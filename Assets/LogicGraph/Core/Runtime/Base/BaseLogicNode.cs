@@ -45,6 +45,15 @@ namespace Game.Logic.Runtime
         }
 
         /// <summary>
+        /// 拉去数据
+        /// </summary>
+        public virtual void PullData() { }
+        /// <summary>
+        /// 推送数据
+        /// </summary>
+        public virtual void PushData() { }
+
+        /// <summary>
         /// 节点初始化的时候调用
         /// </summary>
         protected virtual bool OnEnable() => true;
