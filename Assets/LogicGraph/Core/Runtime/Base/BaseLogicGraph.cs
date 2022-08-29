@@ -11,9 +11,10 @@ namespace Game.Logic.Runtime
         private string _onlyId = "";
         public string OnlyId => _onlyId;
 
+        #region 节点定义
+
         [SerializeReference]
         private List<BaseLogicNode> _nodes = new List<BaseLogicNode>();
-
         /// <summary>
         /// 当前逻辑图的所有节点
         /// </summary>
@@ -31,19 +32,46 @@ namespace Game.Logic.Runtime
         /// </summary>       
         public List<int> StartNodes => _startNodes;
 
+        #endregion
+
+        #region 变量定义
+
+        [SerializeReference]
+        private List<BaseVariable> _vars = new List<BaseVariable>();
+        /// <summary>
+        /// 当前逻辑图的所有变量
+        /// </summary>
+        public List<BaseVariable> Vars => _vars;
+        /// <summary>
+        /// 当前逻辑图的所有变量的另一种缓存
+        /// </summary>
+        private Dictionary<string, BaseVariable> _varDic = new Dictionary<string, BaseVariable>();
+
+        #endregion
 
         /// <summary>
         /// 获取一个节点
         /// </summary>
-        /// <param name="onlyId"></param>
+        /// <param name="onlyId">节点唯一Id</param>
         /// <returns></returns>
-        public BaseLogicNode GetNodeById(int onlyId) => _nodeDic.ContainsKey(onlyId) ? _nodeDic[onlyId] : null;
+        public BaseLogicNode GetNode(int onlyId) => _nodeDic.ContainsKey(onlyId) ? _nodeDic[onlyId] : null;
+
+        /// <summary>
+        /// 获取变量
+        /// </summary>
+        /// <param name="varName">变量名</param>
+        /// <returns></returns>
+        public BaseVariable GetVar(string varName) => _varDic.ContainsKey(varName) ? _varDic[varName] : null;
 
         /// <summary>
         /// 初始化
         /// </summary>
         public virtual void Init()
         {
+            foreach (var item in _vars)
+            {
+                _varDic.Add(item.Name, item);
+            }
             foreach (var item in Nodes)
             {
                 _nodeDic.Add(item.onlyId, item);

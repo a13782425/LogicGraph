@@ -27,7 +27,6 @@ namespace Game.Logic.Editor
         {
             m_createUI();
 
-
         }
 
         private void m_createUI()

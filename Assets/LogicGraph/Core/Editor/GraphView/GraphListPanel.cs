@@ -76,13 +76,13 @@ namespace Game.Logic.Editor
             list.Clear();
             SampleTreeItem createTree = new SampleTreeItem("创建逻辑图");
             createTree.userData = "root";
-            //foreach (var item in LogicProvider.LGEditorList)
-            //{
-            //    SampleTreeItem tree = new SampleTreeItem(item.GraphName);
-            //    tree.userData = item;
-            //    tree.onClick = m_createLogic;
-            //    createTree.AddChild(tree);
-            //}
+            foreach (var item in LogicProvider.LGEditorList)
+            {
+                SampleTreeItem tree = new SampleTreeItem(item.GraphName);
+                tree.userData = item;
+                tree.onClick = m_createLogic;
+                createTree.AddChild(tree);
+            }
             SampleTreeItem openTree = new SampleTreeItem("打开逻辑图");
             openTree.userData = "root";
 
@@ -118,7 +118,8 @@ namespace Game.Logic.Editor
 
         private void m_createLogic(ITreeViewItem obj)
         {
-            //LGEditorCache configData = obj.userData as LGEditorCache;
+            LGEditorCache configData = obj.userData as LGEditorCache;
+            Debug.LogError(configData.GraphName);
             //string path = EditorUtility.SaveFilePanel("创建逻辑图", Application.dataPath, "LogicGraph", "asset");
             //if (string.IsNullOrEmpty(path))
             //{

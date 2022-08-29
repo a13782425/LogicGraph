@@ -1,0 +1,16 @@
+{
+    "name": "Logic.Example.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ee55fde2d14605c46909166e79ec3935"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
