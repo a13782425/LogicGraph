@@ -15,9 +15,9 @@ namespace Game.Logic.Editor
         [SerializeField]
         public Color Color = new Color(0, 0, 0, 0.3f);
         [SerializeField]
-        public Vector2 Pos;
+        public SVector2 Pos;
         [SerializeField]
-        public Vector2 Size;
+        public SVector2 Size;
         [SerializeField]
         public List<int> Nodes = new List<int>();
     }

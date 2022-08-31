@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Game.Logic.Runtime;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -120,35 +121,39 @@ namespace Game.Logic.Editor
         {
             LGEditorCache configData = obj.userData as LGEditorCache;
             Debug.LogError(configData.GraphName);
-            //string path = EditorUtility.SaveFilePanel("创建逻辑图", Application.dataPath, "LogicGraph", "asset");
-            //if (string.IsNullOrEmpty(path))
-            //{
-            //    EditorUtility.DisplayDialog("错误", "路径为空", "确定");
-            //    return;
-            //}
-            //if (File.Exists(path))
-            //{
-            //    EditorUtility.DisplayDialog("错误", "创建文件已存在", "确定");
-            //    return;
-            //}
-            //string file = Path.GetFileNameWithoutExtension(path);
-            //BaseLogicGraph graph = ScriptableObject.CreateInstance(configData.GraphType) as BaseLogicGraph;
-            //BaseGraphView graphView = Activator.CreateInstance(configData.ViewType) as BaseGraphView;
-            //graph.name = file;
-            //if (graphView.DefaultVars != null)
-            //{
-            //    foreach (var item in graphView.DefaultVars)
-            //    {
-            //        item.CanRename = false;
-            //        item.CanDel = false;
-            //        graph.Variables.Add(item);
-            //    }
-            //}
+            string path = EditorUtility.SaveFilePanel("创建逻辑图", Application.dataPath, "LogicGraph", "asset");
+            if (string.IsNullOrEmpty(path))
+            {
+                EditorUtility.DisplayDialog("错误", "路径为空", "确定");
+                return;
+            }
+            if (File.Exists(path))
+            {
+                EditorUtility.DisplayDialog("错误", "创建文件已存在", "确定");
+                return;
+            }
+            string file = Path.GetFileNameWithoutExtension(path);
+            BaseLogicGraph graph = ScriptableObject.CreateInstance(configData.GraphType) as BaseLogicGraph;
+            GraphEditorData graphEditor = new GraphEditorData();
+            LogicGraphView graphView = Activator.CreateInstance(configData.ViewType) as LogicGraphView;
+            graph.name = file;
+            if (graphView.DefaultVars != null)
+            {
+                foreach (var item in graphView.DefaultVars)
+                {
+                    //item.CanRename = false;
+                    //item.CanDel = false;
+                    graph.Variables.Add(item);
+                }
+            }
             //graphView = null;
-            //path = path.Replace(Application.dataPath, "Assets");
-            //graph.Title = file;
-            //AssetDatabase.CreateAsset(graph, path);
-            //AssetDatabase.Refresh();
+            path = path.Replace(Application.dataPath, "Assets");
+            graphEditor.Title = file;
+            graphEditor.GroupDatas.Add(new GroupEditorData());
+            AssetDatabase.CreateAsset(graph, path);
+            AssetDatabase.Refresh();
+
+            LogicUtils.SetGraphEditorData(path, graphEditor);
             //Window.GraphOnlyId = graph.OnlyId;
             this.Hide();
         }

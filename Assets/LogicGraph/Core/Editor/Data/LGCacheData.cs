@@ -47,14 +47,16 @@ namespace Game.Logic.Editor
         /// 图名
         /// </summary>
         public string GraphName;
+
         /// <summary>
-        /// 图类型名全称,含命名空间
+        /// 逻辑图类型
         /// </summary>
-        public string GraphClassName;
+        public Type GraphType { get; set; }
+
         /// <summary>
-        /// 图类型名全称,含命名空间
+        /// 视图类型
         /// </summary>
-        public string GraphViewClassName;
+        public Type ViewType { get; set; }
 
     }
 

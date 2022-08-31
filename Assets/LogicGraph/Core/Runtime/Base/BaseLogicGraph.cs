@@ -37,11 +37,11 @@ namespace Game.Logic.Runtime
         #region 变量定义
 
         [SerializeReference]
-        private List<BaseVariable> _vars = new List<BaseVariable>();
+        private List<BaseVariable> _variables = new List<BaseVariable>();
         /// <summary>
         /// 当前逻辑图的所有变量
         /// </summary>
-        public List<BaseVariable> Vars => _vars;
+        public List<BaseVariable> Variables => _variables;
         /// <summary>
         /// 当前逻辑图的所有变量的另一种缓存
         /// </summary>
@@ -68,7 +68,7 @@ namespace Game.Logic.Runtime
         /// </summary>
         public virtual void Init()
         {
-            foreach (var item in _vars)
+            foreach (var item in _variables)
             {
                 _varDic.Add(item.Name, item);
             }

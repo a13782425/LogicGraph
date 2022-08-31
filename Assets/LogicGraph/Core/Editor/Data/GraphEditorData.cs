@@ -11,6 +11,10 @@ namespace Game.Logic.Editor
     public sealed class GraphEditorData
     {
         /// <summary>
+        /// 标题
+        /// </summary>
+        public string Title;
+        /// <summary>
         /// 当前图的节点编辑器数据
         /// </summary>
         [SerializeField]
@@ -34,6 +38,7 @@ namespace Game.Logic.Editor
         /// 当前图的缩放
         /// </summary>
         [SerializeField]
-        public Vector3 Scale = Vector3.one;
+        public SVector3 Scale = Vector3.one;
+      
     }
 }

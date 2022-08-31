@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace Game.Logic.Editor
 {
+    /// <summary>
+    /// 对于编辑器一些信息的提供
+    /// </summary>
     public static class LogicProvider
     {
         private static List<LGEditorCache> _lgEditorList = new List<LGEditorCache>();
@@ -26,7 +29,6 @@ namespace Game.Logic.Editor
         private static void BuildGraphCache()
         {
             TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom<LogicGraphView>();
-            Debug.LogError(types.Count);
 
             //循环查询逻辑图
             foreach (var item in types)
@@ -35,15 +37,10 @@ namespace Game.Logic.Editor
                 var graphAttr = item.GetCustomAttribute<LogicGraphAttribute>();
                 if (graphAttr != null)
                 {
-                    Debug.LogError(graphAttr.LogicName);
                     LGEditorCache graphData = new LGEditorCache();
-                    graphData.GraphClassName = graphAttr.GraphType.FullName;
-                    graphData.GraphViewClassName = item.FullName;
-                    //graphData.DefaultNodes.Clear();
-                    //graphData.DefaultNodeFullNames = graphAttr.DefaultNodes.Select(a => a.FullName).ToList();
+                    graphData.GraphType = graphAttr.GraphType;
+                    graphData.ViewType = item;
                     graphData.GraphName = graphAttr.LogicName;
-                    //graphData.GraphType = graphAttr.GraphType;
-                    //graphData.ViewType = item;
                     LGEditorList.Add(graphData);
                 }
             }

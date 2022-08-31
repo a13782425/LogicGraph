@@ -46,6 +46,34 @@ namespace Game.Logic.Editor
             PORT_CUBE = "cube";
             MIN_SIZE = new Vector2(640, 360);
         }
+
+
+        /// <summary>
+        /// 获取逻辑图编辑器数据
+        /// </summary>
+        /// <param name="logicPath"></param>
+        /// <returns></returns>
+        public static GraphEditorData GetGraphEditorData(string logicPath)
+        {
+            AssetImporter importer = AssetImporter.GetAtPath(logicPath);
+            return importer == null ? null : JsonUtility.FromJson<GraphEditorData>(importer.userData);
+        }
+        /// <summary>
+        /// 设置逻辑图编辑器数据
+        /// </summary>
+        /// <param name="logicPath"></param>
+        /// <returns></returns>
+        public static bool SetGraphEditorData(string logicPath, GraphEditorData editorData)
+        {
+            AssetImporter importer = AssetImporter.GetAtPath(logicPath);
+            if (importer == null)
+            {
+                return false;
+            }
+            importer.userData = JsonUtility.ToJson(editorData);
+            importer.SaveAndReimport();
+            return true;
+        }
     }
 
 

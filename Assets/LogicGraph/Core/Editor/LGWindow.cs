@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,11 +9,13 @@ namespace Game.Logic.Editor
 {
     public class LGWindow : EditorWindow
     {
-        private VisualElement _topContent;
-        private VisualElement _centerContent;
+        private VisualElement _leftContent;
+        private VisualElement _rightContent;
         private VisualElement _bottomContent;
 
         private GraphListPanel _graphListPanel;
+
+        private VisualElement contentContainer;
 
         public static void ShowLogic()
         {
@@ -32,30 +35,32 @@ namespace Game.Logic.Editor
         private void m_createUI()
         {
             titleContent = new GUIContent("逻辑图");
-            _topContent = new VisualElement();
-            _topContent.name = "top";
-            _topContent.style.height = 21;
-            _topContent.style.flexGrow = 0;
-            _centerContent = new VisualElement();
-            _centerContent.name = "center";
-            _centerContent.style.flexGrow = 1;
+            contentContainer = new VisualElement();
+            contentContainer.name = "contentContainer";
+            this.rootVisualElement.Add(contentContainer);
+            rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, "LGWindow.uss")));
+            _leftContent = new VisualElement();
+            _leftContent.name = "left";
+            _rightContent = new VisualElement();
+            _rightContent.name = "right";
             _bottomContent = new VisualElement();
             _bottomContent.name = "bottom";
-            _bottomContent.style.height = 21;
-            _bottomContent.style.flexGrow = 0;
+            //_bottomContent.style.height = 24;
+            //_bottomContent.style.backgroundColor = new Color(32 / 255f, 32 / 255f, 32 / 255f);
 
-            this.rootVisualElement.Add(_topContent);
-            this.rootVisualElement.Add(_centerContent);
+
+            this.contentContainer.Add(_leftContent);
+            this.contentContainer.Add(_rightContent);
             this.rootVisualElement.Add(_bottomContent);
-            var _topToolbar = new ToolbarView();
-            _topToolbar.onDrawLeft += m_onDrawTopLeft;
-            _topContent.Add(_topToolbar);
+            //var _topToolbar = new ToolbarView();
+            //_topToolbar.onDrawLeft += m_onDrawTopLeft;
+            //_topContent.Add(_topToolbar);
             //_bottomToolbar = new ToolbarView();
             //_bottomToolbar.onDrawLeft += m_onDrawBottomLeft;
             //_bottomToolbar.onDrawRight += m_onDrawBottomRight;
             //_bottomContent.Add(_bottomToolbar);
             _graphListPanel = new GraphListPanel(this);
-            this.rootVisualElement.Add(_graphListPanel);
+            this._leftContent.Add(new FlyoutMenuView());
             _graphListPanel.Hide();
 
         }
