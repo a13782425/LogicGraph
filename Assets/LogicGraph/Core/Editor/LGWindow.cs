@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,15 +8,22 @@ using UnityEngine.UIElements;
 
 namespace Game.Logic.Editor
 {
-    public class LGWindow : EditorWindow
+    public sealed partial class LGWindow : EditorWindow
     {
         private VisualElement _leftContent;
         private VisualElement _rightContent;
         private VisualElement _bottomContent;
 
-        private GraphListPanel _graphListPanel;
+        private FlyoutMenuView _menuView;
 
         private VisualElement contentContainer;
+
+        public FlyoutButton overviewButton { get; private set; }
+        public FlyoutButton loadButton { get; private set; }
+        public FlyoutButton graphButton { get; private set; }
+        public FlyoutButton saveButton { get; private set; }
+
+        internal OverviewGraphView overviewGraph { get; private set; }
 
         public static void ShowLogic()
         {
@@ -25,11 +33,13 @@ namespace Game.Logic.Editor
             panel.Focus();
         }
 
-
+        /// <summary>
+        /// 相当于构造函数
+        /// 但会在每次编译后执行
+        /// </summary>
         private void OnEnable()
         {
             m_createUI();
-
         }
 
         private void m_createUI()
@@ -45,34 +55,57 @@ namespace Game.Logic.Editor
             _rightContent.name = "right";
             _bottomContent = new VisualElement();
             _bottomContent.name = "bottom";
-            //_bottomContent.style.height = 24;
-            //_bottomContent.style.backgroundColor = new Color(32 / 255f, 32 / 255f, 32 / 255f);
 
 
             this.contentContainer.Add(_leftContent);
             this.contentContainer.Add(_rightContent);
             this.rootVisualElement.Add(_bottomContent);
-            //var _topToolbar = new ToolbarView();
-            //_topToolbar.onDrawLeft += m_onDrawTopLeft;
-            //_topContent.Add(_topToolbar);
-            //_bottomToolbar = new ToolbarView();
-            //_bottomToolbar.onDrawLeft += m_onDrawBottomLeft;
-            //_bottomToolbar.onDrawRight += m_onDrawBottomRight;
-            //_bottomContent.Add(_bottomToolbar);
-            _graphListPanel = new GraphListPanel(this);
-            this._leftContent.Add(new FlyoutMenuView());
-            _graphListPanel.Hide();
+            _menuView = new FlyoutMenuView(this);
+            this._leftContent.Add(_menuView);
 
+            //初始化侧边栏的按钮
+            m_initMenuBtns();
+            //初始化总览图
+            m_initOverviewGraph();
         }
 
-        private void m_onDrawTopLeft()
+        /// <summary>
+        /// 初始化总览图
+        /// </summary>
+        private void m_initOverviewGraph()
         {
-            if (GUILayout.Button("菜单", EditorStyles.toolbarButton))
-            {
-                _graphListPanel.Show();
-            }
-            //onDrawTopLeft?.Invoke();
+            overviewGraph = new OverviewGraphView(this);
+            _rightContent.Add(overviewGraph);
         }
+        /// <summary>
+        /// 初始化侧边栏的按钮
+        /// </summary>
+        private void m_initMenuBtns()
+        {
+            overviewButton = _menuView.AddButton("总览");
+            overviewButton.icon = LogicUtils.GetTexture("flyout_all");
 
+            loadButton = _menuView.AddButton("打开");
+            loadButton.icon = LogicUtils.GetTexture("flyout_load");
+
+            graphButton = _menuView.AddButton("图");
+            graphButton.icon = LogicUtils.GetTexture("flyout_graph");
+
+            saveButton = _menuView.AddButton("保存");
+            saveButton.icon = LogicUtils.GetTexture("flyout_save");
+
+            overviewButton.onClick += onOverviewClick;
+
+            overviewButton.Select();
+            graphButton.Hide();
+            saveButton.Hide();
+
+            void onOverviewClick(ClickEvent evt)
+            {
+                overviewButton.Select();
+                graphButton.UnSelect();
+            }
+
+        }
     }
 }

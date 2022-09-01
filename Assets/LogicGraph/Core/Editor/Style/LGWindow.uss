@@ -9,6 +9,6 @@
 	flex-grow: 1;
 }
 #bottom{
-	height: 24;
-	background-color: rgba(32,32,32,255);
+	height: 24px;
+	background-color: rgba(0,0,0,255);
 }

@@ -1,0 +1,7 @@
+﻿OverviewNode{
+}
+#title-label{
+	margin-right: 6px;
+	flex-grow: 1;
+	-unity-text-align: middle-center;
+}

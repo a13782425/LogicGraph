@@ -25,29 +25,33 @@ namespace Game.Logic.Editor
             IsCollapsing
         }
 
-        private bool isShow = true;
-        private MenuState currentMenuState { get; set; }
-        private bool areButtonLabelsHidden { get; set; }
+        /// <summary>
+        /// 当前界面属于哪个窗口
+        /// </summary>
+        public LGWindow owner { get; }
         public VisualElement layoutContainer { get; }
         public VisualElement headerContainer { get; }
         public ScrollView buttonsScrollViewContainer { get; }
         public VisualElement buttonsContainer { get; }
-        public FlyoutToggleButton overviewButton { get; }
-        public FlyoutToggleButton loadButton { get; }
-        public FlyoutToggleButton graphButton { get; }
-        public FlyoutToggleButton saveButton { get; }
-
-        //public VisualElement footerContainer { get; }
+        public FlyoutButton overviewButton { get; }
+        public FlyoutButton loadButton { get; }
+        public FlyoutButton graphButton { get; }
+        public FlyoutButton saveButton { get; }
+        /// <summary>
+        /// 自定义按钮
+        /// </summary>
+        private List<FlyoutButton> buttons { get; }
 
         private Image headerIcon { get; }
         private Label headerLabel { get; }
 
         #endregion
 
-        public FlyoutMenuView()
+        public FlyoutMenuView(LGWindow lgwindow)
         {
+            owner = lgwindow;
             this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(EDITOR_STYLE_PATH, STYLE_PATH)));
-
+            buttons = new List<FlyoutButton>();
             layoutContainer = new VisualElement();
             layoutContainer.AddToClassList("FlyoutMenuView");
             layoutContainer.name = "layoutContainer";
@@ -69,37 +73,19 @@ namespace Game.Logic.Editor
             headerLabel.AddToClassList("headerLabel");
             headerContainer.Add(headerLabel);
 
-
-            //buttonsScrollViewContainer = new ScrollView();
-            //buttonsScrollViewContainer.verticalScrollerVisibility = ScrollerVisibility.Hidden;
-            //buttonsScrollViewContainer.name = "buttonsScrollViewContainer";
-            //buttonsScrollViewContainer.AddToClassList("FlyoutMenuView");
-            //layoutContainer.Add(buttonsScrollViewContainer);
-
             buttonsContainer = new VisualElement();
             buttonsContainer.name = "buttonsContainer";
             buttonsContainer.AddToClassList("FlyoutMenuView");
             layoutContainer.Add(buttonsContainer);
 
-            overviewButton = AddButton("总览");
-            overviewButton.tabIcon.AddToClassList("overview");
-
-            loadButton = AddButton("打开");
-            loadButton.tabIcon.AddToClassList("load");
-
-            graphButton = AddButton("图");
-            graphButton.tabIcon.AddToClassList("graph");
-
-            saveButton = AddButton("保存");
-            saveButton.tabIcon.AddToClassList("save");
-
             headerIcon.RegisterCallback<ClickEvent>(onHeaderClick);
         }
 
-        public FlyoutToggleButton AddButton(string text)
+        public FlyoutButton AddButton(string text)
         {
-            FlyoutToggleButton tabButton = new FlyoutToggleButton();
+            FlyoutButton tabButton = new FlyoutButton();
             tabButton.text = text;
+            buttons.Add(tabButton);
             buttonsContainer.Add(tabButton);
             var spaceBlock = new VisualElement();
             spaceBlock.name = "spaceBlock";
@@ -111,22 +97,17 @@ namespace Game.Logic.Editor
         }
         private void onHeaderClick(ClickEvent evt)
         {
-            if (headerIcon.ClassListContains("hide") && !isShow)
-            {
-                isShow = false;
-            }
-            isShow = !isShow;
-            if (isShow)
+            if (this.ClassListContains("hide"))
             {
                 this.RemoveFromClassList("hide");
                 headerContainer.RemoveFromClassList("hide");
                 buttonsContainer.RemoveFromClassList("hide");
                 headerIcon.RemoveFromClassList("hide");
                 headerLabel.RemoveFromClassList("hide");
-                overviewButton.Show();
-                loadButton.Show();
-                graphButton.Show();
-                saveButton.Show();
+                foreach (var item in buttons)
+                {
+                    item.ZoomIn();
+                }
             }
             else
             {
@@ -135,12 +116,11 @@ namespace Game.Logic.Editor
                 buttonsContainer.AddToClassList("hide");
                 headerIcon.AddToClassList("hide");
                 headerLabel.AddToClassList("hide");
-                overviewButton.Hide();
-                loadButton.Hide();
-                graphButton.Hide();
-                saveButton.Hide();
+                foreach (var item in buttons)
+                {
+                    item.ZoomOut();
+                }
             }
-
         }
     }
 }

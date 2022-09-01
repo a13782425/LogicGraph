@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEditor.Experimental;
 using UnityEngine;
 
 namespace Game.Logic.Editor
@@ -10,6 +11,11 @@ namespace Game.Logic.Editor
     //逻辑图工具类
     internal static partial class LogicUtils
     {
+        /// <summary>
+        /// [大版本][小版本][Bug修复]
+        /// 大版本 大于0 为正式版
+        /// </summary>
+        public const string VERSIONS = "0.0.1 beta";
         /// <summary>
         /// 编辑器路径
         /// </summary>
@@ -73,6 +79,16 @@ namespace Game.Logic.Editor
             importer.userData = JsonUtility.ToJson(editorData);
             importer.SaveAndReimport();
             return true;
+        }
+
+        /// <summary>
+        /// 获取resource下的图片
+        /// </summary>
+        /// <param name="textureName"></param>
+        /// <returns></returns>
+        public static Texture GetTexture(string textureName)
+        {
+            return Resources.Load<Texture>(textureName);
         }
     }
 

@@ -1,0 +1,17 @@
+﻿/*OverviewGroup{
+}
+.scope > .mainContainer{
+	flex-direction: row;
+}*/
+
+.mainContainer > #headerContainer {
+	height: 32px;
+	justify-content: center;
+}
+.mainContainer > #headerContainer > .unity-label{
+	font-size: 18px;
+	padding-left: 8px;
+}
+.scope > .mainContainer > #centralContainer > #contentContainerPlaceholder{
+	padding: 8px;
+}
