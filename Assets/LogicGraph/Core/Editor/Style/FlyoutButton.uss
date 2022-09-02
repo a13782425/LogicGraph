@@ -1,5 +1,5 @@
 ﻿FlyoutButton{
-	height: 48px;
+	height: 36px;
 	padding-left: 4px;
 	border-bottom-left-radius: 6px;
 	border-bottom-right-radius: 6px;
@@ -12,8 +12,8 @@
 }
 
 FlyoutButton > #tabIcon{
-	width: 30px;
-	height: 30px;
+	width: 32px;
+	height: 32px;
 }
 
 FlyoutButton > #contentLabel{
@@ -34,7 +34,7 @@ FlyoutButton > #contentLabel.hide{
 	display: none;
 }
 FlyoutButton.hide{
-	width: 48px;
+	width: 36px;
     align-self: center;
 	justify-content: center;
 	padding-left: 0px;

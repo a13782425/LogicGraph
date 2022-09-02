@@ -1,0 +1,9 @@
+﻿GraphViewInspector{
+	width: 160px;
+	background-color: rgba(47,47,47,255);
+}
+
+.inspector-separator{
+	height: 2px;
+	background-color: rgba(0,0,0,255);
+}

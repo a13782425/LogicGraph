@@ -1,6 +1,6 @@
 ﻿FlyoutMenuView{
-    background-color: rgba(42,42,42,255);
-    width: 180px;
+    background-color: rgba(47,47,47,255);
+    width: 160;
     flex-grow: 1;
 }
 
@@ -52,7 +52,7 @@
 }
 
 FlyoutMenuView.hide{
-    width: 64px;
+    width: 48px;
 }
 #buttonsContainer.FlyoutMenuView.hide {
     padding-top: 16px;

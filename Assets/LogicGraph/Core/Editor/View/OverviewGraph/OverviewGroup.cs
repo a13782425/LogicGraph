@@ -34,6 +34,8 @@ namespace Game.Logic.Editor
             int index = 0;
             Rect rect = this.GetPosition();
             var width = this.containedElements.First().GetPosition().width + 5;
+            Debug.LogError(this.containedElements.First().GetPosition());
+            Debug.LogError(this.containedElements.First().layout);
             foreach (var item in this.containedElements)
             {
                 Rect temp = item.GetPosition();
