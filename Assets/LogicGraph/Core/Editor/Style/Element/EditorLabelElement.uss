@@ -1,0 +1,13 @@
+﻿EditorLabelElement{
+	flex-grow: 1;
+	padding: 6px;
+}
+EditorLabelElement > #title_label{
+	flex-grow: 1;
+	font-size: 12px;
+	-unity-text-align: middle-center;
+}
+EditorLabelElement > #input_field{
+	display: none;
+	flex-grow: 1;
+}

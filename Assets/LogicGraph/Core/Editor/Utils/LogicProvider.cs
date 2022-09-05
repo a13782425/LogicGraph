@@ -1,3 +1,5 @@
+using Game.Logic.Runtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -17,11 +19,19 @@ namespace Game.Logic.Editor
         /// 逻辑图模板缓存
         /// </summary>
         public static List<LGEditorCache> LGEditorList => _lgEditorList;
+
+
+        private static List<LGCatalogCache> _lgCatalogList = new List<LGCatalogCache>();
+        /// <summary>
+        /// 逻辑图目录缓存
+        /// </summary>
+        public static List<LGCatalogCache> LGCatalogList => _lgCatalogList;
         static LogicProvider()
         {
             BuildGraphCache();
-
+            BuildGraphCatalog();
         }
+
 
         /// <summary>
         /// 生成逻辑图编辑器信息缓存
@@ -44,7 +54,35 @@ namespace Game.Logic.Editor
                     LGEditorList.Add(graphData);
                 }
             }
-
         }
+        /// <summary>
+        /// 生成逻辑图信息缓存
+        /// </summary>
+        private static void BuildGraphCatalog()
+        {
+            HashSet<string> hashKey = new HashSet<string>();
+            LGCatalogList.Clear();
+            string[] guids = AssetDatabase.FindAssets("t:BaseLogicGraph");
+            foreach (string guid in guids)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                BaseLogicGraph logicGraph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(assetPath);
+                if (logicGraph == null)
+                    continue;
+                if (hashKey.Contains(logicGraph.OnlyId))
+                {
+                    logicGraph.ResetGUID();
+                }
+                var editorData = logicGraph.GetEditorData();
+                LGCatalogCache graphCache = new LGCatalogCache();
+                graphCache.GraphClassName = logicGraph.GetType().FullName;
+                graphCache.AssetPath = assetPath;
+                graphCache.OnlyId = logicGraph.OnlyId;
+                graphCache.EditorData = editorData;
+                hashKey.Add(logicGraph.OnlyId);
+                LGCatalogList.Add(graphCache);
+            }
+        }
+
     }
 }

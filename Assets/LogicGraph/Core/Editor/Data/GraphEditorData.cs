@@ -13,7 +13,7 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 标题
         /// </summary>
-        public string Title;
+        public string LogicName;
         /// <summary>
         /// 当前图的节点编辑器数据
         /// </summary>
@@ -38,7 +38,20 @@ namespace Game.Logic.Editor
         /// 当前图的缩放
         /// </summary>
         [SerializeField]
-        public SVector3 Scale = Vector3.one;
-      
+        public Vector3 Scale = Vector3.one;
+
+        [SerializeField]
+        private string _createTime = DateTime.Now.ToString("yyyy.MM.dd");
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public string CreateTime => _createTime;
+
+        /// <summary>
+        /// 修改时间
+        /// </summary>
+        [SerializeField]
+        public string ModifyTime = "";
+
     }
 }

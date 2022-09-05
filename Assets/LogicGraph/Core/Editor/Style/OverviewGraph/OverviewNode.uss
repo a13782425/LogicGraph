@@ -5,3 +5,9 @@
 	flex-grow: 1;
 	-unity-text-align: middle-center;
 }
+
+.time_label{
+	color: rgba(63,62,60,255);
+	margin-left: 8px;
+	margin-right: 8px;
+}

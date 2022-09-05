@@ -10,13 +10,13 @@ namespace Game.Logic.Editor
     /// <summary>
     /// 逻辑图目录缓存
     /// </summary>
-    internal class LGCatalogCache
+    public class LGCatalogCache
     {
         public string OnlyId;
         /// <summary>
         /// 逻辑图名
         /// </summary>
-        public string LogicName;
+        public string LogicName=> EditorData.LogicName;
         /// <summary>
         /// 图类型名全称,含命名空间
         /// </summary>
@@ -33,7 +33,7 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 当前的逻辑图
         /// </summary>
-        public BaseLogicGraph Graph;
+        public GraphEditorData EditorData;
     }
 
     /// <summary>

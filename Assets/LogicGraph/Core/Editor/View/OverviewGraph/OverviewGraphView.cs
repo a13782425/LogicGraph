@@ -33,22 +33,36 @@ namespace Game.Logic.Editor
             contentZoomer.maxScale = 2f;
             contentZoomer.scaleStep = 0.05f;
             this.AddManipulator(contentZoomer);
-            var group = new OverviewGroup(this);
-            this.AddElement(group);
-            var node = new OverviewNode(this);
-            this.AddElement(node);
-            group.AddElement(node);
-            node = new OverviewNode(this);
-            this.AddElement(node);
-            group.AddElement(node);
-            node = new OverviewNode(this);
-            this.AddElement(node);
-            group.AddElement(node);
-            this.MarkDirtyRepaint();
-            this.schedule.Execute(() =>
+            m_addGroup();
+            //var group = new OverviewGroup(this);
+            //this.AddElement(group);
+            //var node = new OverviewNode(this);
+            //this.AddElement(node);
+            //group.AddElement(node);
+            //node = new OverviewNode(this);
+            //this.AddElement(node);
+            //group.AddElement(node);
+            //node = new OverviewNode(this);
+            //this.AddElement(node);
+            //group.AddElement(node);
+            //this.MarkDirtyRepaint();
+            //this.schedule.Execute(() =>
+            //{
+            //    group.ResetElementPosition();
+            //}).ExecuteLater(1);
+        }
+
+        /// <summary>
+        /// 添加分组
+        /// </summary>
+        private void m_addGroup()
+        {
+            foreach (var item in LogicProvider.LGEditorList)
             {
-                group.ResetElementPosition();
-            });
+                var group = new OverviewGroup(this);
+                group.Initialize(item);
+                this.AddElement(group);
+            }
         }
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
@@ -87,6 +101,7 @@ namespace Game.Logic.Editor
             LogicGraphView graphView = Activator.CreateInstance(configData.ViewType) as LogicGraphView;
             GraphEditorData graphEditor = new GraphEditorData();
             graph.name = file;
+            graph.ResetGUID();
             if (graphView.DefaultVars != null)
             {
                 foreach (var item in graphView.DefaultVars)
@@ -96,10 +111,10 @@ namespace Game.Logic.Editor
             }
             graphView = null;
             path = path.Replace(Application.dataPath, "Assets");
-            graphEditor.Title = file;
+            graphEditor.LogicName = file;
             AssetDatabase.CreateAsset(graph, path);
             AssetDatabase.Refresh();
-            graph.SetEditorData(path, graphEditor);
+            graph.SetEditorData(graphEditor);
             //Todo: 打开当前创建的逻辑图
             return true;
         }
