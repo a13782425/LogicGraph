@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Game.Logic.Editor
 {
@@ -16,7 +17,7 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 逻辑图名
         /// </summary>
-        public string LogicName=> EditorData.LogicName;
+        public string LogicName => EditorData.LogicName;
         /// <summary>
         /// 图类型名全称,含命名空间
         /// </summary>
@@ -44,15 +45,21 @@ namespace Game.Logic.Editor
     public sealed class LGEditorCache
     {
         /// <summary>
+        /// 索引
+        /// </summary>
+        public int Index { get; set; }
+        /// <summary>
         /// 图名
         /// </summary>
-        public string GraphName;
-
+        public string GraphName { get; set; }
+        /// <summary>
+        /// 图的颜色
+        /// </summary>
+        internal Color GraphColor { get; set; }
         /// <summary>
         /// 逻辑图类型
         /// </summary>
         public Type GraphType { get; set; }
-
         /// <summary>
         /// 视图类型
         /// </summary>

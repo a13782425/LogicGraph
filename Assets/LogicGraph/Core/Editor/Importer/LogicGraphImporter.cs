@@ -27,22 +27,24 @@ namespace Game.Logic.Editor
         public static void OnPostprocessAllAssets(string[] importedAsset, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
             bool hasAsset = false;
+            LogicAssetsChangedEventArgs refreshViewEvent = new LogicAssetsChangedEventArgs();
             foreach (var str in movedFromAssetPaths)
             {
                 //移动前资源路径
-                if (Path.GetExtension(str) == ".asset")
-                {
-                    hasAsset = true;
-                    goto End;
-                }
             }
             foreach (var str in movedAssets)
             {
                 //移动后资源路径
                 if (Path.GetExtension(str) == ".asset")
                 {
-                    hasAsset = true;
-                    goto End;
+                    var logicGraph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(str);
+                    if (logicGraph != null)
+                    {
+                        refreshViewEvent.moveGraphs.Add(str);
+                        bool res = LogicProvider.MoveGraph(str, logicGraph);
+                        if (!hasAsset)
+                            hasAsset = res;
+                    }
                 }
             }
             foreach (string str in importedAsset)
@@ -52,9 +54,14 @@ namespace Game.Logic.Editor
                     var logicGraph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(str);
                     if (logicGraph != null)
                     {
-                        logicGraph.ResetGUID();
-                        hasAsset = true;
-                        goto End;
+                        if (logicGraph.GetEditorData() == null)
+                        {
+                            logicGraph.ResetGUID();
+                            refreshViewEvent.addGraphs.Add(str);
+                            bool res = LogicProvider.AddGraph(str, logicGraph);
+                            if (!hasAsset)
+                                hasAsset = res;
+                        }
                     }
                 }
             }
@@ -62,15 +69,17 @@ namespace Game.Logic.Editor
             {
                 if (Path.GetExtension(str) == ".asset")
                 {
-                    hasAsset = true;
-                    goto End;
+                    refreshViewEvent.deletedGraphs.Add(str);
+                    bool res = LogicProvider.DeleteGraph(str);
+                    if (!hasAsset)
+                        hasAsset = res;
                 }
             }
 
-        End: if (hasAsset)
+            if (hasAsset)
             {
                 Debug.LogError("有文件发生改变");
-                //LogicProvider.BuildGraphAssetCache();
+                LogicMessage.OnEvent(LogicEventId.LOGIC_ASSETS_CHANGED, refreshViewEvent);
             }
         }
     }

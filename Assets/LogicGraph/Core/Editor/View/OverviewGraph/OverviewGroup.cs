@@ -18,11 +18,13 @@ namespace Game.Logic.Editor
     {
         private const string STYLE_PATH = "OverviewGraph/OverviewGroup.uss";
         public OverviewGraphView onwer { get; }
+
         /// <summary>
         /// 逻辑图编辑器信息缓存
         /// </summary>
-        public LGEditorCache lgCache { get; private set; }
+        public LGEditorCache data { get; private set; }
         private Label title_label { get; }
+        private List<OverviewNode> _nodes = new List<OverviewNode>();
         public override string title { get => title_label.text; set => title_label.text = value; }
         public OverviewGroup(OverviewGraphView view)
         {
@@ -36,53 +38,76 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="item"></param>
-        internal void Initialize(LGEditorCache item)
+        /// <param name="editorCache"></param>
+        internal void Initialize(LGEditorCache editorCache)
         {
-            lgCache = item;
-            title = lgCache.GraphName;
-            Refresh();
-
-        }
-        internal void Refresh()
-        {
-            string typeName = lgCache.GraphType.FullName;
+            data = editorCache;
+            title = data.GraphName;
+            title_label.style.color = editorCache.GraphColor;
+            string typeName = data.GraphType.FullName;
             var list = LogicProvider.LGCatalogList.Where(a => a.GraphClassName == typeName).ToList();
             foreach (var item in list)
             {
-                var node = new OverviewNode(onwer);
+                var node = new OverviewNode(onwer, this);
                 node.Initialize(item);
                 onwer.AddElement(node);
                 this.AddElement(node);
+                _nodes.Add(node);
             }
-            this.schedule.Execute(() =>
-            {
-                Debug.LogError(1);
-                ResetElementPosition();
-            }).StartingIn(1);
+            ResetElementPosition();
         }
 
+        public void Show()
+        {
+            LogicMessage.AddListener(LogicEventId.LOGIC_ASSETS_CHANGED, m_onLogicAssetsChanged);
+        }
+
+        public void Hide()
+        {
+            LogicMessage.RemoveListener(LogicEventId.LOGIC_ASSETS_CHANGED, m_onLogicAssetsChanged);
+        }
+
+        private bool m_onLogicAssetsChanged(object arg)
+        {
+            var changed = arg as LogicAssetsChangedEventArgs;
+
+            foreach (var item in changed.addGraphs)
+            {
+                LGCatalogCache catalog = LogicProvider.LGCatalogList.FirstOrDefault(a => a.AssetPath == item);
+                if (catalog != null && catalog.GraphClassName == data.GraphType.FullName)
+                {
+                    var node = new OverviewNode(onwer, this);
+                    node.Initialize(catalog);
+                    onwer.AddElement(node);
+                    this.AddElement(node);
+                    _nodes.Add(node);
+                }
+            }
+            var temp = containedElements as List<GraphElement>;
+            foreach (var item in changed.deletedGraphs)
+            {
+                OverviewNode node = _nodes.FirstOrDefault(a => a.data.AssetPath == item);
+                if (node != null)
+                {
+                    _nodes.Remove(node);
+                    this.RemoveElement(node);
+                    onwer.RemoveElement(node);
+                }
+            }
+            ResetElementPosition();
+            return true;
+        }
         internal void ResetElementPosition()
         {
-            GraphElement firstElement = this.containedElements.FirstOrDefault();
-            if (firstElement == null)
-            {
-                return;
-            }
             int index = 0;
-            Rect rect = this.GetPosition();
-            var width = firstElement.GetPosition().width + 5;
-            Debug.LogError(firstElement.GetPosition());
-            Debug.LogError(firstElement.layout);
             foreach (var item in this.containedElements)
             {
                 Rect temp = item.GetPosition();
-                temp.x = width * index;
-                temp.y = rect.y;
+                temp.x = 145 * index;
+                temp.y = data.Index * 160;
                 item.SetPosition(temp);
                 index++;
             }
-            this.MarkDirtyRepaint();
         }
         public void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {

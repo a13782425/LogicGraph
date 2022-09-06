@@ -61,18 +61,21 @@ namespace Game.Logic.Editor
                 title_label.style.display = DisplayStyle.None;
                 input_field.SelectAll();
                 input_field.Q(TextInputBaseField<string>.textInputUssName).Focus();
+                evt.StopImmediatePropagation();
             }
         }
-        private void m_titleEditorOnKeyDown(KeyDownEvent e)
+        private void m_titleEditorOnKeyDown(KeyDownEvent evt)
         {
-            switch (e.keyCode)
+            switch (evt.keyCode)
             {
                 case KeyCode.Escape:
                     m_editTitleCancelled = true;
                     input_field.Q(TextInputBaseField<string>.textInputUssName).Blur();
+                    evt.StopImmediatePropagation();
                     break;
                 case KeyCode.Return:
                     input_field.Q(TextInputBaseField<string>.textInputUssName).Blur();
+                    evt.StopImmediatePropagation();
                     break;
             }
         }

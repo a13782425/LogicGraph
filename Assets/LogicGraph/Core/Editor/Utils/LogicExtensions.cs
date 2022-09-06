@@ -20,7 +20,6 @@ namespace Game.Logic.Editor
         public static GraphEditorData GetEditorData(this BaseLogicGraph graph)
         {
             AssetImporter importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(graph));
-            Debug.LogError(importer);
             return importer == null ? null : JsonUtility.FromJson<GraphEditorData>(importer.userData);
         }
         /// <summary>

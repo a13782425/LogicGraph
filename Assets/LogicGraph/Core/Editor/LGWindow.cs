@@ -12,7 +12,7 @@ namespace Game.Logic.Editor
     {
         private VisualElement _leftContent;
         private VisualElement _rightContent;
-        private VisualElement _bottomContent;
+        //private VisualElement _bottomContent;
 
         private FlyoutMenuView _menuView;
 
@@ -53,13 +53,13 @@ namespace Game.Logic.Editor
             _leftContent.name = "left";
             _rightContent = new VisualElement();
             _rightContent.name = "right";
-            _bottomContent = new VisualElement();
-            _bottomContent.name = "bottom";
+            //_bottomContent = new VisualElement();
+            //_bottomContent.name = "bottom";
 
 
             this.contentContainer.Add(_leftContent);
             this.contentContainer.Add(_rightContent);
-            this.rootVisualElement.Add(_bottomContent);
+            //this.rootVisualElement.Add(_bottomContent);
             _menuView = new FlyoutMenuView(this);
             this._leftContent.Add(_menuView);
 
@@ -76,6 +76,7 @@ namespace Game.Logic.Editor
         {
             overviewGraph = new OverviewGraphView(this);
             _rightContent.Add(overviewGraph);
+            overviewGraph.Show();
         }
         /// <summary>
         /// 初始化侧边栏的按钮

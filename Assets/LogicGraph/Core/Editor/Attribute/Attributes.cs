@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Game.Logic.Editor
 {
@@ -17,6 +18,10 @@ namespace Game.Logic.Editor
         /// 对应那个逻辑图
         /// </summary>
         public Type GraphType { get; private set; }
+        /// <summary>
+        /// 当前逻辑图的颜色
+        /// </summary>
+        public Color? Color { get; set; }
 
         public LogicGraphAttribute(string str, Type graphType)
         {

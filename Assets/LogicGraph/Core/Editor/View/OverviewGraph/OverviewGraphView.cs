@@ -20,13 +20,13 @@ namespace Game.Logic.Editor
         private const string STYLE_PATH = "OverviewGraph/OverviewGraphView.uss";
         public LGWindow onwer { get; }
         private CreateLGSearchWindow _createLGSearch;
+        private List<OverviewGroup> _groups = new List<OverviewGroup>();
         public OverviewGraphView(LGWindow window)
         {
             onwer = window;
             this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new SelectionDragger());
-            this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new ClickSelector());
             ContentZoomer contentZoomer = new ContentZoomer();
             contentZoomer.minScale = 0.5f;
@@ -34,22 +34,32 @@ namespace Game.Logic.Editor
             contentZoomer.scaleStep = 0.05f;
             this.AddManipulator(contentZoomer);
             m_addGroup();
-            //var group = new OverviewGroup(this);
-            //this.AddElement(group);
-            //var node = new OverviewNode(this);
-            //this.AddElement(node);
-            //group.AddElement(node);
-            //node = new OverviewNode(this);
-            //this.AddElement(node);
-            //group.AddElement(node);
-            //node = new OverviewNode(this);
-            //this.AddElement(node);
-            //group.AddElement(node);
-            //this.MarkDirtyRepaint();
-            //this.schedule.Execute(() =>
-            //{
-            //    group.ResetElementPosition();
-            //}).ExecuteLater(1);
+            Vector2 pos = new Vector2(100, 120);
+            this.UpdateViewTransform(pos, Vector3.one);
+
+            this.RegisterCallback<KeyUpEvent>(m_onKeyDown);
+        }
+
+        /// <summary>
+        /// 显示
+        /// </summary>
+        public void Show()
+        {
+            foreach (var item in _groups)
+            {
+                item.Show();
+            }
+        }
+
+        /// <summary>
+        /// 隐藏
+        /// </summary>
+        public void Hide()
+        {
+            foreach (var item in _groups)
+            {
+                item.Hide();
+            }
         }
 
         /// <summary>
@@ -62,6 +72,7 @@ namespace Game.Logic.Editor
                 var group = new OverviewGroup(this);
                 group.Initialize(item);
                 this.AddElement(group);
+                _groups.Add(group);
             }
         }
 
@@ -69,7 +80,23 @@ namespace Game.Logic.Editor
         {
             evt.menu.AppendAction("创建逻辑图", onCreateLogicClick, DropdownMenuAction.AlwaysEnabled);
         }
-
+        private void m_onKeyDown(KeyUpEvent evt)
+        {
+            switch (evt.keyCode)
+            {
+                case KeyCode.Delete:
+                    var temp = selection.OfType<OverviewNode>().ToList();
+                    foreach (var item in temp)
+                    {
+                        if (EditorUtility.DisplayDialog("警告", $"正在删除《{item.data.LogicName}》逻辑图", "确定", "取消"))
+                        {
+                            LogicUtils.RemoveGraph(item.data.AssetPath);
+                        }
+                    }
+                    evt.StopImmediatePropagation();
+                    break;
+            }
+        }
         private void onCreateLogicClick(DropdownMenuAction obj)
         {
             if (_createLGSearch == null)
@@ -101,7 +128,6 @@ namespace Game.Logic.Editor
             LogicGraphView graphView = Activator.CreateInstance(configData.ViewType) as LogicGraphView;
             GraphEditorData graphEditor = new GraphEditorData();
             graph.name = file;
-            graph.ResetGUID();
             if (graphView.DefaultVars != null)
             {
                 foreach (var item in graphView.DefaultVars)

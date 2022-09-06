@@ -14,11 +14,11 @@ namespace Game.Logic.Editor
             EditorApplication.wantsToQuit += UnityQuit;
         }
 
-        [MenuItem("Framework/逻辑图/打开逻辑图", priority = 99)]
-        private static void OpenLogicWindow()
-        {
-            Debug.LogError("sadasd");
-        }
+        //[MenuItem("Framework/逻辑图/打开逻辑图", priority = 99)]
+        //private static void OpenLogicWindow()
+        //{
+        //    Debug.LogError("sadasd");
+        //}
 
         private static bool UnityQuit()
         {

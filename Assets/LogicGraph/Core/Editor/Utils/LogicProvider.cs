@@ -2,6 +2,8 @@ using Game.Logic.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -51,10 +53,25 @@ namespace Game.Logic.Editor
                     graphData.GraphType = graphAttr.GraphType;
                     graphData.ViewType = item;
                     graphData.GraphName = graphAttr.LogicName;
+                    graphData.GraphColor = graphAttr.Color.HasValue ? graphAttr.Color.Value : LogicUtils.GetGraphColor(item);
                     LGEditorList.Add(graphData);
                 }
             }
+            LGEditorList.Sort((a, b) =>
+            {
+                if (a.GraphType.FullName.GetHashCode() < b.GraphType.FullName.GetHashCode())
+                    return -1;
+                else if (a.GraphType.FullName.GetHashCode() > b.GraphType.FullName.GetHashCode())
+                    return 1;
+                return 0;
+            });
+            for (int i = 0; i < LGEditorList.Count; i++)
+            {
+                LGEditorList[i].Index = i;
+            }
         }
+
+
         /// <summary>
         /// 生成逻辑图信息缓存
         /// </summary>
@@ -83,6 +100,50 @@ namespace Game.Logic.Editor
                 LGCatalogList.Add(graphCache);
             }
         }
+        /// <summary>
+        /// 移动逻辑图
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="logicGraph"></param>
 
+        internal static bool MoveGraph(string path, BaseLogicGraph logicGraph)
+        {
+            var catalog = LGCatalogList.FirstOrDefault(a => a.OnlyId == logicGraph.OnlyId);
+            if (catalog != null)
+                catalog.AssetPath = path;
+            return true;
+        }
+        /// <summary>
+        /// 新增逻辑图
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="logicGraph"></param>
+        internal static bool AddGraph(string path, BaseLogicGraph logicGraph)
+        {
+            var catalog = LGCatalogList.FirstOrDefault(a => a.OnlyId == logicGraph.OnlyId);
+            if (catalog != null)
+                return false;
+            GraphEditorData graphEditor = LogicUtils.InitGraphEditorData(logicGraph);
+            path = path.Replace(Application.dataPath, "Assets");
+            LGCatalogCache graphCache = new LGCatalogCache();
+            graphCache.GraphClassName = logicGraph.GetType().FullName;
+            graphCache.AssetPath = path;
+            graphCache.OnlyId = logicGraph.OnlyId;
+            graphCache.EditorData = graphEditor;
+            LGCatalogList.Add(graphCache);
+            return true;
+        }
+        /// <summary>
+        /// 删除逻辑图
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        internal static bool DeleteGraph(string path)
+        {
+            var catalog = LGCatalogList.FirstOrDefault(a => a.AssetPath == path);
+            if (catalog != null)
+                LGCatalogList.Remove(catalog);
+            return true;
+        }
     }
 }

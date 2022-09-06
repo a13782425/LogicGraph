@@ -1,6 +1,6 @@
 ﻿FlyoutMenuView{
     background-color: rgba(47,47,47,255);
-    width: 160;
+    width: 140px;
     flex-grow: 1;
 }
 
@@ -20,11 +20,12 @@
     flex-direction: row;
     align-items: center;
     align-self: auto;
+    margin-left: 10px;
 }
 
 #headerContainer > .headerIcon{
-    width: 36px;
-    height: 36px;
+    width: 24px;
+    height: 24px;
     background-image: resource("flyout_hide");
     margin: 4px;
 }
@@ -34,7 +35,7 @@
     align-self: center;
     -unity-font-style: bold;
     -unity-text-align: middle-left;
-    font-size: 18px;
+    font-size: 16px;
     margin: 4px;
 }
 
@@ -42,25 +43,38 @@
 }
 
 
-#buttonsContainer.FlyoutMenuView {
+#buttonsScrollViewContainer.FlyoutMenuView {
     flex-grow: 1;
-    padding: 8px;
+    padding: 12px;
 }
 
-#buttonsContainer.Fluid.ToggleButton.FlyoutMenuView {
+#buttonsScrollViewContainer.Fluid.ToggleButton.FlyoutMenuView {
     padding: 4px;
+}
+
+#footerContainer{
+	height: 24px;
+	background-color: rgba(0,0,0,255);
+}
+
+#footerContainer > #verLabel{
+    margin-left: 4px;
+    color: rgba(82,82,82,255);
+    flex-grow: 1;
+    -unity-text-align: middle-left;
 }
 
 FlyoutMenuView.hide{
     width: 48px;
 }
-#buttonsContainer.FlyoutMenuView.hide {
+#buttonsScrollViewContainer.FlyoutMenuView.hide {
     padding-top: 16px;
     padding-bottom: 16px;
     padding-left: 0px;
     padding-right: 0px;
 }
 #headerContainer.hide{
+    margin-left: 0px;
     align-self: center;
 }
 #headerContainer > .headerIcon.hide{

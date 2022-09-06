@@ -15,15 +15,6 @@ namespace Game.Logic.Editor
     public sealed class FlyoutMenuView : VisualElement
     {
         private const string STYLE_PATH = "FlyoutMenuView.uss";
-        #region MenuState
-
-        private enum MenuState
-        {
-            Expanded,
-            IsExpanding,
-            Collapsed,
-            IsCollapsing
-        }
 
         /// <summary>
         /// 当前界面属于哪个窗口
@@ -33,6 +24,7 @@ namespace Game.Logic.Editor
         public VisualElement headerContainer { get; }
         public ScrollView buttonsScrollViewContainer { get; }
         public VisualElement buttonsContainer { get; }
+        public VisualElement footerContainer { get; }
         public FlyoutButton overviewButton { get; }
         public FlyoutButton loadButton { get; }
         public FlyoutButton graphButton { get; }
@@ -44,8 +36,7 @@ namespace Game.Logic.Editor
 
         private Image headerIcon { get; }
         private Label headerLabel { get; }
-
-        #endregion
+        private Label verLabel { get; }
 
         public FlyoutMenuView(LGWindow lgwindow)
         {
@@ -73,10 +64,22 @@ namespace Game.Logic.Editor
             headerLabel.AddToClassList("headerLabel");
             headerContainer.Add(headerLabel);
 
-            buttonsContainer = new VisualElement();
-            buttonsContainer.name = "buttonsContainer";
-            buttonsContainer.AddToClassList("FlyoutMenuView");
-            layoutContainer.Add(buttonsContainer);
+            buttonsScrollViewContainer = new ScrollView();
+            buttonsScrollViewContainer.name = "buttonsScrollViewContainer";
+            buttonsScrollViewContainer.AddToClassList("FlyoutMenuView");
+            buttonsScrollViewContainer.verticalScrollerVisibility = ScrollerVisibility.Hidden;
+            buttonsScrollViewContainer.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+            layoutContainer.Add(buttonsScrollViewContainer);
+
+            footerContainer = new VisualElement();
+            footerContainer.name = "footerContainer";
+            footerContainer.AddToClassList("FlyoutMenuView");
+            layoutContainer.Add(footerContainer);
+
+            verLabel = new Label();
+            verLabel.name = "verLabel";
+            verLabel.text = "Ver: " + LogicUtils.VERSIONS;
+            footerContainer.Add(verLabel);
 
             headerIcon.RegisterCallback<ClickEvent>(onHeaderClick);
         }
@@ -86,13 +89,13 @@ namespace Game.Logic.Editor
             FlyoutButton tabButton = new FlyoutButton();
             tabButton.text = text;
             buttons.Add(tabButton);
-            buttonsContainer.Add(tabButton);
+            buttonsScrollViewContainer.Add(tabButton);
             var spaceBlock = new VisualElement();
             spaceBlock.name = "spaceBlock";
             spaceBlock.style.height = 8;
             spaceBlock.style.alignSelf = Align.Center;
             spaceBlock.style.flexShrink = 0;
-            buttonsContainer.Add(spaceBlock);
+            buttonsScrollViewContainer.Add(spaceBlock);
             return tabButton;
         }
         private void onHeaderClick(ClickEvent evt)
@@ -101,9 +104,10 @@ namespace Game.Logic.Editor
             {
                 this.RemoveFromClassList("hide");
                 headerContainer.RemoveFromClassList("hide");
-                buttonsContainer.RemoveFromClassList("hide");
+                buttonsScrollViewContainer.RemoveFromClassList("hide");
                 headerIcon.RemoveFromClassList("hide");
                 headerLabel.RemoveFromClassList("hide");
+                verLabel.text = "Ver: " + LogicUtils.VERSIONS;
                 foreach (var item in buttons)
                 {
                     item.ZoomIn();
@@ -113,9 +117,10 @@ namespace Game.Logic.Editor
             {
                 this.AddToClassList("hide");
                 headerContainer.AddToClassList("hide");
-                buttonsContainer.AddToClassList("hide");
+                buttonsScrollViewContainer.AddToClassList("hide");
                 headerIcon.AddToClassList("hide");
                 headerLabel.AddToClassList("hide");
+                verLabel.text = LogicUtils.VERSIONS;
                 foreach (var item in buttons)
                 {
                     item.ZoomOut();

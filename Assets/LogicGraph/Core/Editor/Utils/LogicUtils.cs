@@ -1,3 +1,4 @@
+using Game.Logic.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Experimental;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Game.Logic.Editor
 {
@@ -15,7 +17,7 @@ namespace Game.Logic.Editor
         /// [大版本][小版本][Bug修复]
         /// 大版本 大于0 为正式版
         /// </summary>
-        public const string VERSIONS = "0.0.1 beta";
+        public const string VERSIONS = "0.0.1 A";
         /// <summary>
         /// 编辑器路径
         /// </summary>
@@ -29,6 +31,7 @@ namespace Game.Logic.Editor
         /// 方块端口样式
         /// </summary>
         public readonly static string PORT_CUBE;
+
 
         /// <summary>
         /// 窗口最小大小
@@ -62,6 +65,57 @@ namespace Game.Logic.Editor
         {
             return Resources.Load<Texture>(textureName);
         }
+        /// <summary>
+        /// 获取图的颜色
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        internal static Color GetGraphColor(Type type)
+        {
+            Random random = new Random(type.FullName.GetHashCode());
+            float h = (float)random.NextDouble();
+            return Color.HSVToRGB(h, 0.6f, 1);
+        }
+
+        /// <summary>
+        /// 初始化逻辑图编辑器数据
+        /// </summary>
+        internal static GraphEditorData InitGraphEditorData(BaseLogicGraph graph)
+        {
+            var editorData = graph.GetEditorData();
+            if (editorData == null)
+            {
+                editorData = new GraphEditorData();
+                editorData.LogicName = graph.name;
+                graph.SetEditorData(editorData);
+            }
+            return editorData;
+        }
+
+        /// <summary>
+        /// 删除逻辑图
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <returns></returns>
+        internal static bool RemoveGraph(BaseLogicGraph graph)
+        {
+            return RemoveGraph(AssetDatabase.GetAssetPath(graph));
+        }
+        /// <summary>
+        /// 删除逻辑图
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <returns></returns>
+        internal static bool RemoveGraph(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+                AssetDatabase.Refresh();
+            }
+            return true;
+        }
     }
 
     //编辑器拓展
@@ -79,6 +133,14 @@ namespace Game.Logic.Editor
         private static void OpenLogicWindow()
         {
             LGWindow.ShowLogic();
+        }
+        [MenuItem("Framework/逻辑图/打开逻辑图1", priority = 99)]
+        private static void OpenLogicWindow1()
+        {
+            LGCatalogCache cache = LogicProvider.LGCatalogList[0];
+            BaseLogicGraph graph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(cache.AssetPath);
+            var editor = graph.GetEditorData();
+            graph.SetEditorData(editor);
         }
 
         private static bool UnityQuit()
