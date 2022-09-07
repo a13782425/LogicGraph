@@ -67,8 +67,13 @@ namespace Game.Logic.Editor
             buttonsScrollViewContainer = new ScrollView();
             buttonsScrollViewContainer.name = "buttonsScrollViewContainer";
             buttonsScrollViewContainer.AddToClassList("FlyoutMenuView");
+#if UNITY_2021_1_OR_NEWER
             buttonsScrollViewContainer.verticalScrollerVisibility = ScrollerVisibility.Hidden;
             buttonsScrollViewContainer.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+#else
+            buttonsScrollViewContainer.showHorizontal = false;
+            buttonsScrollViewContainer.showVertical = false;
+#endif
             layoutContainer.Add(buttonsScrollViewContainer);
 
             footerContainer = new VisualElement();
