@@ -89,6 +89,10 @@ namespace Game.Logic.Editor
         {
             switch (evt.keyCode)
             {
+                case KeyCode.Escape:
+                    ClearSelection();
+                    evt.StopImmediatePropagation();
+                    break;
                 case KeyCode.Delete:
                     var temp = selection.OfType<OverviewNode>().ToList();
                     foreach (var item in temp)
@@ -102,6 +106,7 @@ namespace Game.Logic.Editor
                     break;
             }
         }
+
         private void onCreateLogicClick(DropdownMenuAction obj)
         {
             if (_createLGSearch == null)
@@ -150,6 +155,6 @@ namespace Game.Logic.Editor
             return true;
         }
 
-  
+
     }
 }

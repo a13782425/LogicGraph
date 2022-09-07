@@ -301,17 +301,6 @@ namespace Game.Logic.Editor
     partial class LGWindow
     {
         /// <summary>
-        /// 当当前窗口处于焦点的时候
-        /// </summary>
-        private void OnFocus()
-        {
-            if (!string.IsNullOrWhiteSpace(graphId))
-            {
-                m_onGraphClick(null);
-            }
-        }
-
-        /// <summary>
         /// 相当于构造函数
         /// 但会在每次编译后执行
         /// </summary>

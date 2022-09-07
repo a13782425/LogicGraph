@@ -157,7 +157,6 @@ namespace Game.Logic.Editor
             if (catalog != null)
                 return false;
             GraphEditorData graphEditor = LogicUtils.InitGraphEditorData(logicGraph);
-            path = FileUtil.GetProjectRelativePath(path);
             LGSummaryInfo graphCache = new LGSummaryInfo();
             graphCache.GraphClassName = logicGraph.GetType().FullName;
             graphCache.AssetPath = path;
