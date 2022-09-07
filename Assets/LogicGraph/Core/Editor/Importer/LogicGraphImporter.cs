@@ -79,7 +79,7 @@ namespace Game.Logic.Editor
             if (hasAsset)
             {
                 Debug.LogError("有文件发生改变");
-                LogicMessage.OnEvent(LogicEventId.LOGIC_ASSETS_CHANGED, refreshViewEvent);
+                LogicUtils.OnEvent(LogicEventId.LOGIC_ASSETS_CHANGED, refreshViewEvent);
             }
         }
     }

@@ -14,16 +14,27 @@
 FlyoutButton > #tabIcon{
 	width: 18px;
 	height: 18px;
+	--unity-image-tint-color: rgba(128,128,128,255);
 }
 
 FlyoutButton > #contentLabel{
 	padding: 8px;
 	font-size: 12px;
 	-unity-text-align: middle-center;
+	margin-left: 8px;
+	color: rgba(128,128,128,255);
 }
 
 FlyoutButton.select{
 	background-color: rgba(42,92,140,255);
+}
+
+FlyoutButton.select > #tabIcon{
+	--unity-image-tint-color: rgba(255,255,255,255);
+}
+
+FlyoutButton.select > #contentLabel{
+	color: rgba(255,255,255,255);
 }
 
 FlyoutButton:hover{

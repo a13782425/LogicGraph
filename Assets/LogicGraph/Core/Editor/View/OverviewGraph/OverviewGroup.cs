@@ -22,24 +22,25 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 逻辑图编辑器信息缓存
         /// </summary>
-        public LGEditorCache data { get; private set; }
+        public LGCategoryInfo data { get; private set; }
         private Label title_label { get; }
         private List<OverviewNode> _nodes = new List<OverviewNode>();
         public override string title { get => title_label.text; set => title_label.text = value; }
         public OverviewGroup(OverviewGraphView view)
         {
-            base.capabilities |= Capabilities.Selectable | Capabilities.Movable;
+            base.capabilities |= Capabilities.Selectable;
             onwer = view;
             this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
             title_label = new Label("默认逻辑图");
             this.headerContainer.Add(title_label);
             this.AddManipulator(new ContextualMenuManipulator(BuildContextualMenu));
+            ;
         }
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="editorCache"></param>
-        internal void Initialize(LGEditorCache editorCache)
+        internal void Initialize(LGCategoryInfo editorCache)
         {
             data = editorCache;
             title = data.GraphName;
@@ -57,23 +58,15 @@ namespace Game.Logic.Editor
             ResetElementPosition();
         }
 
-        public void Show()
+        /// <summary>
+        /// 刷新总览视图
+        /// </summary>
+        /// <param name="eventArgs"></param>
+        internal void Refresh(LogicAssetsChangedEventArgs eventArgs)
         {
-            LogicMessage.AddListener(LogicEventId.LOGIC_ASSETS_CHANGED, m_onLogicAssetsChanged);
-        }
-
-        public void Hide()
-        {
-            LogicMessage.RemoveListener(LogicEventId.LOGIC_ASSETS_CHANGED, m_onLogicAssetsChanged);
-        }
-
-        private bool m_onLogicAssetsChanged(object arg)
-        {
-            var changed = arg as LogicAssetsChangedEventArgs;
-
-            foreach (var item in changed.addGraphs)
+            foreach (var item in eventArgs.addGraphs)
             {
-                LGCatalogCache catalog = LogicProvider.LGCatalogList.FirstOrDefault(a => a.AssetPath == item);
+                LGSummaryInfo catalog = LogicProvider.LGCatalogList.FirstOrDefault(a => a.AssetPath == item);
                 if (catalog != null && catalog.GraphClassName == data.GraphType.FullName)
                 {
                     var node = new OverviewNode(onwer, this);
@@ -84,7 +77,7 @@ namespace Game.Logic.Editor
                 }
             }
             var temp = containedElements as List<GraphElement>;
-            foreach (var item in changed.deletedGraphs)
+            foreach (var item in eventArgs.deletedGraphs)
             {
                 OverviewNode node = _nodes.FirstOrDefault(a => a.data.AssetPath == item);
                 if (node != null)
@@ -95,8 +88,8 @@ namespace Game.Logic.Editor
                 }
             }
             ResetElementPosition();
-            return true;
         }
+
         internal void ResetElementPosition()
         {
             int index = 0;
@@ -107,6 +100,13 @@ namespace Game.Logic.Editor
                 temp.y = data.Index * 160;
                 item.SetPosition(temp);
                 index++;
+            }
+            if (this.containedElements.Count() == 0)
+            {
+                Rect rect = this.GetPosition();
+                rect.x = -12;
+                rect.y = -44 + 160 * data.Index;
+                this.SetPosition(rect);
             }
         }
         public void BuildContextualMenu(ContextualMenuPopulateEvent evt)

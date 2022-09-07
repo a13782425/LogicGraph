@@ -16,9 +16,9 @@ namespace Game.Logic.Editor
     /// <summary>
     /// 逻辑图内部消息通知
     /// </summary>
-    public static class LogicMessage
+    public sealed class LogicMessage
     {
-        private static Dictionary<int, MessageDto> _allMsg = new Dictionary<int, MessageDto>();
+        private Dictionary<int, MessageDto> _allMsg = new Dictionary<int, MessageDto>();
         private static Queue<List<MessageEventHandler>> _cachePool = new Queue<List<MessageEventHandler>>();
         /// <summary>
         /// 注册事件
@@ -26,7 +26,7 @@ namespace Game.Logic.Editor
         /// </summary>
         /// <param name="messageId">事件ID</param>
         /// <param name="callback">事件回调</param>
-        public static void AddListener(int messageId, MessageEventHandler callback)
+        public void AddListener(int messageId, MessageEventHandler callback)
         {
             if (!_allMsg.ContainsKey(messageId))
             {
@@ -39,7 +39,7 @@ namespace Game.Logic.Editor
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="callback"></param>
-        public static void RemoveListener(int messageId, MessageEventHandler callback)
+        public void RemoveListener(int messageId, MessageEventHandler callback)
         {
             if (!_allMsg.ContainsKey(messageId))
             {
@@ -52,7 +52,7 @@ namespace Game.Logic.Editor
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="args"></param>
-        public static void OnEvent(int messageId, object args = null)
+        public void OnEvent(int messageId, object args = null)
         {
             if (_allMsg.ContainsKey(messageId))
             {

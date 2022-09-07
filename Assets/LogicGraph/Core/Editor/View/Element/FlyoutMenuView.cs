@@ -107,7 +107,7 @@ namespace Game.Logic.Editor
                 buttonsScrollViewContainer.RemoveFromClassList("hide");
                 headerIcon.RemoveFromClassList("hide");
                 headerLabel.RemoveFromClassList("hide");
-                verLabel.text = "Ver: " + LogicUtils.VERSIONS;
+                verLabel.style.visibility = Visibility.Visible;
                 foreach (var item in buttons)
                 {
                     item.ZoomIn();
@@ -120,7 +120,7 @@ namespace Game.Logic.Editor
                 buttonsScrollViewContainer.AddToClassList("hide");
                 headerIcon.AddToClassList("hide");
                 headerLabel.AddToClassList("hide");
-                verLabel.text = LogicUtils.VERSIONS;
+                verLabel.style.visibility = Visibility.Hidden;
                 foreach (var item in buttons)
                 {
                     item.ZoomOut();

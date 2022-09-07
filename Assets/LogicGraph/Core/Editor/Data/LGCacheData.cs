@@ -9,9 +9,9 @@ using UnityEngine;
 namespace Game.Logic.Editor
 {
     /// <summary>
-    /// 逻辑图目录缓存
+    /// 单个逻辑图对象的简介和编辑器信息
     /// </summary>
-    public class LGCatalogCache
+    public class LGSummaryInfo 
     {
         public string OnlyId;
         /// <summary>
@@ -38,11 +38,11 @@ namespace Game.Logic.Editor
     }
 
     /// <summary>
-    /// 逻辑图编辑器信息缓存
-    /// 用来记录逻辑图的编辑器数据
+    /// 逻辑图分类信息
+    /// 针对一类逻辑图公用信息的缓存
     /// </summary>
     [Serializable]
-    public sealed class LGEditorCache
+    public sealed class LGCategoryInfo
     {
         /// <summary>
         /// 索引

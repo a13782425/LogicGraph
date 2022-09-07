@@ -23,6 +23,7 @@ namespace Game.Logic.Editor
         private List<OverviewGroup> _groups = new List<OverviewGroup>();
         public OverviewGraphView(LGWindow window)
         {
+            Input.imeCompositionMode = IMECompositionMode.On;
             onwer = window;
             this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
             this.AddManipulator(new ContentDragger());
@@ -45,10 +46,7 @@ namespace Game.Logic.Editor
         /// </summary>
         public void Show()
         {
-            foreach (var item in _groups)
-            {
-                item.Show();
-            }
+            this.style.display = DisplayStyle.Flex;
         }
 
         /// <summary>
@@ -56,12 +54,19 @@ namespace Game.Logic.Editor
         /// </summary>
         public void Hide()
         {
+            this.style.display = DisplayStyle.None;
+        }
+        /// <summary>
+        /// 刷新总览视图
+        /// </summary>
+        /// <param name="eventArg"></param>
+        internal void Refresh(LogicAssetsChangedEventArgs eventArg)
+        {
             foreach (var item in _groups)
             {
-                item.Hide();
+                item.Refresh(eventArg);
             }
         }
-
         /// <summary>
         /// 添加分组
         /// </summary>
@@ -111,7 +116,7 @@ namespace Game.Logic.Editor
 
         private bool m_onCreateLGSelectEntry(SearchTreeEntry arg1, SearchWindowContext arg2)
         {
-            LGEditorCache configData = arg1.userData as LGEditorCache;
+            LGCategoryInfo configData = arg1.userData as LGCategoryInfo;
             string path = EditorUtility.SaveFilePanel("创建逻辑图", Application.dataPath, "LogicGraph", "asset");
             if (string.IsNullOrEmpty(path))
             {
@@ -136,7 +141,7 @@ namespace Game.Logic.Editor
                 }
             }
             graphView = null;
-            path = path.Replace(Application.dataPath, "Assets");
+            path = FileUtil.GetProjectRelativePath(path);
             graphEditor.LogicName = file;
             AssetDatabase.CreateAsset(graph, path);
             AssetDatabase.Refresh();
@@ -144,5 +149,7 @@ namespace Game.Logic.Editor
             //Todo: 打开当前创建的逻辑图
             return true;
         }
+
+  
     }
 }

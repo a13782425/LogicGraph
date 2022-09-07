@@ -19,7 +19,7 @@ namespace Game.Logic.Editor
             var entries = new List<SearchTreeEntry>();
             entries.Add(new SearchTreeGroupEntry(new GUIContent("创建逻辑图")));
 
-            foreach (LGEditorCache item in LogicProvider.LGEditorList)
+            foreach (LGCategoryInfo item in LogicProvider.LGEditorList)
             {
                 entries.Add(new SearchTreeEntry(new GUIContent(item.GraphName)) { level = 1, userData = item });
             }

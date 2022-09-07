@@ -1,0 +1,3 @@
+﻿.graphView{
+	flex-grow: 1;
+}

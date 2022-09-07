@@ -1,9 +1,11 @@
 ﻿using Game.Logic.Runtime;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -12,6 +14,7 @@ namespace Game.Logic.Editor
 {
     public partial class LogicGraphView : GraphView
     {
+        private const string STYLE_PATH = "GraphView/LogicGraphView.uss";
         /// <summary>
         /// 开始节点
         /// </summary>
@@ -24,6 +27,8 @@ namespace Game.Logic.Editor
         /// 当前逻辑图可以用的变量
         /// </summary>
         public virtual List<Type> VarTypes => new List<Type>();
+
+   
     }
 
     /// <summary>
@@ -33,17 +38,38 @@ namespace Game.Logic.Editor
     {
         public LogicGraphView()
         {
+            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
             Input.imeCompositionMode = IMECompositionMode.On;
             m_addGridBackGround();
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new ClickSelector());
-            //扩展大小与父对象相同
-            this.StretchToParentSize();
+            this.AddElement(new BaseNodeView());
         }
     }
 
+
+    /// <summary>
+    /// 公共方法
+    /// </summary>
+    partial class LogicGraphView
+    {
+        /// <summary>
+        /// 显示
+        /// </summary>
+        public void Show()
+        {
+            this.style.display = DisplayStyle.Flex;
+        }
+        /// <summary>
+        /// 隐藏
+        /// </summary>
+        public void Hide()
+        {
+            this.style.display = DisplayStyle.None;
+        }
+    }
     /// <summary>
     /// 背景网格
     /// </summary>
@@ -65,8 +91,8 @@ namespace Game.Logic.Editor
             contentZoomer.maxScale = 2f;
             contentZoomer.scaleStep = 0.05f;
             this.AddManipulator(contentZoomer);
-            //扩展大小与父对象相同
-            this.StretchToParentSize();
+            ////扩展大小与父对象相同
+            //this.StretchToParentSize();
         }
     }
 }

@@ -16,18 +16,51 @@ namespace Game.Logic.Editor
     /// </summary>
     public static class LogicProvider
     {
-        private static List<LGEditorCache> _lgEditorList = new List<LGEditorCache>();
+        private static List<LGCategoryInfo> _lgEditorList = new List<LGCategoryInfo>();
         /// <summary>
         /// 逻辑图模板缓存
         /// </summary>
-        public static List<LGEditorCache> LGEditorList => _lgEditorList;
+        public static List<LGCategoryInfo> LGEditorList => _lgEditorList;
 
 
-        private static List<LGCatalogCache> _lgCatalogList = new List<LGCatalogCache>();
+        private static List<LGSummaryInfo> _lgCatalogList = new List<LGSummaryInfo>();
         /// <summary>
         /// 逻辑图目录缓存
         /// </summary>
-        public static List<LGCatalogCache> LGCatalogList => _lgCatalogList;
+        public static List<LGSummaryInfo> LGCatalogList => _lgCatalogList;
+
+        /// <summary>
+        /// 获取逻辑图的简介和编辑器信息
+        /// </summary>
+        /// <param name="logic"></param>
+        /// <returns></returns>
+        public static LGSummaryInfo GetSummaryInfo(BaseLogicGraph logic) => GetSummaryInfo(logic.OnlyId);
+        /// <summary>
+        /// 获取逻辑图的简介和编辑器信息
+        /// </summary>
+        /// <param name="onlyId"></param>
+        /// <returns></returns>
+        public static LGSummaryInfo GetSummaryInfo(string onlyId) => LGCatalogList.FirstOrDefault(a => a.OnlyId == onlyId);
+
+        /// <summary>
+        /// 获得对应逻辑图的分类信息
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public static LGCategoryInfo GetCategoryInfo(LGSummaryInfo info) => GetCategoryInfo(info.GraphClassName);
+        /// <summary>
+        /// 获得对应逻辑图的分类信息
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public static LGCategoryInfo GetCategoryInfo(BaseLogicGraph info) => GetCategoryInfo(info.GetType().FullName);
+        /// <summary>
+        /// 获得对应逻辑图的分类信息
+        /// </summary>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        public static LGCategoryInfo GetCategoryInfo(string className) => LGEditorList.FirstOrDefault(a => a.GraphType.FullName == className);
+
         static LogicProvider()
         {
             BuildGraphCache();
@@ -49,7 +82,7 @@ namespace Game.Logic.Editor
                 var graphAttr = item.GetCustomAttribute<LogicGraphAttribute>();
                 if (graphAttr != null)
                 {
-                    LGEditorCache graphData = new LGEditorCache();
+                    LGCategoryInfo graphData = new LGCategoryInfo();
                     graphData.GraphType = graphAttr.GraphType;
                     graphData.ViewType = item;
                     graphData.GraphName = graphAttr.LogicName;
@@ -91,7 +124,7 @@ namespace Game.Logic.Editor
                     logicGraph.ResetGUID();
                 }
                 var editorData = logicGraph.GetEditorData();
-                LGCatalogCache graphCache = new LGCatalogCache();
+                LGSummaryInfo graphCache = new LGSummaryInfo();
                 graphCache.GraphClassName = logicGraph.GetType().FullName;
                 graphCache.AssetPath = assetPath;
                 graphCache.OnlyId = logicGraph.OnlyId;
@@ -124,8 +157,8 @@ namespace Game.Logic.Editor
             if (catalog != null)
                 return false;
             GraphEditorData graphEditor = LogicUtils.InitGraphEditorData(logicGraph);
-            path = path.Replace(Application.dataPath, "Assets");
-            LGCatalogCache graphCache = new LGCatalogCache();
+            path = FileUtil.GetProjectRelativePath(path);
+            LGSummaryInfo graphCache = new LGSummaryInfo();
             graphCache.GraphClassName = logicGraph.GetType().FullName;
             graphCache.AssetPath = path;
             graphCache.OnlyId = logicGraph.OnlyId;

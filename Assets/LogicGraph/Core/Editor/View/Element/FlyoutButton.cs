@@ -35,6 +35,7 @@ namespace Game.Logic.Editor
             this.RegisterCallback<ClickEvent>(onToggleClick);
             this.RegisterCallback<MouseLeaveEvent>(this.ExecuteDefaultAction);
             this.RegisterCallback<MouseEnterEvent>(this.ExecuteDefaultAction);
+            //_tabIcon.tintColor = Color.red;
         }
 
         private void onToggleClick(ClickEvent evt)

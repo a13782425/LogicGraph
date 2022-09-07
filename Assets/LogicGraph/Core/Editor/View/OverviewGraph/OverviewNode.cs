@@ -25,7 +25,7 @@ namespace Game.Logic.Editor
         private VisualElement _contentContainer;
         public override VisualElement contentContainer => _contentContainer;
 
-        public LGCatalogCache data { get; private set; }
+        public LGSummaryInfo data { get; private set; }
         private Label _createTimeLabel;
         private Label _modifyTimeLabel;
         public OverviewNode(OverviewGraphView view, OverviewGroup group)
@@ -57,7 +57,7 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 设置逻辑图简介
         /// </summary>
-        public void Initialize(LGCatalogCache item)
+        public void Initialize(LGSummaryInfo item)
         {
             data = item;
             title = item.LogicName;
@@ -93,6 +93,7 @@ namespace Game.Logic.Editor
         {
             if (evt.clickCount == 2)
             {
+                onwer.onwer.ShowLogicGraph(data.OnlyId);
                 Debug.LogError("打开逻辑图");
             }
         }

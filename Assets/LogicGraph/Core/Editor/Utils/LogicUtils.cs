@@ -31,12 +31,14 @@ namespace Game.Logic.Editor
         /// 方块端口样式
         /// </summary>
         public readonly static string PORT_CUBE;
-
-
         /// <summary>
         /// 窗口最小大小
         /// </summary>
         public readonly static Vector2 MIN_SIZE;
+        /// <summary>
+        /// 全局事件管理器
+        /// </summary>
+        private readonly static LogicMessage _logicMessage;
         static LogicUtils()
         {
             Type lgType = typeof(LGWindow);
@@ -54,8 +56,13 @@ namespace Game.Logic.Editor
             EDITOR_STYLE_PATH = Path.Combine(EDITOR_PATH, "Style");
             PORT_CUBE = "cube";
             MIN_SIZE = new Vector2(640, 360);
+            _logicMessage = new LogicMessage();
         }
+    }
 
+    //公共方法
+    partial class LogicUtils
+    {
         /// <summary>
         /// 获取resource下的图片
         /// </summary>
@@ -65,6 +72,44 @@ namespace Game.Logic.Editor
         {
             return Resources.Load<Texture>(textureName);
         }
+
+        /// <summary>
+        /// 加载逻辑图
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static T LoadGraph<T>(string path) where T : BaseLogicGraph
+        {
+            if (string.IsNullOrEmpty(path)) return null;
+            return AssetDatabase.LoadAssetAtPath<T>(path);
+        }
+        /// <summary>
+        /// 注册一个全局事件
+        /// 同一个事件回调在一个事件ID中只能注册一次
+        /// </summary>
+        /// <param name="messageId">事件ID</param>
+        /// <param name="callback">事件回调</param>
+        public static void AddListener(int messageId, MessageEventHandler callback) => _logicMessage.AddListener(messageId, callback);
+        /// <summary>
+        /// 移除一个全局事件
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <param name="callback"></param>
+        public static void RemoveListener(int messageId, MessageEventHandler callback) => _logicMessage.RemoveListener(messageId, callback);
+        /// <summary>
+        /// 派发一个全局事件
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <param name="args"></param>
+        public static void OnEvent(int messageId, object args = null) => _logicMessage.OnEvent(messageId, args);
+    }
+
+    /// <summary>
+    /// 内部方法
+    /// </summary>
+    partial class LogicUtils
+    {
         /// <summary>
         /// 获取图的颜色
         /// </summary>
@@ -92,7 +137,6 @@ namespace Game.Logic.Editor
             }
             return editorData;
         }
-
         /// <summary>
         /// 删除逻辑图
         /// </summary>
@@ -132,15 +176,7 @@ namespace Game.Logic.Editor
         [MenuItem("Framework/逻辑图/打开逻辑图", priority = 99)]
         private static void OpenLogicWindow()
         {
-            LGWindow.ShowLogic();
-        }
-        [MenuItem("Framework/逻辑图/打开逻辑图1", priority = 99)]
-        private static void OpenLogicWindow1()
-        {
-            LGCatalogCache cache = LogicProvider.LGCatalogList[0];
-            BaseLogicGraph graph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(cache.AssetPath);
-            var editor = graph.GetEditorData();
-            graph.SetEditorData(editor);
+            LGWindow.OpenWindow();
         }
 
         private static bool UnityQuit()

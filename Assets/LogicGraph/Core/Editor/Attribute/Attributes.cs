@@ -29,4 +29,13 @@ namespace Game.Logic.Editor
             GraphType = graphType;
         }
     }
+
+    /// <summary>
+    /// 格式化逻辑图方法
+    /// 方法参数(BaseLogicGraph,path)
+    /// </summary>
+    public sealed class GraphFormatAttribute : Attribute
+    {
+
+    }
 }

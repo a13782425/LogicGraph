@@ -1,4 +1,8 @@
-﻿/*OverviewGroup{
+﻿OverviewGroup.scope{
+	min-height: 129px;
+	min-width: 162px;
+}
+/*OverviewGroup{
 }
 .scope > .mainContainer{
 	flex-direction: row;
@@ -9,7 +13,7 @@
 	justify-content: center;
 }
 .mainContainer > #headerContainer > .unity-label{
-	font-size: 16px;
+	font-size: 14px;
 	padding-left: 8px;
 }
 .scope > .mainContainer > #centralContainer > #contentContainerPlaceholder{

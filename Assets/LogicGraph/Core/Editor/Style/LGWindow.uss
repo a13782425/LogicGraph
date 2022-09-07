@@ -7,9 +7,5 @@
 }
 #contentContainer > #right{
 	flex-grow: 1;
-	flex-direction: row;
+	flex-direction: column;
 }
-/*#bottom{
-	height: 24px;
-	background-color: rgba(0,0,0,255);
-}*/

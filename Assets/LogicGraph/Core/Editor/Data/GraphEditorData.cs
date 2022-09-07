@@ -13,7 +13,13 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 标题
         /// </summary>
+        [SerializeField]
         public string LogicName;
+        /// <summary>
+        /// 是否是首次打开
+        /// </summary>
+        [SerializeField]
+        public bool IsFirst = true;
         /// <summary>
         /// 当前图的节点编辑器数据
         /// </summary>
