@@ -8,16 +8,16 @@ using UnityEditor.AssetImporters;
 
 namespace Game.Logic.Editor
 {
-    [CustomEditor(typeof(LogicGraphImporter))]
-    [CanEditMultipleObjects]
-    internal class LogicGraphImporterInspector : ScriptedImporterEditor
-    {
-        public override void OnInspectorGUI()
-        {
-            UnityEditor.EditorGUI.BeginDisabledGroup(true);
-            base.OnInspectorGUI();
-            UnityEditor.EditorGUI.EndDisabledGroup();
-        }
+    //[CustomEditor(typeof(LogicGraphImporter))]
+    //[CanEditMultipleObjects]
+    //internal class LogicGraphImporterInspector : ScriptedImporterEditor
+    //{
+    //    public override void OnInspectorGUI()
+    //    {
+    //        UnityEditor.EditorGUI.BeginDisabledGroup(true);
+    //        base.OnInspectorGUI();
+    //        UnityEditor.EditorGUI.EndDisabledGroup();
+    //    }
    
-    }
+    //}
 }

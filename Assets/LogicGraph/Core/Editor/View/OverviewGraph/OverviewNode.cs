@@ -67,7 +67,7 @@ namespace Game.Logic.Editor
 
         private void InitUI()
         {
-            var separator = new SeparatorElement(SeparatorElement.SeparatorDirection.Horizontal);
+            var separator = new SeparatorElement(ElementDirection.Horizontal);
             separator.thickness = 2;
             separator.color = group.data.GraphColor;
 

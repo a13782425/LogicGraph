@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,6 +6,10 @@ using UnityEngine;
 
 namespace Game.Logic.Runtime
 {
+    /// <summary>
+    /// 逻辑图基类
+    /// </summary>
+    [Serializable]
     public class BaseLogicGraph : ScriptableObject
     {
         [SerializeField]

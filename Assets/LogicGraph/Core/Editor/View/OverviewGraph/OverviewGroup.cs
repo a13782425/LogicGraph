@@ -46,7 +46,7 @@ namespace Game.Logic.Editor
             title = data.GraphName;
             title_label.style.color = editorCache.GraphColor;
             string typeName = data.GraphType.FullName;
-            var list = LogicProvider.LGCatalogList.Where(a => a.GraphClassName == typeName).ToList();
+            var list = LogicProvider.LGSummaryList.Where(a => a.GraphClassName == typeName).ToList();
             foreach (var item in list)
             {
                 var node = new OverviewNode(onwer, this);
@@ -66,7 +66,7 @@ namespace Game.Logic.Editor
         {
             foreach (var item in eventArgs.addGraphs)
             {
-                LGSummaryInfo catalog = LogicProvider.LGCatalogList.FirstOrDefault(a => a.AssetPath == item);
+                LGSummaryInfo catalog = LogicProvider.LGSummaryList.FirstOrDefault(a => a.AssetPath == item);
                 if (catalog != null && catalog.GraphClassName == data.GraphType.FullName)
                 {
                     var node = new OverviewNode(onwer, this);

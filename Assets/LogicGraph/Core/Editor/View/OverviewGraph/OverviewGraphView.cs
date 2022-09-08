@@ -37,8 +37,8 @@ namespace Game.Logic.Editor
             m_addGroup();
             Vector2 pos = new Vector2(100, 120);
             this.UpdateViewTransform(pos, Vector3.one);
-
             this.RegisterCallback<KeyUpEvent>(m_onKeyDown);
+            onwer.toolbar.Add(new OverviewGraphToolBar());
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Game.Logic.Editor
         /// </summary>
         private void m_addGroup()
         {
-            foreach (var item in LogicProvider.LGEditorList)
+            foreach (var item in LogicProvider.LGCategoryList)
             {
                 var group = new OverviewGroup(this);
                 group.Initialize(item);
@@ -133,24 +133,8 @@ namespace Game.Logic.Editor
                 EditorUtility.DisplayDialog("错误", "创建文件已存在", "确定");
                 return false;
             }
-            string file = Path.GetFileNameWithoutExtension(path);
-            BaseLogicGraph graph = ScriptableObject.CreateInstance(configData.GraphType) as BaseLogicGraph;
-            LogicGraphView graphView = Activator.CreateInstance(configData.ViewType) as LogicGraphView;
-            GraphEditorData graphEditor = new GraphEditorData();
-            graph.name = file;
-            if (graphView.DefaultVars != null)
-            {
-                foreach (var item in graphView.DefaultVars)
-                {
-                    graph.Variables.Add(item);
-                }
-            }
-            graphView = null;
             path = FileUtil.GetProjectRelativePath(path);
-            graphEditor.LogicName = file;
-            AssetDatabase.CreateAsset(graph, path);
-            AssetDatabase.Refresh();
-            graph.SetEditorData(graphEditor);
+            BaseLogicGraph graph = LogicUtils.CreateGraph(configData.GraphType, path);
             //Todo: 打开当前创建的逻辑图
             return true;
         }

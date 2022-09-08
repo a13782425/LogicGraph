@@ -41,7 +41,7 @@ namespace Game.Logic.Editor
                     if (logicGraph != null)
                     {
                         refreshViewEvent.moveGraphs.Add(str);
-                        bool res = LogicProvider.MoveGraph(str, logicGraph);
+                        bool res = LogicProvider.MoveGraphToSummary(str, logicGraph);
                         if (!hasAsset)
                             hasAsset = res;
                     }
@@ -58,7 +58,9 @@ namespace Game.Logic.Editor
                         {
                             logicGraph.ResetGUID();
                             refreshViewEvent.addGraphs.Add(str);
-                            bool res = LogicProvider.AddGraph(str, logicGraph);
+                            bool res = LogicProvider.AddGraphToSummary(str, logicGraph);
+                            if (res)
+                                EditorUtility.SetDirty(logicGraph);
                             if (!hasAsset)
                                 hasAsset = res;
                         }
@@ -70,7 +72,7 @@ namespace Game.Logic.Editor
                 if (Path.GetExtension(str) == ".asset")
                 {
                     refreshViewEvent.deletedGraphs.Add(str);
-                    bool res = LogicProvider.DeleteGraph(str);
+                    bool res = LogicProvider.DeleteGraphToSummary(str);
                     if (!hasAsset)
                         hasAsset = res;
                 }
@@ -79,6 +81,7 @@ namespace Game.Logic.Editor
             if (hasAsset)
             {
                 Debug.LogError("有文件发生改变");
+                AssetDatabase.SaveAssets();
                 LogicUtils.OnEvent(LogicEventId.LOGIC_ASSETS_CHANGED, refreshViewEvent);
             }
         }

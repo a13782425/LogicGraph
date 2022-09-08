@@ -80,6 +80,29 @@ namespace Game.Logic.Editor
             panel.Focus();
             return panel;
         }
+        /// <summary>
+        /// 打开窗口
+        /// </summary>
+        public static LGWindow OpenWindow(string onlyId)
+        {
+            if (string.IsNullOrWhiteSpace(onlyId))
+            {
+                return OpenWindow();
+            }
+            LGWindow window = m_getWindow(onlyId);
+            if (window == null)
+            {
+                window = OpenWindow();
+                window.ShowLogicGraph(onlyId);
+            }
+            else
+            {
+                window.m_focus();
+            }
+            return window;
+        }
+
+
 
         /// <summary>
         /// 显示单个逻辑图
@@ -96,7 +119,7 @@ namespace Game.Logic.Editor
                 }
                 else
                 {
-                    window.Focus();
+                    window.m_focus();
                 }
                 return;
             }
@@ -145,7 +168,7 @@ namespace Game.Logic.Editor
     //私有方法及事件回调
     partial class LGWindow
     {
-        private LGWindow m_getWindow(string onlyId)
+        private static LGWindow m_getWindow(string onlyId)
         {
             if (string.IsNullOrWhiteSpace(onlyId))
                 return null;
@@ -163,6 +186,11 @@ namespace Game.Logic.Editor
                 }
             }
             return panel;
+        }
+        private void m_focus()
+        {
+            this.Focus();
+            m_onGraphClick(null);
         }
         private void m_showLogicGraph()
         {

@@ -48,7 +48,16 @@ namespace Game.Logic.Editor
             this.AddElement(new BaseNodeView());
         }
     }
-
+    /// <summary>
+    /// 重写
+    /// </summary>
+    partial class LogicGraphView
+    {
+        public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
+        {
+            
+        }
+    }
 
     /// <summary>
     /// 公共方法

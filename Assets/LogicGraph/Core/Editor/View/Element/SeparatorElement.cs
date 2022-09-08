@@ -13,23 +13,12 @@ namespace Game.Logic.Editor
     /// </summary>
     public sealed class SeparatorElement : VisualElement
     {
-        public enum SeparatorDirection
-        {
-            /// <summary>
-            /// 垂直
-            /// </summary>
-            Vertical,
-            /// <summary>
-            /// 水平
-            /// </summary>
-            Horizontal
-        }
-        private SeparatorDirection m_direction = SeparatorDirection.Vertical;
+        private ElementDirection m_direction = ElementDirection.Vertical;
 
         /// <summary>
         /// 分割线方向
         /// </summary>
-        public SeparatorDirection direction
+        public ElementDirection direction
         {
             get
             {
@@ -49,7 +38,7 @@ namespace Game.Logic.Editor
         {
             get
             {
-                if (direction == SeparatorDirection.Vertical)
+                if (direction == ElementDirection.Vertical)
                 {
                     return this.style.width.value.value;
                 }
@@ -57,7 +46,7 @@ namespace Game.Logic.Editor
             }
             set
             {
-                if (direction == SeparatorDirection.Vertical)
+                if (direction == ElementDirection.Vertical)
                 {
                     this.style.width = value;
                     this.style.height = Length.Percent(100);
@@ -74,9 +63,9 @@ namespace Game.Logic.Editor
         /// </summary>
         public Color color { get => this.style.backgroundColor.value; set => this.style.backgroundColor = value; }
 
-        public SeparatorElement() : this(SeparatorDirection.Vertical) { }
+        public SeparatorElement() : this(ElementDirection.Vertical) { }
 
-        public SeparatorElement(SeparatorDirection vertical)
+        public SeparatorElement(ElementDirection vertical)
         {
             this.direction = vertical;
             this.thickness = 2;

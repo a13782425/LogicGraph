@@ -16,18 +16,18 @@ namespace Game.Logic.Editor
     /// </summary>
     public static class LogicProvider
     {
-        private static List<LGCategoryInfo> _lgEditorList = new List<LGCategoryInfo>();
+        private static List<LGCategoryInfo> _lgCategoryList = new List<LGCategoryInfo>();
         /// <summary>
-        /// 逻辑图模板缓存
+        /// 逻辑图分类信息缓存
         /// </summary>
-        public static List<LGCategoryInfo> LGEditorList => _lgEditorList;
+        public static List<LGCategoryInfo> LGCategoryList => _lgCategoryList;
 
 
-        private static List<LGSummaryInfo> _lgCatalogList = new List<LGSummaryInfo>();
+        private static List<LGSummaryInfo> _lgSummaryList = new List<LGSummaryInfo>();
         /// <summary>
-        /// 逻辑图目录缓存
+        /// 逻辑图对象的简介和编辑器信息缓存
         /// </summary>
-        public static List<LGSummaryInfo> LGCatalogList => _lgCatalogList;
+        public static List<LGSummaryInfo> LGSummaryList => _lgSummaryList;
 
         /// <summary>
         /// 获取逻辑图的简介和编辑器信息
@@ -40,7 +40,7 @@ namespace Game.Logic.Editor
         /// </summary>
         /// <param name="onlyId"></param>
         /// <returns></returns>
-        public static LGSummaryInfo GetSummaryInfo(string onlyId) => LGCatalogList.FirstOrDefault(a => a.OnlyId == onlyId);
+        public static LGSummaryInfo GetSummaryInfo(string onlyId) => LGSummaryList.FirstOrDefault(a => a.OnlyId == onlyId);
 
         /// <summary>
         /// 获得对应逻辑图的分类信息
@@ -59,7 +59,7 @@ namespace Game.Logic.Editor
         /// </summary>
         /// <param name="className"></param>
         /// <returns></returns>
-        public static LGCategoryInfo GetCategoryInfo(string className) => LGEditorList.FirstOrDefault(a => a.GraphType.FullName == className);
+        public static LGCategoryInfo GetCategoryInfo(string className) => LGCategoryList.FirstOrDefault(a => a.GraphType.FullName == className);
 
         static LogicProvider()
         {
@@ -87,10 +87,10 @@ namespace Game.Logic.Editor
                     graphData.ViewType = item;
                     graphData.GraphName = graphAttr.LogicName;
                     graphData.GraphColor = graphAttr.Color.HasValue ? graphAttr.Color.Value : LogicUtils.GetGraphColor(item);
-                    LGEditorList.Add(graphData);
+                    LGCategoryList.Add(graphData);
                 }
             }
-            LGEditorList.Sort((a, b) =>
+            LGCategoryList.Sort((a, b) =>
             {
                 if (a.GraphType.FullName.GetHashCode() < b.GraphType.FullName.GetHashCode())
                     return -1;
@@ -98,9 +98,9 @@ namespace Game.Logic.Editor
                     return 1;
                 return 0;
             });
-            for (int i = 0; i < LGEditorList.Count; i++)
+            for (int i = 0; i < LGCategoryList.Count; i++)
             {
-                LGEditorList[i].Index = i;
+                LGCategoryList[i].Index = i;
             }
         }
 
@@ -111,7 +111,7 @@ namespace Game.Logic.Editor
         private static void BuildGraphCatalog()
         {
             HashSet<string> hashKey = new HashSet<string>();
-            LGCatalogList.Clear();
+            LGSummaryList.Clear();
             string[] guids = AssetDatabase.FindAssets("t:BaseLogicGraph");
             foreach (string guid in guids)
             {
@@ -130,30 +130,30 @@ namespace Game.Logic.Editor
                 graphCache.OnlyId = logicGraph.OnlyId;
                 graphCache.EditorData = editorData;
                 hashKey.Add(logicGraph.OnlyId);
-                LGCatalogList.Add(graphCache);
+                LGSummaryList.Add(graphCache);
             }
         }
         /// <summary>
-        /// 移动逻辑图
+        /// 在简介中移动逻辑图
         /// </summary>
         /// <param name="path"></param>
         /// <param name="logicGraph"></param>
 
-        internal static bool MoveGraph(string path, BaseLogicGraph logicGraph)
+        internal static bool MoveGraphToSummary(string path, BaseLogicGraph logicGraph)
         {
-            var catalog = LGCatalogList.FirstOrDefault(a => a.OnlyId == logicGraph.OnlyId);
+            var catalog = LGSummaryList.FirstOrDefault(a => a.OnlyId == logicGraph.OnlyId);
             if (catalog != null)
                 catalog.AssetPath = path;
             return true;
         }
         /// <summary>
-        /// 新增逻辑图
+        /// 在简介中新增逻辑图
         /// </summary>
         /// <param name="path"></param>
         /// <param name="logicGraph"></param>
-        internal static bool AddGraph(string path, BaseLogicGraph logicGraph)
+        internal static bool AddGraphToSummary(string path, BaseLogicGraph logicGraph)
         {
-            var catalog = LGCatalogList.FirstOrDefault(a => a.OnlyId == logicGraph.OnlyId);
+            var catalog = LGSummaryList.FirstOrDefault(a => a.OnlyId == logicGraph.OnlyId);
             if (catalog != null)
                 return false;
             GraphEditorData graphEditor = LogicUtils.InitGraphEditorData(logicGraph);
@@ -162,19 +162,19 @@ namespace Game.Logic.Editor
             graphCache.AssetPath = path;
             graphCache.OnlyId = logicGraph.OnlyId;
             graphCache.EditorData = graphEditor;
-            LGCatalogList.Add(graphCache);
+            LGSummaryList.Add(graphCache);
             return true;
         }
         /// <summary>
-        /// 删除逻辑图
+        /// 在简介中删除逻辑图
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        internal static bool DeleteGraph(string path)
+        internal static bool DeleteGraphToSummary(string path)
         {
-            var catalog = LGCatalogList.FirstOrDefault(a => a.AssetPath == path);
+            var catalog = LGSummaryList.FirstOrDefault(a => a.AssetPath == path);
             if (catalog != null)
-                LGCatalogList.Remove(catalog);
+                LGSummaryList.Remove(catalog);
             return true;
         }
     }

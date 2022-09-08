@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEditor.Experimental;
 using UnityEngine;
 using Random = System.Random;
@@ -137,6 +138,22 @@ namespace Game.Logic.Editor
             }
             return editorData;
         }
+
+        /// <summary>
+        /// 创建逻辑图
+        /// </summary>
+        /// <param name="graphType"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        internal static BaseLogicGraph CreateGraph(Type graphType, string path)
+        {
+            BaseLogicGraph graph = ScriptableObject.CreateInstance(graphType) as BaseLogicGraph;
+            string file = Path.GetFileNameWithoutExtension(path);
+            graph.name = file;
+            AssetDatabase.CreateAsset(graph, path);
+            AssetDatabase.Refresh();
+            return graph;
+        }
         /// <summary>
         /// 删除逻辑图
         /// </summary>
@@ -178,7 +195,18 @@ namespace Game.Logic.Editor
         {
             LGWindow.OpenWindow();
         }
+        [OnOpenAsset(0)]
+        public static bool OnBaseGraphOpened(int instanceID, int line)
+        {
+            var asset = EditorUtility.InstanceIDToObject(instanceID) as BaseLogicGraph;
 
+            if (asset != null)
+            {
+                LGWindow.OpenWindow(asset.OnlyId);
+                return true;
+            }
+            return false;
+        }
         private static bool UnityQuit()
         {
             //EditorUtility.DisplayDialog("我就是不让你关闭unity", "我就是不让你关闭unity", "呵呵");

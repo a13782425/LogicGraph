@@ -1,0 +1,25 @@
+﻿.vertical-layout > #title{
+	margin-top: 12px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}
+.vertical-layout > #input{
+	align-items: center; 
+}
+/*.vertical-layout > #input > .port > #type{
+	display: none;
+}*/
+.vertical-layout > #output{
+	align-items: center; 
+}
+.vertical-layout > #output > .port > #type{
+	display: none;
+}
+.vertical-layout > #node-border{
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	margin: 0px;
+	min-height: 48px;
+}
