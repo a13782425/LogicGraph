@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
@@ -15,6 +16,8 @@ namespace Game.Logic.Editor
     public partial class LogicGraphView : GraphView
     {
         private const string STYLE_PATH = "GraphView/LogicGraphView.uss";
+
+        private const int NODE_START_ID = 10000;
 
         /// <summary>
         /// 开始节点
@@ -31,11 +34,11 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 当前逻辑图的公共信息缓存
         /// </summary>
-        public LGCategoryInfo categoryInfo { get; private set; }
+        public LGCategoryInfo categoryInfo => owner.categoryInfo;
         /// <summary>
         /// 当前逻辑的简介信息和编辑器信息
         /// </summary>
-        public LGSummaryInfo summaryInfo { get; private set; }
+        public LGSummaryInfo summaryInfo => owner.summaryInfo;
         /// <summary>
         /// 当前逻辑图所属的窗口
         /// </summary>
@@ -48,6 +51,15 @@ namespace Game.Logic.Editor
         /// 创建节点的搜索窗口
         /// </summary>
         private CreateNodeSearchWindow _createNodeSearch = null;
+
+        /// <summary>
+        /// 节点唯一ID
+        /// </summary>
+        private int _nodeUniqueId = NODE_START_ID;
+        /// <summary>
+        /// 没有使用到的Id
+        /// </summary>
+        private Queue<int> _unusedIds = new Queue<int>();
     }
 
     /// <summary>
@@ -64,16 +76,81 @@ namespace Game.Logic.Editor
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new ClickSelector());
-            this.AddElement(new BaseNodeView());
         }
 
         public void Initialize(LGWindow lgWindow, BaseLogicGraph graph)
         {
             owner = lgWindow;
             target = graph;
-            summaryInfo = LogicProvider.GetSummaryInfo(graph);
-            categoryInfo = LogicProvider.GetCategoryInfo(graph);
             graphViewChanged = m_onGraphViewChanged;
+            m_initNodeUniqueId();
+            summaryInfo.EditorData.NodeDatas.RemoveAll(a => graph.GetNode(a.OnlyId) == null);
+            var editorData = summaryInfo.EditorData;
+            target.Nodes.RemoveAll(a => editorData.NodeDatas.FirstOrDefault(b => a.OnlyId == b.OnlyId) == null);
+            summaryInfo.EditorData.NodeDatas.ForEach(a =>
+            {
+                a.node = graph.GetNode(a.OnlyId);
+                m_showNodeView(a);
+            });
+
+        }
+    }
+    //公共方法
+    partial class LogicGraphView
+    {
+        /// <summary>
+        /// 添加一个节点
+        /// </summary>
+        public BaseLogicNode AddNode(Type nodeType)
+        {
+            return AddNode(nodeType, Vector2.zero);
+        }
+        /// <summary>
+        /// 添加一个节点
+        /// </summary>
+        public BaseLogicNode AddNode(Type nodeType, Vector2 pos)
+        {
+            BaseLogicNode logicNode = Activator.CreateInstance(nodeType) as BaseLogicNode;
+            LogicNodeCategory nodeCategory = categoryInfo.Nodes.FirstOrDefault(a => a.NodeType == nodeType);
+            if (nodeCategory != null)
+            {
+            }
+            NodeEditorData data = new NodeEditorData();
+            data.node = logicNode;
+            data.Pos = pos;
+            data.Title = nodeCategory.NodeName;
+            m_setNodeId(logicNode);
+            data.OnlyId = logicNode.OnlyId;
+            this.target.Nodes.Add(logicNode);
+            this.summaryInfo.EditorData.NodeDatas.Add(data);
+            m_showNodeView(data);
+            return logicNode;
+        }
+
+        /// <summary>
+        /// 显示
+        /// </summary>
+        public void Show()
+        {
+            this.style.display = DisplayStyle.Flex;
+        }
+        /// <summary>
+        /// 隐藏
+        /// </summary>
+        public void Hide()
+        {
+            this.style.display = DisplayStyle.None;
+        }
+
+        /// <summary>
+        /// 保存
+        /// </summary>
+        public void Save()
+        {
+            EditorUtility.SetDirty(target);
+            target.SetEditorData(summaryInfo.EditorData);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
     }
     //重写
@@ -138,30 +215,78 @@ namespace Game.Logic.Editor
             var nodePosition = this.contentViewContainer.WorldToLocal(windowMousePosition);
             if (searchTreeEntry.userData is LogicNodeCategory nodeCategory)
             {
+                BaseLogicNode node = AddNode(nodeCategory.NodeType, nodePosition);
             }
 
             return true;
         }
     }
-
-    //公共方法
+    //私有
     partial class LogicGraphView
     {
-        /// <summary>
-        /// 显示
-        /// </summary>
-        public void Show()
+        private void m_showNodeView(NodeEditorData editorData)
         {
-            this.style.display = DisplayStyle.Flex;
+            BaseNodeView nodeView = new BaseNodeView();
+            this.AddElement(nodeView);
+            nodeView.SetPosition(new Rect(editorData.Pos, Vector2.one));
+        }
+
+        /// <summary>
+        /// 设置唯一Id
+        /// </summary>
+        /// <param name="node"></param>
+        private void m_setNodeId(BaseLogicNode node)
+        {
+            var field = typeof(BaseLogicNode).GetField("_onlyId", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            if (field != null)
+            {
+                int id = 0;
+                if (_unusedIds.Count > 0)
+                {
+                    id = _unusedIds.Dequeue();
+                }
+                else
+                {
+                    id = _nodeUniqueId;
+                    _nodeUniqueId++;
+                }
+                field.SetValue(node, id);
+            }
+            else
+            {
+                Debug.LogError("节点没有找到字段");
+            }
         }
         /// <summary>
-        /// 隐藏
+        /// 设置唯一Id
         /// </summary>
-        public void Hide()
+        private void m_recycleUniqueId(int id)
         {
-            this.style.display = DisplayStyle.None;
+            _unusedIds.Enqueue(id);
+        }
+        /// <summary>
+        /// 设置唯一Id
+        /// </summary>
+        /// <param name="node"></param>
+        private void m_initNodeUniqueId()
+        {
+            if (target.Nodes.Count > 0)
+            {
+                int node = target.Nodes.Max(a => a.OnlyId);
+                _nodeUniqueId = node++;
+                for (int i = NODE_START_ID; i < _nodeUniqueId; i++)
+                {
+                    if (target.GetNode(i) == null)
+                    {
+                        _unusedIds.Enqueue(i);
+                    }
+                }
+            }
         }
     }
+
+
     /// <summary>
     /// 背景网格
     /// </summary>

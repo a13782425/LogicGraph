@@ -73,13 +73,15 @@ namespace Game.Logic.Runtime
         /// </summary>
         public virtual void Init()
         {
+            Debug.LogError("1111");
+
             foreach (var item in _variables)
             {
                 _varDic.Add(item.Name, item);
             }
             foreach (var item in Nodes)
             {
-                _nodeDic.Add(item.onlyId, item);
+                _nodeDic.Add(item.OnlyId, item);
             }
             Nodes.ForEach(n => n.Initialize(this));
         }

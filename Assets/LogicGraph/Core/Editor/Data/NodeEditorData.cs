@@ -15,7 +15,13 @@ namespace Game.Logic.Editor
         public BaseLogicNode node;
 
         [SerializeField]
-        public SVector2 Pos = Vector2.zero;
+        public int OnlyId;
+
+        [SerializeField]
+        public string Title;
+
+        [SerializeField]
+        public Vector2 Pos = Vector2.zero;
         /// <summary>
         /// 是否上锁
         /// </summary>

@@ -8,6 +8,10 @@ using UnityEngine;
 
 namespace Game.Logic.Runtime
 {
+    /// <summary>
+    /// 逻辑节点基类
+    /// </summary>
+    [Serializable]
     public abstract class BaseLogicNode
     {
 
@@ -16,7 +20,7 @@ namespace Game.Logic.Runtime
         /// <summary>
         /// 数据唯一Id
         /// </summary>
-        public int onlyId => _onlyId;
+        public int OnlyId => _onlyId;
         [SerializeField]
         private List<int> _childs = new List<int>();
         public List<int> Childs => _childs;

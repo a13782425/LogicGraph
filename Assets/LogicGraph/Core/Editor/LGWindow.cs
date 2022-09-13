@@ -93,6 +93,7 @@ namespace Game.Logic.Editor
             if (window == null)
             {
                 window = OpenWindow();
+
                 window.ShowLogicGraph(onlyId);
             }
             else
@@ -139,6 +140,7 @@ namespace Game.Logic.Editor
                 graphButton.Hide();
                 saveButton.Hide();
                 m_onOverviewClick(null);
+
             }
         }
         /// <summary>
@@ -203,6 +205,7 @@ namespace Game.Logic.Editor
                 else
                 {
                     BaseLogicGraph graph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(summaryInfo.AssetPath);
+                    
                     //删除没有的节点
                     graph.Nodes.RemoveAll(n => n == null);
                     graph.Init();
@@ -313,7 +316,7 @@ namespace Game.Logic.Editor
         {
             if (!string.IsNullOrWhiteSpace(graphId))
             {
-                Debug.LogError("保存逻辑图");
+                graphView?.Save();
             }
         }
     }
@@ -346,6 +349,10 @@ namespace Game.Logic.Editor
         private void OnDisable()
         {
             LogicUtils.RemoveListener(LogicEventId.LOGIC_ASSETS_CHANGED, m_onLogicAssetsChanged);
+            if (graphView!=null)
+            {
+                Resources.UnloadAsset(graphView.target);
+            }
         }
     }
 
