@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class DefaultLogicGraph : BaseLogicGraph
+namespace Game.Logic.Example
 {
+    public class DefaultLogicGraph : BaseLogicGraph
+    {
+    }
+
 }

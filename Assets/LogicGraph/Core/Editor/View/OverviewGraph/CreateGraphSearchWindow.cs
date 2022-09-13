@@ -11,7 +11,7 @@ namespace Game.Logic.Editor
     /// <summary>
     /// 创建逻辑图搜索窗口
     /// </summary>
-    internal sealed class CreateLGSearchWindow : ScriptableObject, ISearchWindowProvider
+    internal sealed class CreateGraphSearchWindow : ScriptableObject, ISearchWindowProvider
     {
         public event Func<SearchTreeEntry, SearchWindowContext, bool> onSelectHandler;
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)

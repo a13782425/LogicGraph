@@ -1,4 +1,6 @@
-﻿.vertical-layout > #title{
+﻿/*
+竖向排列效果暂时不做
+.vertical-layout > #title{
 	margin-top: 12px;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
@@ -6,9 +8,7 @@
 .vertical-layout > #input{
 	align-items: center; 
 }
-/*.vertical-layout > #input > .port > #type{
-	display: none;
-}*/
+
 .vertical-layout > #output{
 	align-items: center; 
 }
@@ -22,4 +22,4 @@
 	border-bottom-right-radius: 3px;
 	margin: 0px;
 	min-height: 48px;
-}
+}*/

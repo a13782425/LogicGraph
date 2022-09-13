@@ -5,9 +5,8 @@ using UnityEngine;
 
 namespace Game.Logic.Example.Editor
 {
-    [LogicGraph("默认逻辑图", typeof(DefaultLogicGraph))]
-    public class DefaultLogicGraphView : LogicGraphView
+    [LogicNode(typeof(DebugNode), "系统/打印")]
+    public class DebugNodeView : BaseNodeView
     {
-
     }
 }

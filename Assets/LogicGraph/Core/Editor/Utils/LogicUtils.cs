@@ -121,7 +121,7 @@ namespace Game.Logic.Editor
         {
             Random random = new Random(type.FullName.GetHashCode());
             float h = (float)random.NextDouble();
-            return Color.HSVToRGB(h, 0.6f, 1);
+            return Color.HSVToRGB(h, 0.4f, 1);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Game.Logic.Editor
         }
 
         /// <summary>
-        /// 创建逻辑图
+        /// 创建逻辑图 
         /// </summary>
         /// <param name="graphType"></param>
         /// <param name="path"></param>

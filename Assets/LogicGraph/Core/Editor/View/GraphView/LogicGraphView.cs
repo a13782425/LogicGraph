@@ -15,6 +15,7 @@ namespace Game.Logic.Editor
     public partial class LogicGraphView : GraphView
     {
         private const string STYLE_PATH = "GraphView/LogicGraphView.uss";
+
         /// <summary>
         /// 开始节点
         /// </summary>
@@ -27,8 +28,26 @@ namespace Game.Logic.Editor
         /// 当前逻辑图可以用的变量
         /// </summary>
         public virtual List<Type> VarTypes => new List<Type>();
-
-   
+        /// <summary>
+        /// 当前逻辑图的公共信息缓存
+        /// </summary>
+        public LGCategoryInfo categoryInfo { get; private set; }
+        /// <summary>
+        /// 当前逻辑的简介信息和编辑器信息
+        /// </summary>
+        public LGSummaryInfo summaryInfo { get; private set; }
+        /// <summary>
+        /// 当前逻辑图所属的窗口
+        /// </summary>
+        public LGWindow owner { get; private set; }
+        /// <summary>
+        /// 当前节点视图对应的节点
+        /// </summary>
+        public BaseLogicGraph target { get; private set; }
+        /// <summary>
+        /// 创建节点的搜索窗口
+        /// </summary>
+        private CreateNodeSearchWindow _createNodeSearch = null;
     }
 
     /// <summary>
@@ -47,21 +66,85 @@ namespace Game.Logic.Editor
             this.AddManipulator(new ClickSelector());
             this.AddElement(new BaseNodeView());
         }
+
+        public void Initialize(LGWindow lgWindow, BaseLogicGraph graph)
+        {
+            owner = lgWindow;
+            target = graph;
+            summaryInfo = LogicProvider.GetSummaryInfo(graph);
+            categoryInfo = LogicProvider.GetCategoryInfo(graph);
+            graphViewChanged = m_onGraphViewChanged;
+        }
     }
-    /// <summary>
-    /// 重写
-    /// </summary>
+    //重写
     partial class LogicGraphView
     {
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
-            
+            evt.menu.AppendAction("创建节点", m_onCreateNodeWindow, DropdownMenuAction.AlwaysEnabled);
+            evt.menu.AppendAction("创建分组", null, DropdownMenuAction.AlwaysEnabled);
+            evt.menu.AppendAction("创建默认节点", null, DropdownMenuAction.AlwaysEnabled);
+            evt.menu.AppendSeparator();
+            foreach (var item in categoryInfo.Formats)
+            {
+                evt.menu.AppendAction("导出: " + item.FormatName, null, DropdownMenuAction.AlwaysEnabled, item);
+            }
+        }
+        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
+        {
+            return base.GetCompatiblePorts(startPort, nodeAdapter);
+        }
+    }
+    //回调
+    partial class LogicGraphView
+    {
+        private GraphViewChange m_onGraphViewChanged(GraphViewChange graphViewChange)
+        {
+            return graphViewChange;
+        }
+        /// <summary>
+        /// 键盘按键
+        /// </summary>
+        /// <param name="evt"></param>
+        private void m_onKeyDownEvent(KeyDownEvent evt)
+        {
+        }
+        /// <summary>
+        /// 节点搜索窗
+        /// </summary>
+        /// <param name="obj"></param>
+        protected void m_onCreateNodeWindow(DropdownMenuAction obj)
+        {
+            if (_createNodeSearch == null)
+            {
+                _createNodeSearch = ScriptableObject.CreateInstance<CreateNodeSearchWindow>();
+                _createNodeSearch.Init(categoryInfo);
+                _createNodeSearch.onSelectHandler += m_onCreateNodeSelectEntry;
+            }
+
+            Vector2 screenPos = owner.GetScreenPosition(obj.eventInfo.mousePosition);
+            SearchWindow.Open(new SearchWindowContext(screenPos), _createNodeSearch);
+        }
+        /// <summary>
+        /// 节点搜索窗回调
+        /// </summary>
+        /// <param name="searchTreeEntry"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private bool m_onCreateNodeSelectEntry(SearchTreeEntry searchTreeEntry, SearchWindowContext context)
+        {
+            //经过计算得出节点的位置
+            var windowMousePosition = this.ChangeCoordinatesTo(this, context.screenMousePosition - owner.position.position);
+            var nodePosition = this.contentViewContainer.WorldToLocal(windowMousePosition);
+            if (searchTreeEntry.userData is LogicNodeCategory nodeCategory)
+            {
+            }
+
+            return true;
         }
     }
 
-    /// <summary>
-    /// 公共方法
-    /// </summary>
+    //公共方法
     partial class LogicGraphView
     {
         /// <summary>

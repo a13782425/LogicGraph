@@ -19,7 +19,7 @@ namespace Game.Logic.Editor
     {
         private const string STYLE_PATH = "OverviewGraph/OverviewGraphView.uss";
         public LGWindow onwer { get; }
-        private CreateLGSearchWindow _createLGSearch;
+        private CreateGraphSearchWindow _createLGSearch;
         private List<OverviewGroup> _groups = new List<OverviewGroup>();
         public OverviewGraphView(LGWindow window)
         {
@@ -111,7 +111,7 @@ namespace Game.Logic.Editor
         {
             if (_createLGSearch == null)
             {
-                _createLGSearch = ScriptableObject.CreateInstance<CreateLGSearchWindow>();
+                _createLGSearch = ScriptableObject.CreateInstance<CreateGraphSearchWindow>();
                 _createLGSearch.onSelectHandler += m_onCreateLGSelectEntry;
             }
 

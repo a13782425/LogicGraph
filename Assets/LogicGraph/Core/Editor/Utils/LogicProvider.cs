@@ -63,15 +63,20 @@ namespace Game.Logic.Editor
 
         static LogicProvider()
         {
-            BuildGraphCache();
-            BuildGraphCatalog();
+            m_buildGraphCache();
+            m_buildFormat();
+            m_buildNode();
+            m_buildGraphSummary();
         }
+
+
+
 
 
         /// <summary>
         /// 生成逻辑图编辑器信息缓存
         /// </summary>
-        private static void BuildGraphCache()
+        private static void m_buildGraphCache()
         {
             TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom<LogicGraphView>();
 
@@ -103,12 +108,108 @@ namespace Game.Logic.Editor
                 LGCategoryList[i].Index = i;
             }
         }
+        /// <summary>
+        /// 生成导出信息缓存
+        /// </summary>
+        private static void m_buildFormat()
+        {
+            List<MethodInfo> methodInfos = TypeCache.GetMethodsWithAttribute<GraphFormatAttribute>().ToList();
+            Type retuenType = typeof(bool);
+            Type paramType1 = typeof(BaseLogicGraph);
+            Type paramType2 = typeof(string);
+            foreach (var item in methodInfos)
+            {
+                if (!item.IsStatic)
+                {
+                    Debug.LogError($"方法:{item.Name}不是静态方法");
+                    continue;
+                }
+                if (item.ReturnType != retuenType)
+                {
+                    Debug.LogError($"方法:{item.Name}返回类型错误,返回类型应为:bool");
+                    continue;
+                }
 
+                ParameterInfo[] @params = item.GetParameters();
 
+                if (@params.Length != 2)
+                {
+                    Debug.LogError($"方法:{item.Name}参数数量错误,参数数量应为:2");
+                    continue;
+                }
+                ParameterInfo info1 = @params[0];
+                ParameterInfo info2 = @params[1];
+                if (info1.ParameterType != paramType1)
+                {
+                    Debug.LogError($"方法:{item.Name}第一个参数类型错误,第一个参数类型应为:BaseLogicGraph");
+                    continue;
+                }
+                if (info2.ParameterType != paramType2)
+                {
+                    Debug.LogError($"方法:{item.Name}第二个参数类型错误,第二个参数类型应为:string");
+                    continue;
+                }
+                GraphFormatAttribute formatAttr = item.GetCustomAttribute<GraphFormatAttribute>();
+                LGCategoryInfo categoryInfo = GetCategoryInfo(formatAttr.GraphType.FullName);
+                if (categoryInfo != null)
+                {
+                    LogicFormatCategory formatCache = new LogicFormatCategory();
+                    formatCache.FormatName = formatAttr.LogicName;
+                    formatCache.Extension = formatAttr.Extension;
+                    formatCache.Method = item;
+                    categoryInfo.Formats.Add(formatCache);
+                }
+            }
+        }
+        /// <summary>
+        /// 生成导出节点缓存
+        /// </summary>
+        private static void m_buildNode()
+        {
+            List<Type> nodeViewTypes = TypeCache.GetTypesDerivedFrom<BaseNodeView>().ToList();
+            foreach (Type nodeViewType in nodeViewTypes)
+            {
+                var nodeAttr = nodeViewType.GetCustomAttribute<LogicNodeAttribute>();
+                if (nodeAttr != null)
+                {
+                    if (!nodeAttr.IsEnable)
+                        continue;
+                    LogicNodeCategory nodeData = new LogicNodeCategory();
+                    string[] strs = nodeAttr.MenuText.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    nodeData.NodeLayers = strs;
+                    nodeData.NodeName = strs[strs.Length - 1];
+                    nodeData.PortType = nodeAttr.PortType;
+                    nodeData.NodeType = nodeAttr.NodeType;
+                    nodeData.ViewType = nodeViewType;
+
+                    LGCategoryList.ForEach(a => a.Nodes.Add(nodeData));
+                }
+            }
+            foreach (LGCategoryInfo item in LGCategoryList)
+            {
+                item.Nodes.Sort((entry1, entry2) =>
+                {
+                    for (var i = 0; i < entry1.NodeLayers.Length; i++)
+                    {
+                        if (i >= entry2.NodeLayers.Length)
+                            return 1;
+                        var value = entry1.NodeLayers[i].CompareTo(entry2.NodeLayers[i]);
+                        if (value != 0)
+                        {
+                            // Make sure that leaves go before nodes
+                            if (entry1.NodeLayers.Length != entry2.NodeLayers.Length && (i == entry1.NodeLayers.Length - 1 || i == entry2.NodeLayers.Length - 1))
+                                return entry1.NodeLayers.Length < entry2.NodeLayers.Length ? -1 : 1;
+                            return value;
+                        }
+                    }
+                    return 0;
+                });
+            }
+        }
         /// <summary>
         /// 生成逻辑图信息缓存
         /// </summary>
-        private static void BuildGraphCatalog()
+        private static void m_buildGraphSummary()
         {
             HashSet<string> hashKey = new HashSet<string>();
             LGSummaryList.Clear();

@@ -5,8 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-[LogicGraph("天气逻辑图", typeof(WeatherLogicGraph))]
-internal class WeatherLogicGraphView : LogicGraphView
+namespace Game.Logic.Example.Editor
 {
-}
+    [LogicGraph("天气逻辑图", typeof(WeatherLogicGraph))]
+    public class WeatherLogicGraphView : LogicGraphView
+    {
+    }
 
+}

@@ -5,9 +5,8 @@ using UnityEngine;
 
 namespace Game.Logic.Example.Editor
 {
-    [LogicGraph("默认逻辑图", typeof(DefaultLogicGraph))]
-    public class DefaultLogicGraphView : LogicGraphView
+    [LogicNode(typeof(DelayNode), "系统/延时")]
+    public class DelayNodeView : BaseNodeView
     {
-
     }
 }

@@ -196,19 +196,18 @@ namespace Game.Logic.Editor
         {
             if (!string.IsNullOrWhiteSpace(graphId))
             {
-                LGSummaryInfo graphInfo = LogicProvider.GetSummaryInfo(graphId);
-                if (graphInfo == null)
+                if (summaryInfo == null)
                 {
                     this.Close();
                 }
                 else
                 {
-                    LGCategoryInfo editorCache = LogicProvider.GetCategoryInfo(graphInfo);
-                    BaseLogicGraph graph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(graphInfo.AssetPath);
+                    BaseLogicGraph graph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(summaryInfo.AssetPath);
                     //删除没有的节点
                     graph.Nodes.RemoveAll(n => n == null);
                     graph.Init();
                     graphView = Activator.CreateInstance(categoryInfo.ViewType) as LogicGraphView;
+                    graphView.Initialize(this, graph);
                     graphButton.Show();
                     saveButton.Show();
                     _rightContent.Add(graphView);
@@ -336,12 +335,17 @@ namespace Game.Logic.Editor
         {
             _logicMessage = new LogicMessage();
             m_createUI();
-            if (!string.IsNullOrWhiteSpace(graphId))
+            if (!string.IsNullOrWhiteSpace(_graphId))
             {
-                this.graphId = graphId;
+                this.graphId = _graphId;
                 m_showLogicGraph();
             }
             LogicUtils.AddListener(LogicEventId.LOGIC_ASSETS_CHANGED, m_onLogicAssetsChanged);
+        }
+
+        private void OnDisable()
+        {
+            LogicUtils.RemoveListener(LogicEventId.LOGIC_ASSETS_CHANGED, m_onLogicAssetsChanged);
         }
     }
 

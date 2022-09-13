@@ -65,10 +65,9 @@ namespace Game.Logic.Editor
             _contentContainer.name = "contentContainer";
             _contents = topContainer.parent;
             _contents.Add(_contentContainer);
-            m_portVerticalLayout();
-            Port port = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, null);
+            Port port = this.InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, null);
             this.inputContainer.Add(port);
-            Port port2 = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Single, null);
+            Port port2 = this.InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, null);
             this.outputContainer.Add(port2);
         }
     }
@@ -90,6 +89,7 @@ namespace Game.Logic.Editor
     {
         /// <summary>
         /// 端口垂直布局
+        /// 暂时不做
         /// </summary>
         private void m_portVerticalLayout()
         {
@@ -101,6 +101,7 @@ namespace Game.Logic.Editor
         }
         /// <summary>
         /// 端口水平布局
+        /// 暂时不做
         /// </summary>
         private void m_portHorizontalLayout()
         {

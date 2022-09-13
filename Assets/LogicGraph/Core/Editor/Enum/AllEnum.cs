@@ -20,4 +20,24 @@ namespace Game.Logic.Editor
         /// </summary>
         Horizontal
     }
+
+    /// <summary>
+    /// 端口类型枚举
+    /// </summary>
+    [Flags]
+    public enum PortTypeEnum : byte
+    {
+        /// <summary>
+        /// 只有进
+        /// </summary>
+        In = 1,
+        /// <summary>
+        /// 只有出
+        /// </summary>
+        Out = 2,
+        /// <summary>
+        /// 二者皆有
+        /// </summary>
+        All = In | Out
+    }
 }
