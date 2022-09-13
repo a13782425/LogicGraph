@@ -274,7 +274,7 @@ namespace Game.Logic.Editor
             if (target.Nodes.Count > 0)
             {
                 int node = target.Nodes.Max(a => a.OnlyId);
-                _nodeUniqueId = node++;
+                _nodeUniqueId = node + 1;
                 for (int i = NODE_START_ID; i < _nodeUniqueId; i++)
                 {
                     if (target.GetNode(i) == null)
