@@ -34,11 +34,16 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 当前逻辑图的公共信息缓存
         /// </summary>
-        public LGCategoryInfo categoryInfo => owner.categoryInfo;
+        public LGCategoryInfo categoryInfo => owner.operateData.categoryInfo;
         /// <summary>
         /// 当前逻辑的简介信息和编辑器信息
         /// </summary>
-        public LGSummaryInfo summaryInfo => owner.summaryInfo;
+        public LGSummaryInfo summaryInfo => owner.operateData.summaryInfo;
+        /// <summary>
+        /// 当前逻辑图的编辑器信息
+        /// </summary>
+        public GraphEditorData editorData => owner.operateData.editorData;
+
         /// <summary>
         /// 当前逻辑图所属的窗口
         /// </summary>
@@ -84,10 +89,9 @@ namespace Game.Logic.Editor
             target = graph;
             graphViewChanged = m_onGraphViewChanged;
             m_initNodeUniqueId();
-            summaryInfo.EditorData.NodeDatas.RemoveAll(a => graph.GetNode(a.OnlyId) == null);
-            var editorData = summaryInfo.EditorData;
+            editorData.NodeDatas.RemoveAll(a => graph.GetNode(a.OnlyId) == null);
             target.Nodes.RemoveAll(a => editorData.NodeDatas.FirstOrDefault(b => a.OnlyId == b.OnlyId) == null);
-            summaryInfo.EditorData.NodeDatas.ForEach(a =>
+            editorData.NodeDatas.ForEach(a =>
             {
                 a.node = graph.GetNode(a.OnlyId);
                 m_showNodeView(a);
@@ -122,7 +126,7 @@ namespace Game.Logic.Editor
             m_setNodeId(logicNode);
             data.OnlyId = logicNode.OnlyId;
             this.target.Nodes.Add(logicNode);
-            this.summaryInfo.EditorData.NodeDatas.Add(data);
+            this.editorData.NodeDatas.Add(data);
             m_showNodeView(data);
             return logicNode;
         }
@@ -147,8 +151,9 @@ namespace Game.Logic.Editor
         /// </summary>
         public void Save()
         {
+            target.SetEditorData(editorData);
+            summaryInfo.SetData(editorData);
             EditorUtility.SetDirty(target);
-            target.SetEditorData(summaryInfo.EditorData);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
@@ -228,6 +233,7 @@ namespace Game.Logic.Editor
         {
             BaseNodeView nodeView = new BaseNodeView();
             this.AddElement(nodeView);
+            nodeView.Initialize(this, editorData);
             nodeView.SetPosition(new Rect(editorData.Pos, Vector2.one));
         }
 

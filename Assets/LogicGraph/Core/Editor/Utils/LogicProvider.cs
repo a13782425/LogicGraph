@@ -229,7 +229,8 @@ namespace Game.Logic.Editor
                 graphCache.GraphClassName = logicGraph.GetType().FullName;
                 graphCache.AssetPath = assetPath;
                 graphCache.OnlyId = logicGraph.OnlyId;
-                graphCache.EditorData = editorData;
+                graphCache.SetData(editorData);
+
                 hashKey.Add(logicGraph.OnlyId);
                 LGSummaryList.Add(graphCache);
             }
@@ -254,15 +255,17 @@ namespace Game.Logic.Editor
         /// <param name="logicGraph"></param>
         internal static bool AddGraphToSummary(string path, BaseLogicGraph logicGraph)
         {
-            var catalog = LGSummaryList.FirstOrDefault(a => a.OnlyId == logicGraph.OnlyId);
-            if (catalog != null)
-                return false;
-            GraphEditorData graphEditor = LogicUtils.InitGraphEditorData(logicGraph);
+            logicGraph.ResetGUID();
+            GraphEditorData editorData = logicGraph.GetEditorData();
+            editorData.LogicName = logicGraph.name;
+            editorData.CreateTime = DateTime.Now;
+            logicGraph.SetEditorData(editorData);
             LGSummaryInfo graphCache = new LGSummaryInfo();
             graphCache.GraphClassName = logicGraph.GetType().FullName;
             graphCache.AssetPath = path;
             graphCache.OnlyId = logicGraph.OnlyId;
-            graphCache.EditorData = graphEditor;
+            graphCache.LogicName = editorData.LogicName;
+            graphCache.SetData(editorData);
             LGSummaryList.Add(graphCache);
             return true;
         }

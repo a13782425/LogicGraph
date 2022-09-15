@@ -111,6 +111,10 @@ namespace Game.Logic.Editor
     /// </summary>
     partial class LogicUtils
     {
+        internal static string FormatTime(DateTime time)
+        {
+            return time.ToString("yyyy.MM.dd HH:mm");
+        }
         /// <summary>
         /// 获取图的颜色
         /// </summary>
@@ -125,18 +129,30 @@ namespace Game.Logic.Editor
         }
 
         /// <summary>
-        /// 初始化逻辑图编辑器数据
+        /// 卸载一个UnityObject
         /// </summary>
-        internal static GraphEditorData InitGraphEditorData(BaseLogicGraph graph)
+        /// <param name="obj"></param>
+        internal static void UnloadObject(UnityEngine.Object obj)
         {
-            var editorData = graph.GetEditorData();
-            if (editorData == null)
+            if (obj != null)
             {
-                editorData = new GraphEditorData();
-                editorData.LogicName = graph.name;
-                graph.SetEditorData(editorData);
+                Resources.UnloadAsset(obj);
             }
-            return editorData;
+        }
+
+        /// <summary>
+        /// 获取逻辑图数据
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        internal static (BaseLogicGraph graph, GraphEditorData editorData) GetLogicGraph(string path)
+        {
+            BaseLogicGraph graph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(path);
+            if (graph != null)
+            {
+                return (graph, graph.GetEditorData());
+            }
+            return (null, null);
         }
 
         /// <summary>
@@ -145,11 +161,15 @@ namespace Game.Logic.Editor
         /// <param name="graphType"></param>
         /// <param name="path"></param>
         /// <returns></returns>
-        internal static BaseLogicGraph CreateGraph(Type graphType, string path)
+        internal static BaseLogicGraph CreateLogicGraph(Type graphType, string path)
         {
             BaseLogicGraph graph = ScriptableObject.CreateInstance(graphType) as BaseLogicGraph;
             string file = Path.GetFileNameWithoutExtension(path);
             graph.name = file;
+            var editorData = graph.GetEditorData();
+            editorData.LogicName = file;
+            editorData.CreateTime = DateTime.Now;
+            graph.SetEditorData(editorData);
             AssetDatabase.CreateAsset(graph, path);
             AssetDatabase.Refresh();
             return graph;

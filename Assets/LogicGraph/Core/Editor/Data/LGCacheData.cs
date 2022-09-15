@@ -18,7 +18,7 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 逻辑图名
         /// </summary>
-        public string LogicName => EditorData.LogicName;
+        public string LogicName;
         /// <summary>
         /// 图类型名全称,含命名空间
         /// </summary>
@@ -31,11 +31,21 @@ namespace Game.Logic.Editor
         /// 资源路径
         /// </summary>
         public string AssetPath;
-
         /// <summary>
-        /// 当前的逻辑图
+        /// 创建时间
         /// </summary>
-        public GraphEditorData EditorData;
+        public string CreateTime;
+        /// <summary>
+        /// 修改时间
+        /// </summary>
+        public string ModifyTime;
+
+        internal void SetData(GraphEditorData editorData)
+        {
+            this.LogicName = editorData.LogicName;
+            this.CreateTime = LogicUtils.FormatTime(editorData.CreateTime);
+            this.ModifyTime = LogicUtils.FormatTime(editorData.ModifyTime);
+        }
     }
 
     /// <summary>

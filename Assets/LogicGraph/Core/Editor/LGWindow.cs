@@ -12,6 +12,9 @@ namespace Game.Logic.Editor
 {
     public sealed partial class LGWindow : EditorWindow
     {
+        private GraphOperateData _operateData = new GraphOperateData();
+        internal GraphOperateData operateData => _operateData;
+
         /// <summary>
         /// 逻辑图唯一Id
         /// </summary>
@@ -25,30 +28,9 @@ namespace Game.Logic.Editor
             private set
             {
                 _graphId = value;
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    _summaryInfo = null;
-                    _categoryInfo = null;
-                }
-                else
-                {
-                    _summaryInfo = LogicProvider.GetSummaryInfo(value);
-                    _categoryInfo = LogicProvider.GetCategoryInfo(_summaryInfo.GraphClassName);
-                }
+                operateData.Refresh(value);
             }
         }
-
-        private LGSummaryInfo _summaryInfo = null;
-        /// <summary>
-        /// 当前展示逻辑图的简介和编辑器信息
-        /// </summary>
-        public LGSummaryInfo summaryInfo => _summaryInfo;
-        private LGCategoryInfo _categoryInfo = null;
-        /// <summary>
-        /// 当前逻辑图分类信息
-        /// </summary>
-        public LGCategoryInfo categoryInfo => _categoryInfo;
-
 
         private VisualElement _leftContent;
         private VisualElement _rightContent;
@@ -69,6 +51,8 @@ namespace Game.Logic.Editor
         internal OverviewGraphView overviewView { get; private set; }
 
         private LogicGraphView graphView { get; set; }
+
+
         /// <summary>
         /// 打开窗口
         /// </summary>
@@ -134,7 +118,7 @@ namespace Game.Logic.Editor
         {
             if (graphView != null)
             {
-                graphId = null;
+                this.graphId = null;
                 graphView.RemoveFromHierarchy();
                 graphView = null;
                 graphButton.Hide();
@@ -180,7 +164,7 @@ namespace Game.Logic.Editor
             {
                 if (item is LGWindow p)
                 {
-                    if (p._graphId == onlyId)
+                    if (p.graphId == onlyId)
                     {
                         panel = p;
                         break;
@@ -196,21 +180,19 @@ namespace Game.Logic.Editor
         }
         private void m_showLogicGraph()
         {
-            if (!string.IsNullOrWhiteSpace(graphId))
+            if (!string.IsNullOrWhiteSpace(this.graphId))
             {
-                if (summaryInfo == null)
+                if (this.operateData.summaryInfo == null)
                 {
                     this.Close();
                 }
                 else
                 {
-                    BaseLogicGraph graph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(summaryInfo.AssetPath);
-                    
                     //删除没有的节点
-                    graph.Nodes.RemoveAll(n => n == null);
-                    graph.Init();
-                    graphView = Activator.CreateInstance(categoryInfo.ViewType) as LogicGraphView;
-                    graphView.Initialize(this, graph);
+                    this.operateData.logicGraph.Nodes.RemoveAll(n => n == null);
+                    this.operateData.logicGraph.Init();
+                    graphView = Activator.CreateInstance(this.operateData.categoryInfo.ViewType) as LogicGraphView;
+                    graphView.Initialize(this, this.operateData.logicGraph);
                     graphButton.Show();
                     saveButton.Show();
                     _rightContent.Add(graphView);
@@ -224,11 +206,11 @@ namespace Game.Logic.Editor
             LogicAssetsChangedEventArgs eventArg = args as LogicAssetsChangedEventArgs;
             overviewView.Refresh(eventArg);
 
-            if (summaryInfo != null)
+            if (!string.IsNullOrWhiteSpace(this.graphId))
             {
                 foreach (var item in eventArg.deletedGraphs)
                 {
-                    if (item == summaryInfo.AssetPath)
+                    if (item == this.operateData.summaryInfo.AssetPath)
                     {
                         CloseLogicGraph();
                         break;
@@ -301,7 +283,7 @@ namespace Game.Logic.Editor
             var graph = LogicUtils.LoadGraph<BaseLogicGraph>(FileUtil.GetProjectRelativePath(path));
             if (graph != null)
             {
-                graphId = graph.OnlyId;
+                this.graphId = graph.OnlyId;
                 m_showLogicGraph();
             }
         }
@@ -314,7 +296,7 @@ namespace Game.Logic.Editor
         }
         private void m_onSaveClick(ClickEvent obj)
         {
-            if (!string.IsNullOrWhiteSpace(graphId))
+            if (!string.IsNullOrWhiteSpace(this.graphId))
             {
                 graphView?.Save();
             }
@@ -349,9 +331,13 @@ namespace Game.Logic.Editor
         private void OnDisable()
         {
             LogicUtils.RemoveListener(LogicEventId.LOGIC_ASSETS_CHANGED, m_onLogicAssetsChanged);
-            if (graphView!=null)
+
+        }
+        private void OnDestroy()
+        {
+            if (graphView != null)
             {
-                Resources.UnloadAsset(graphView.target);
+                this.graphId = null;
             }
         }
     }

@@ -23,11 +23,17 @@ namespace Game.Logic.Editor
         /// </summary>
         private readonly EditorLabelElement m_titleLabel;
 
+        public LogicGraphView owner { get; private set; }
 
         /// <summary>
         /// 当前节点视图对应的节点
         /// </summary>
         public BaseLogicNode target { get; private set; }
+
+        /// <summary>
+        /// 节点编辑器数据
+        /// </summary>
+        public NodeEditorData editorData { get; private set; }
 
         public override string title { get => m_titleLabel.text; set => m_titleLabel.text = value; }
 
@@ -60,7 +66,6 @@ namespace Game.Logic.Editor
             }
             m_titleLabel = new EditorLabelElement();
             titleContainer.Add(m_titleLabel);
-            m_titleLabel.text = "萨达萨达所多";
             _contentContainer = new VisualElement();
             _contentContainer.name = "contentContainer";
             _contents = topContainer.parent;
@@ -69,6 +74,13 @@ namespace Game.Logic.Editor
             this.inputContainer.Add(port);
             Port port2 = this.InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, null);
             this.outputContainer.Add(port2);
+        }
+        public void Initialize(LogicGraphView owner, NodeEditorData editorData)
+        {
+            this.owner = owner;
+            this.target = editorData.node;
+            this.editorData = editorData;
+            this.title = editorData.Title;
         }
     }
     /// <summary>

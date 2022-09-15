@@ -20,7 +20,7 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 所有的资源的导入，删除，移动，都会调用此方法，注意，这个方法是static的
         /// </summary>
-        /// <param name="importedAsset">导入的资源</param>
+        /// <param name="importedAsset">导入或者发生改变的资源</param>
         /// <param name="deletedAssets">删除的资源</param>
         /// <param name="movedAssets">移动后资源路径</param>
         /// <param name="movedFromAssetPaths">移动前资源路径</param>
@@ -49,21 +49,28 @@ namespace Game.Logic.Editor
             }
             foreach (string str in importedAsset)
             {
+                //导入或者发生改变的资源
                 if (Path.GetExtension(str) == ".asset")
                 {
                     var logicGraph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(str);
                     if (logicGraph != null)
                     {
-                        if (logicGraph.GetEditorData() == null)
+                        LGSummaryInfo summary = LogicProvider.GetSummaryInfo(logicGraph.OnlyId);
+                        if (summary != null)
                         {
-                            logicGraph.ResetGUID();
-                            refreshViewEvent.addGraphs.Add(str);
-                            bool res = LogicProvider.AddGraphToSummary(str, logicGraph);
-                            if (res)
-                                EditorUtility.SetDirty(logicGraph);
-                            if (!hasAsset)
-                                hasAsset = res;
+                            //当前逻辑图ID已存在,需要判断路径是否相同
+                            if (summary.AssetPath == str)
+                            {
+                                //如果路径相同则不操作
+                                continue;
+                            }
                         }
+                        refreshViewEvent.addGraphs.Add(str);
+                        bool res = LogicProvider.AddGraphToSummary(str, logicGraph);
+                        if (res)
+                            EditorUtility.SetDirty(logicGraph);
+                        if (!hasAsset)
+                            hasAsset = res;
                     }
                 }
             }
@@ -77,7 +84,6 @@ namespace Game.Logic.Editor
                         hasAsset = res;
                 }
             }
-
             if (hasAsset)
             {
                 Debug.LogError("有文件发生改变");
@@ -86,62 +92,4 @@ namespace Game.Logic.Editor
             }
         }
     }
-    //[ScriptedImporter(0, ".logic")]
-    //internal class LogicGraphImporter : ScriptedImporter
-    //{
-    //    public string cache = "";
-
-    //    private void createGraph(AssetImportContext ctx)
-    //    {
-    //        File.Delete(ctx.assetPath);
-    //        BaseLogicGraph graph = ScriptableObject.CreateInstance<BaseLogicGraph>();
-    //        AssetDatabase.CreateAsset(graph, ctx.assetPath);
-    //        AssetDatabase.Refresh();
-    //    }
-    //    [MenuItem("Assets/Create/test")]
-    //    private static void abc()
-    //    {
-    //        string path = AssetDatabase.GetAssetPath(Selection.activeObject);
-    //        if (!Directory.Exists(path))
-    //        {
-    //            path = Path.GetDirectoryName(path);
-    //        }
-    //        BaseLogicGraph graph = ScriptableObject.CreateInstance<BaseLogicGraph>();
-
-    //        AssetDatabase.CreateAsset(graph, Path.Combine(path, "abc.asset"));
-    //        AssetDatabase.Refresh();
-    //        var a = AssetImporter.GetAtPath(Path.Combine(path, "abc.asset"));
-    //        a.userData = "ddd";
-    //        a.SaveAndReimport();
-    //    }
-    //    [MenuItem("Assets/test")]
-    //    private static void abc1()
-    //    {
-    //        string path = AssetDatabase.GetAssetPath(Selection.activeObject);
-    //        var a = AssetImporter.GetAtPath(path);
-
-    //        Debug.LogError(a.userData);
-
-
-    //    }
-    //    public override void OnImportAsset(AssetImportContext ctx)
-    //    {
-    //        try
-    //        {
-    //            BaseLogicGraph graphData = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(ctx.assetPath);
-    //            if (graphData == null)
-    //            {
-    //                graphData = ScriptableObject.CreateInstance<BaseLogicGraph>();
-
-    //                ctx.AddObjectToAsset("main", graphData);
-    //                ctx.SetMainObject(graphData);
-    //                //File.Delete(ctx.assetPath);
-    //            }
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            Debug.LogError(ex.Message);
-    //        }
-    //    }
-    //}
 }

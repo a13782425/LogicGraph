@@ -61,8 +61,8 @@ namespace Game.Logic.Editor
         {
             data = item;
             title = item.LogicName;
-            _createTimeLabel.text = "创建时间:  " + item.EditorData.CreateTime;
-            _modifyTimeLabel.text = "修改时间:  " + item.EditorData.ModifyTime;
+            _createTimeLabel.text = "创建时间:  " + item.CreateTime;
+            _modifyTimeLabel.text = "修改时间:  " + item.ModifyTime;
         }
 
         private void InitUI()
@@ -81,10 +81,14 @@ namespace Game.Logic.Editor
         }
         private void m_onRename(string arg1, string arg2)
         {
-            data.EditorData.LogicName = arg2;
+            var (graph, editorData) = LogicUtils.GetLogicGraph(data.AssetPath);
             BaseLogicGraph logicGraph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(data.AssetPath);
-            if (logicGraph != null)
-                logicGraph.SetEditorData(data.EditorData);
+            if (graph != null)
+            {
+                editorData.LogicName = arg2;
+                graph.SetEditorData(editorData);
+                LogicUtils.UnloadObject(graph);
+            }
             else
                 onwer.onwer.ShowNotification(new GUIContent("需要改名的逻辑图没有找到"), 1);
         }

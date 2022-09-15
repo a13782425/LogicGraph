@@ -17,6 +17,7 @@ namespace Game.Logic.Editor
     internal class OverviewGroup : Scope
     {
         private const string STYLE_PATH = "OverviewGraph/OverviewGroup.uss";
+        private const int NODE_WIDTH = 180;
         public OverviewGraphView onwer { get; }
 
         /// <summary>
@@ -96,7 +97,7 @@ namespace Game.Logic.Editor
             foreach (var item in this.containedElements)
             {
                 Rect temp = item.GetPosition();
-                temp.x = 145 * index;
+                temp.x = NODE_WIDTH * index;
                 temp.y = data.Index * 160;
                 item.SetPosition(temp);
                 index++;

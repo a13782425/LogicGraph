@@ -52,6 +52,13 @@ namespace Game.Logic.Runtime
         /// </summary>
         private Dictionary<string, BaseVariable> _varDic = new Dictionary<string, BaseVariable>();
 
+#if UNITY_EDITOR
+        [SerializeField]
+        [Multiline]
+        //[HideInInspector]
+        private string __editorData = "";
+#endif
+
         #endregion
 
         /// <summary>
@@ -73,8 +80,6 @@ namespace Game.Logic.Runtime
         /// </summary>
         public virtual void Init()
         {
-            Debug.LogError("1111");
-
             foreach (var item in _variables)
             {
                 _varDic.Add(item.Name, item);

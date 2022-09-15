@@ -134,7 +134,7 @@ namespace Game.Logic.Editor
                 return false;
             }
             path = FileUtil.GetProjectRelativePath(path);
-            BaseLogicGraph graph = LogicUtils.CreateGraph(configData.GraphType, path);
+            BaseLogicGraph graph = LogicUtils.CreateLogicGraph(configData.GraphType, path);
             //Todo: 打开当前创建的逻辑图
             return true;
         }
