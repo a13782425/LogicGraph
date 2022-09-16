@@ -51,7 +51,7 @@ namespace Game.Logic.Editor
         /// 最后一次Format位置
         /// </summary>
         [SerializeField]
-        public string LastFormatPath => d;
+        public string LastFormatPath { get => d; set => d = value; }
 
         /// <summary>
         /// 当前图坐标
@@ -62,7 +62,7 @@ namespace Game.Logic.Editor
         /// 当前图坐标
         /// </summary>
         [SerializeField]
-        public Vector3 Pos => e;
+        public Vector3 Pos { get => e; set => e = value; }
 
         /// <summary>
         /// 当前图的缩放
@@ -72,7 +72,7 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 当前图的缩放
         /// </summary>
-        public Vector3 Scale => f;
+        public Vector3 Scale { get => f; set => f = value; }
 
         /// <summary>
         /// 创建时间

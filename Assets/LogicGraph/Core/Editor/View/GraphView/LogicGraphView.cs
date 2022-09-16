@@ -43,7 +43,11 @@ namespace Game.Logic.Editor
         /// 当前逻辑图的编辑器信息
         /// </summary>
         public GraphEditorData editorData => owner.operateData.editorData;
-
+        private EdgeConnectorListener _connectorListener;
+        /// <summary>
+        /// 端口连接监听器
+        /// </summary>
+        internal EdgeConnectorListener ConnectorListener => _connectorListener;
         /// <summary>
         /// 当前逻辑图所属的窗口
         /// </summary>
@@ -87,7 +91,6 @@ namespace Game.Logic.Editor
         {
             owner = lgWindow;
             target = graph;
-            graphViewChanged = m_onGraphViewChanged;
             m_initNodeUniqueId();
             editorData.NodeDatas.RemoveAll(a => graph.GetNode(a.OnlyId) == null);
             target.Nodes.RemoveAll(a => editorData.NodeDatas.FirstOrDefault(b => a.OnlyId == b.OnlyId) == null);
@@ -96,9 +99,15 @@ namespace Game.Logic.Editor
                 a.node = graph.GetNode(a.OnlyId);
                 m_showNodeView(a);
             });
-
+            viewTransform.position = editorData.Pos;
+            viewTransform.scale = editorData.Scale;
+            graphViewChanged = m_onGraphViewChanged;
+            viewTransformChanged = m_onViewTransformChanged;
         }
     }
+
+    #region 公共方法
+
     //公共方法
     partial class LogicGraphView
     {
@@ -158,6 +167,11 @@ namespace Game.Logic.Editor
             AssetDatabase.Refresh();
         }
     }
+
+    #endregion
+
+    #region 重写
+
     //重写
     partial class LogicGraphView
     {
@@ -174,15 +188,26 @@ namespace Game.Logic.Editor
         }
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
-            return base.GetCompatiblePorts(startPort, nodeAdapter);
+            return ports.ToList();
         }
+
     }
+
+    #endregion
+
+    #region 回调
+
     //回调
     partial class LogicGraphView
     {
         private GraphViewChange m_onGraphViewChanged(GraphViewChange graphViewChange)
         {
             return graphViewChange;
+        }
+        private void m_onViewTransformChanged(GraphView graphView)
+        {
+            editorData.Pos = viewTransform.position;
+            editorData.Scale = viewTransform.scale;
         }
         /// <summary>
         /// 键盘按键
@@ -226,6 +251,11 @@ namespace Game.Logic.Editor
             return true;
         }
     }
+
+    #endregion
+
+    #region 私有
+
     //私有
     partial class LogicGraphView
     {
@@ -292,6 +322,7 @@ namespace Game.Logic.Editor
         }
     }
 
+    #endregion
 
     /// <summary>
     /// 背景网格
