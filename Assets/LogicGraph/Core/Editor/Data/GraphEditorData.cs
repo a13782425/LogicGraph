@@ -79,7 +79,6 @@ namespace Game.Logic.Editor
         /// </summary>
         [SerializeField]
         private int g = 0;
-
         /// <summary>
         /// 创建时间DateTime.Now.ToString("yyyy.MM.dd");
         /// </summary>
@@ -95,5 +94,14 @@ namespace Game.Logic.Editor
         /// </summary>
         public DateTime ModifyTime { get => MINI_TIME.AddMinutes(h); set => h = (int)(value - MINI_TIME).TotalMinutes; }
 
+        /// <summary>
+        /// 描述
+        /// </summary>
+        [SerializeField]
+        private string i = "";
+        /// <summary>
+        /// 描述
+        /// </summary>
+        public string Describe { get => i; set => i = value; }
     }
 }

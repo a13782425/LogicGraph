@@ -15,23 +15,28 @@ namespace Game.Logic.Editor
         public BaseLogicNode node;
 
         [SerializeField]
-        public int OnlyId;
+        private int a;
+        public int OnlyId { get => a; set => a = value; }
 
         [SerializeField]
-        public string Title;
+        private string b;
+        public string Title { get => b; set => b = value; }
 
         [SerializeField]
-        public Vector2 Pos = Vector2.zero;
+        private Vector2 c;
+        public Vector2 Pos { get => c; set => c = value; }
         /// <summary>
         /// 是否上锁
         /// </summary>
         [SerializeField]
-        public bool IsLock = false;
+        private bool d;
+        public bool IsLock { get => d; set => d = value; }
         /// <summary>
         /// 节点描述
         /// </summary>
         [SerializeField]
-        public string Describe = "";
+        private string e;
+        public string Describe { get => e; set => e = value; }
 
     }
 }

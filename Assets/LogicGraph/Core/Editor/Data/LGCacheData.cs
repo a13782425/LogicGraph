@@ -20,6 +20,10 @@ namespace Game.Logic.Editor
         /// </summary>
         public string LogicName;
         /// <summary>
+        /// 描述
+        /// </summary>
+        public string Describe;
+        /// <summary>
         /// 图类型名全称,含命名空间
         /// </summary>
         public string GraphClassName;
@@ -45,6 +49,7 @@ namespace Game.Logic.Editor
             this.LogicName = editorData.LogicName;
             this.CreateTime = LogicUtils.FormatTime(editorData.CreateTime);
             this.ModifyTime = LogicUtils.FormatTime(editorData.ModifyTime);
+            this.Describe = string.IsNullOrWhiteSpace(editorData.Describe) ? "这里是描述" : editorData.Describe;
         }
     }
 
@@ -94,7 +99,7 @@ namespace Game.Logic.Editor
         /// <param name="type"></param>
         /// <returns></returns>
         public LogicNodeCategory GetNodeCategory(Type nodeType) => Nodes.FirstOrDefault(a => a.NodeType == nodeType);
- 
+
     }
     /// <summary>
     /// 逻辑图节点分类信息缓存

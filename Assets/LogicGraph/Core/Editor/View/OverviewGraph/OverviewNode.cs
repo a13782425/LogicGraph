@@ -62,6 +62,7 @@ namespace Game.Logic.Editor
         {
             data = item;
             title = item.LogicName;
+            _desLabel.text = item.Describe;
             _createTimeLabel.text = "创建时间:  " + item.CreateTime;
             _modifyTimeLabel.text = "修改时间:  " + item.ModifyTime;
         }
@@ -78,6 +79,9 @@ namespace Game.Logic.Editor
             _desLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
             _desLabel.style.color = new Color(137 / 255f, 137 / 255f, 137 / 255f);
             _desLabel.style.fontSize = 10;
+            _desLabel.Q<Label>("title_label").style.whiteSpace = WhiteSpace.Normal;
+            _desLabel.maxLength = 20;
+            _desLabel.onRename += m_onDesRename;
             contentContainer.Add(_desLabel);
             _createTimeLabel = new Label();
             _createTimeLabel.AddToClassList("time_label");
@@ -86,14 +90,33 @@ namespace Game.Logic.Editor
             contentContainer.Add(_createTimeLabel);
             contentContainer.Add(_modifyTimeLabel);
         }
+
+        private void m_onDesRename(string arg1, string arg2)
+        {
+            var (graph, editorData) = LogicUtils.GetLogicGraph(data.AssetPath);
+            if (graph != null)
+            {
+                editorData.Describe = arg2;
+                graph.SetEditorData(editorData);
+                data.Describe = arg2;
+                EditorUtility.SetDirty(graph);
+                AssetDatabase.SaveAssets();
+                LogicUtils.UnloadObject(graph);
+            }
+            else
+                onwer.onwer.ShowNotification(new GUIContent("需要修改描述的逻辑图没有找到"), 1);
+        }
+
         private void m_onRename(string arg1, string arg2)
         {
             var (graph, editorData) = LogicUtils.GetLogicGraph(data.AssetPath);
-            BaseLogicGraph logicGraph = AssetDatabase.LoadAssetAtPath<BaseLogicGraph>(data.AssetPath);
             if (graph != null)
             {
                 editorData.LogicName = arg2;
                 graph.SetEditorData(editorData);
+                data.LogicName = arg2;
+                EditorUtility.SetDirty(graph);
+                AssetDatabase.SaveAssets();
                 LogicUtils.UnloadObject(graph);
             }
             else

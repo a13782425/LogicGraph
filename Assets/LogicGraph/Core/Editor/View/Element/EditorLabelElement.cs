@@ -19,10 +19,44 @@ namespace Game.Logic.Editor
         private Label title_label { get; }
         private TextField input_field { get; }
 
+        private int _maxLength = -1;
+        /// <summary>
+        /// 显示的最长长度
+        /// 小于0不限制长度
+        /// </summary>
+        public int maxLength { get => _maxLength; set => _maxLength = value; }
+
+        private string _originText;
+
         /// <summary>
         /// 内容
         /// </summary>
-        public string text { get { return title_label.text; } set { title_label.text = value; } }
+        public string text
+        {
+            get { return _originText; }
+            set
+            {
+                _originText = value ?? "";
+                string temp = "";
+                if (maxLength < 0)
+                {
+                    temp = _originText;
+                }
+                else
+                {
+                    if (_originText.Length > maxLength)
+                    {
+                        temp = _originText.Substring(0, maxLength);
+                        temp += "...";
+                    }
+                    else
+                    {
+                        temp = _originText;
+                    }
+                }
+                title_label.text = temp;
+            }
+        }
 
         /// <summary>
         /// 重命名回调

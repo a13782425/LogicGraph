@@ -11,14 +11,19 @@ namespace Game.Logic.Editor
     public sealed class GroupEditorData
     {
         [SerializeField]
-        public string Title = "New Group";
+        private string a = "New Group";
+        public string Title { get => a; set => a = value; }
         [SerializeField]
-        public Color Color = new Color(0, 0, 0, 0.3f);
+        private Color b = new Color(0, 0, 0, 0.3f);
+        public Color Color { get => b; set => b = value; }
         [SerializeField]
-        public Vector2 Pos;
+        private Vector2 c;
+        public Vector2 Pos { get => c; set => c = value; }
         [SerializeField]
-        public Vector2 Size;
+        private Vector2 d;
+        public Vector2 Size { get => d; set => d = value; }
         [SerializeField]
-        public List<int> Nodes = new List<int>();
+        private List<int> e = new List<int>();
+        public List<int> Nodes => e;
     }
 }
