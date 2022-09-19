@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Game.Logic.Example.Editor
 {
-    [LogicNode(typeof(StartNode),"系统/开始")]
+    [LogicNode(typeof(StartNode), "系统/开始", PortType = PortDirEnum.Out)]
     public class StartNodeView : BaseNodeView
     {
-      
-    } 
+
+    }
 }

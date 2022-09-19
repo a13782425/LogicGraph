@@ -28,6 +28,7 @@ namespace Game.Logic.Editor
         public LGSummaryInfo data { get; private set; }
         private Label _createTimeLabel;
         private Label _modifyTimeLabel;
+        private EditorLabelElement _desLabel;
         public OverviewNode(OverviewGraphView view, OverviewGroup group)
         {
             onwer = view;
@@ -72,6 +73,12 @@ namespace Game.Logic.Editor
             separator.color = group.data.GraphColor;
 
             contentContainer.Add(separator);
+            _desLabel = new EditorLabelElement();
+            _desLabel.text = "这里是描述,";
+            _desLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
+            _desLabel.style.color = new Color(137 / 255f, 137 / 255f, 137 / 255f);
+            _desLabel.style.fontSize = 10;
+            contentContainer.Add(_desLabel);
             _createTimeLabel = new Label();
             _createTimeLabel.AddToClassList("time_label");
             _modifyTimeLabel = new Label();

@@ -35,6 +35,7 @@ namespace Game.Logic.Editor
     /// 方法参数(逻辑图:BaseLogicGraph,路径:string)
     /// 返回类型(是否导出成功:bool)
     /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public sealed class GraphFormatAttribute : Attribute
     {
         /// <summary>
@@ -75,7 +76,7 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 拥有什么端口
         /// </summary>
-        public PortTypeEnum PortType = PortTypeEnum.All;
+        public PortDirEnum PortType = PortDirEnum.All;
         ///// <summary>
         ///// 包含的逻辑图
         ///// </summary>
@@ -115,5 +116,14 @@ namespace Game.Logic.Editor
             //}
             return result;
         }
+    }
+
+    /// <summary>
+    /// 节点所需要的 类型和组件的映射
+    /// 返回类型(Dic<Type:字段类型,Type:组件类型>)
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public sealed class NodeElementMappingAttribute : Attribute
+    {
     }
 }

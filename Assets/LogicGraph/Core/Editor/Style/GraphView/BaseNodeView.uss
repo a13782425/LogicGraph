@@ -23,6 +23,7 @@
 	margin: 0px;
 	min-height: 48px;
 }*/
+
 .node{
 	min-width: 100px;
 }
@@ -51,4 +52,74 @@
     right: 8px;
     width: 18px;
     height: 18px;
+}
+
+#top{
+    height: 24px;
+}
+
+#input-container {
+    position: absolute;
+    right: 100%;
+    top: 45px;
+    align-items: flex-end;
+    --layer: -50;
+}
+
+#input-container > .port-input-element > * {
+    margin-left: 2px;
+}
+
+#input-container > .port-input-element * {
+    font-size: 8px;
+}
+
+#input-container > .port-input-element {
+    max-width: 180px;
+    background-color: rgba(72, 72, 72, 0.6);
+    margin-top: 3px;
+    margin-bottom: 2px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    height: 19px;
+    overflow: hidden;
+    padding-right: 1px;
+}
+
+#input-container > .port-input-element.empty {
+    width: 0;
+    padding: 0;
+}
+
+.collapsed #input-container {
+    visibility: hidden;
+}
+.input-field-container{
+    --layer: -50;
+    position: absolute;
+    background-color: rgba(72, 72, 72, 0);
+    right: 100%;
+    height: 100%;
+    opacity: 0.6;
+    align-items: flex-end;
+}
+
+.input-field-container > .port-input-element {
+    position: absolute;
+    max-width: 180px;
+    min-width: 36px;
+    background-color: rgba(0, 0, 0, 1);
+    margin-top: 3px;
+    margin-bottom: 2px;
+    margin-right: 0px;
+    padding-left: 2px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    height: 19px;
+    overflow: hidden;
+    padding-right: 1px;
 }

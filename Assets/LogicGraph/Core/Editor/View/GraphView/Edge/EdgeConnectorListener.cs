@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Game.Logic.Editor
 {
-    internal sealed class EdgeConnectorListener : IEdgeConnectorListener
+    public sealed class EdgeConnectorListener : IEdgeConnectorListener
     {
         public readonly LogicGraphView graphView;
         public EdgeConnectorListener(LogicGraphView graphView)

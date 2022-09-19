@@ -1,0 +1,114 @@
+﻿NodePort {
+    height: 24px;
+    align-items: center;
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+NodePort.input {
+    flex-direction: row;
+    padding-left : 0px;
+    padding-right : 0px;
+}
+
+NodePort.output {
+    flex-direction: row-reverse;
+    padding-left : 0px;
+    padding-right : 0px;
+}
+
+NodePort > #connector {
+    border-color: rgb(255, 255, 0);
+    background-color: #212121;
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: 4px;
+    margin-right: 4px;
+    border-left-width:1px;
+    border-top-width:1px;
+    border-right-width:1px;
+    border-bottom-width:1px;
+}
+
+NodePort > #connector:hover {
+    border-color:  #f0f0f0
+}
+
+NodePort > #connector > #cap
+{
+    background-color: #212121;
+    width: 4px;
+    height: 4px;
+    border-radius: 4px;
+}
+
+NodePort > #connector > #cap:hover
+{
+    background-color: #f0f0f0;
+}
+
+.cube #connector, .cube #connector #cap {
+    border-radius: 0px;
+}
+
+.port-input-element:focus{
+    opacity: 1;
+}
+
+.port-input-element {
+    background-color: #000000;
+    opacity: 0.6;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    padding-left:1px;
+    height: 20px;
+    position: absolute;
+    right:100%;
+}
+NodePort > ColorField{
+    width: 60px;
+}
+NodePort > IntegerField,FloatField,DoubleField,{
+    width: 45px;
+}
+NodePort > Toggle{
+    width: 16px;
+}
+NodePort > Vector2Field{
+    width: 100px;
+}
+NodePort > Vector3Field{
+    width: 150px;
+}
+NodePort > Vector4Field{
+    width: 200px;
+}
+.Port_Input {
+	--port-color: #0080FF;
+}
+
+.Port_Output {
+	--port-color: #0080FF;
+}
+
+.Port_CubeInput {
+	--port-color: #FFFF00;
+}
+
+.Port_CubeOutput {
+	--port-color: #FFFF00;
+}
+
+.Port_CubeInput > #type{
+    font-size : 12px;
+}
+
+.Port_CubeOutput > #type{
+    font-size : 12px;
+}

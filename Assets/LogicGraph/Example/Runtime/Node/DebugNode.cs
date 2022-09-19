@@ -7,6 +7,8 @@ namespace Game.Logic.Example
 {
     public class DebugNode : BaseLogicNode
     {
+        [VarInput("文本")]
+        public string log;
     }
 
 }

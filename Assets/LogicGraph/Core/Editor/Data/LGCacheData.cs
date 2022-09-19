@@ -87,6 +87,14 @@ namespace Game.Logic.Editor
         /// 当前逻辑图所对应的节点
         /// </summary>
         public List<LogicNodeCategory> Nodes => _nodes;
+
+        /// <summary>
+        /// 获得当前节点的信息
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public LogicNodeCategory GetNodeCategory(Type nodeType) => Nodes.FirstOrDefault(a => a.NodeType == nodeType);
+ 
     }
     /// <summary>
     /// 逻辑图节点分类信息缓存
@@ -112,7 +120,7 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 节点端口类型
         /// </summary>
-        public PortTypeEnum PortType { get; set; }
+        public PortDirEnum PortType { get; set; }
     }
     /// <summary>
     /// 逻辑图格式化缓存

@@ -29,6 +29,15 @@ namespace Game.Logic.Editor
 
         protected override void RegisterCallbacksOnTarget()
         {
+            var graphElement = target as Port;
+            if (graphElement == null)
+            {
+                return;
+            }
+            if (graphElement.direction == Direction.Input)
+            {
+                return;
+            }
             target.RegisterCallback<MouseDownEvent>(OnMouseDown);
             target.RegisterCallback<MouseMoveEvent>(OnMouseMove);
             target.RegisterCallback<MouseUpEvent>(OnMouseUp);
@@ -38,6 +47,15 @@ namespace Game.Logic.Editor
 
         protected override void UnregisterCallbacksFromTarget()
         {
+            var graphElement = target as Port;
+            if (graphElement == null)
+            {
+                return;
+            }
+            if (graphElement.direction == Direction.Input)
+            {
+                return;
+            }
             target.UnregisterCallback<MouseDownEvent>(OnMouseDown);
             target.UnregisterCallback<MouseMoveEvent>(OnMouseMove);
             target.UnregisterCallback<MouseUpEvent>(OnMouseUp);

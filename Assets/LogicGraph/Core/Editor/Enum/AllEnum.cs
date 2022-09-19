@@ -25,7 +25,7 @@ namespace Game.Logic.Editor
     /// 端口类型枚举
     /// </summary>
     [Flags]
-    public enum PortTypeEnum : byte
+    public enum PortDirEnum : byte
     {
         /// <summary>
         /// 只有进

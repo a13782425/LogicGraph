@@ -98,7 +98,7 @@ namespace Game.Logic.Editor
             {
                 Rect temp = item.GetPosition();
                 temp.x = NODE_WIDTH * index;
-                temp.y = data.Index * 160;
+                temp.y = data.Index * 200;
                 item.SetPosition(temp);
                 index++;
             }
@@ -106,7 +106,7 @@ namespace Game.Logic.Editor
             {
                 Rect rect = this.GetPosition();
                 rect.x = -12;
-                rect.y = -44 + 160 * data.Index;
+                rect.y = -44 + 200 * data.Index;
                 this.SetPosition(rect);
             }
         }

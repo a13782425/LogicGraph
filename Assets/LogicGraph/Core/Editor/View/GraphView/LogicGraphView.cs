@@ -32,7 +32,7 @@ namespace Game.Logic.Editor
         /// </summary>
         public virtual List<Type> VarTypes => new List<Type>();
         /// <summary>
-        /// 当前逻辑图的公共信息缓存
+        /// 当前逻辑图的分类信息
         /// </summary>
         public LGCategoryInfo categoryInfo => owner.operateData.categoryInfo;
         /// <summary>
@@ -85,6 +85,7 @@ namespace Game.Logic.Editor
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new ClickSelector());
+            _connectorListener = new EdgeConnectorListener(this);
         }
 
         public void Initialize(LGWindow lgWindow, BaseLogicGraph graph)
@@ -188,7 +189,36 @@ namespace Game.Logic.Editor
         }
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
-            return ports.ToList();
+            var compatiblePorts = new List<Port>();
+            if (startPort.direction == Direction.Input)
+            {
+                goto End;
+            }
+            if (startPort is NodePort nodePort)
+            {
+                foreach (var port in ports.ToList())
+                {
+                    if (port.direction == Direction.Output)
+                    {
+                        continue;
+                    }
+                    if (nodePort.node == port.node)
+                    {
+                        continue;
+                    }
+                    if (nodePort.connections.FirstOrDefault(a => a.input == port) != null)
+                    {
+                        continue;
+                    }
+                    var tarPort = port as NodePort;
+                    if (tarPort == null)
+                    {
+                        continue;
+                    }
+                    compatiblePorts.Add(tarPort);
+                }
+            }
+        End: return compatiblePorts;
         }
 
     }
@@ -264,6 +294,7 @@ namespace Game.Logic.Editor
             BaseNodeView nodeView = new BaseNodeView();
             this.AddElement(nodeView);
             nodeView.Initialize(this, editorData);
+            nodeView.ShowUI();
             nodeView.SetPosition(new Rect(editorData.Pos, Vector2.one));
         }
 

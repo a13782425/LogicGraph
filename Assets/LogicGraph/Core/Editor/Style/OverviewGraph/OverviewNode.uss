@@ -1,4 +1,7 @@
 ﻿OverviewNode{
+	width: 175px;
+	max-width: 170px;
+	height: 130px;
 }
 #title-label{
 	margin-right: 6px;
@@ -10,4 +13,12 @@
 	color: rgba(63,62,60,255);
 	margin-left: 8px;
 	margin-right: 8px;
+}
+#node-border{
+	flex-grow: 1;
+}
+
+#contents > #center{
+	flex-grow: 1;
+	padding-bottom: 2px;
 }
