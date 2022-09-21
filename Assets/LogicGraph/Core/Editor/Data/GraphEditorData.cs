@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Game.Logic.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,11 @@ using UnityEngine;
 namespace Game.Logic.Editor
 {
     [Serializable]
-    public sealed class GraphEditorData
+    internal sealed class GraphEditorData
     {
         private readonly static DateTime MINI_TIME = new DateTime(2022, 1, 1);
+
+        public BaseLogicGraph target { get; set; }
 
         /// <summary>
         /// 标题
@@ -103,5 +106,12 @@ namespace Game.Logic.Editor
         /// 描述
         /// </summary>
         public string Describe { get => i; set => i = value; }
+
+        /// <summary>
+        /// 当前图的变量编辑器数据
+        /// </summary>
+        [SerializeField]
+        private List<VarEditorData> j = new List<VarEditorData>();
+        public List<VarEditorData> VarDatas => j;
     }
 }

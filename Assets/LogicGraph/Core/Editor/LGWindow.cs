@@ -50,7 +50,7 @@ namespace Game.Logic.Editor
         /// </summary>
         internal OverviewGraphView overviewView { get; private set; }
 
-        private LogicGraphView graphView { get; set; }
+        private BaseGraphView graphView { get; set; }
 
 
         /// <summary>
@@ -191,8 +191,8 @@ namespace Game.Logic.Editor
                     //删除没有的节点
                     this.operateData.logicGraph.Nodes.RemoveAll(n => n == null);
                     this.operateData.logicGraph.Init();
-                    graphView = Activator.CreateInstance(this.operateData.categoryInfo.ViewType) as LogicGraphView;
-                    graphView.Initialize(this, this.operateData.logicGraph);
+                    graphView = Activator.CreateInstance(this.operateData.categoryInfo.ViewType) as BaseGraphView;
+                    graphView.Initialize(this);
                     graphButton.Show();
                     saveButton.Show();
                     _rightContent.Add(graphView);
@@ -228,6 +228,7 @@ namespace Game.Logic.Editor
             contentContainer.name = "contentContainer";
             this.rootVisualElement.Add(contentContainer);
             rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, "LGWindow.uss")));
+            this.rootVisualElement.name = "LGWindow";
             _leftContent = new VisualElement();
             _leftContent.name = "left";
             _rightContent = new VisualElement();

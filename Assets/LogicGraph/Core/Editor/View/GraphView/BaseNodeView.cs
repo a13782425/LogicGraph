@@ -34,7 +34,7 @@ namespace Game.Logic.Editor
         /// </summary>
         private VisualElement _lock;
 
-        public LogicGraphView owner { get; private set; }
+        public BaseGraphView owner { get; private set; }
 
         /// <summary>
         /// 当前节点视图对应的节点
@@ -44,7 +44,7 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 节点编辑器数据
         /// </summary>
-        public NodeEditorData editorData { get; private set; }
+        internal NodeEditorData editorData { get; private set; }
 
         public override string title { get => m_titleLabel.text; set => m_titleLabel.text = value; }
 
@@ -103,10 +103,10 @@ namespace Game.Logic.Editor
 
 
 
-        public void Initialize(LogicGraphView owner, NodeEditorData editorData)
+        internal void Initialize(BaseGraphView owner, NodeEditorData editorData)
         {
             this.owner = owner;
-            this.target = editorData.node;
+            this.target = editorData.target;
             this.editorData = editorData;
             m_initTitle();
             this.title = editorData.Title;

@@ -78,7 +78,7 @@ namespace Game.Logic.Editor
         /// </summary>
         private static void m_buildGraphCache()
         {
-            TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom<LogicGraphView>();
+            TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom<BaseGraphView>();
 
             //循环查询逻辑图
             foreach (var item in types)
@@ -91,7 +91,7 @@ namespace Game.Logic.Editor
                     graphData.GraphType = graphAttr.GraphType;
                     graphData.ViewType = item;
                     graphData.GraphName = graphAttr.LogicName;
-                    graphData.GraphColor = graphAttr.Color.HasValue ? graphAttr.Color.Value : LogicUtils.GetGraphColor(item);
+                    graphData.GraphColor = graphAttr.Color.HasValue ? graphAttr.Color.Value : LogicUtils.GetColor(item);
                     LGCategoryList.Add(graphData);
                 }
             }

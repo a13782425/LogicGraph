@@ -42,15 +42,15 @@ namespace Game.Logic.Runtime
         #region 变量定义
 
         [SerializeReference]
-        private List<BaseVariable> _variables = new List<BaseVariable>();
+        private List<IVariable> _variables = new List<IVariable>();
         /// <summary>
         /// 当前逻辑图的所有变量
         /// </summary>
-        public List<BaseVariable> Variables => _variables;
+        public List<IVariable> Variables => _variables;
         /// <summary>
         /// 当前逻辑图的所有变量的另一种缓存
         /// </summary>
-        private Dictionary<string, BaseVariable> _varDic = new Dictionary<string, BaseVariable>();
+        private Dictionary<string, IVariable> _varDic = new Dictionary<string, IVariable>();
 
 #if UNITY_EDITOR
         [SerializeField]
@@ -73,7 +73,7 @@ namespace Game.Logic.Runtime
         /// </summary>
         /// <param name="varName">变量名</param>
         /// <returns></returns>
-        public BaseVariable GetVar(string varName) => _varDic.ContainsKey(varName) ? _varDic[varName] : null;
+        public IVariable GetVar(string varName) => _varDic.ContainsKey(varName) ? _varDic[varName] : null;
 
         /// <summary>
         /// 初始化

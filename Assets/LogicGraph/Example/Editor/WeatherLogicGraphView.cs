@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Game.Logic.Example.Editor
 {
     [LogicGraph("天气逻辑图", typeof(WeatherLogicGraph))]
-    public class WeatherLogicGraphView : LogicGraphView
+    public class WeatherLogicGraphView : BaseGraphView
     {
     }
 

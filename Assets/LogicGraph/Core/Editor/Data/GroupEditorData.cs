@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Game.Logic.Editor
 {
     [Serializable]
-    public sealed class GroupEditorData
+    internal sealed class GroupEditorData
     {
         [SerializeField]
         private string a = "New Group";

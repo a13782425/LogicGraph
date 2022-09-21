@@ -10,8 +10,8 @@ namespace Game.Logic.Editor
 {
     public sealed class EdgeConnectorListener : IEdgeConnectorListener
     {
-        public readonly LogicGraphView graphView;
-        public EdgeConnectorListener(LogicGraphView graphView)
+        public readonly BaseGraphView graphView;
+        public EdgeConnectorListener(BaseGraphView graphView)
         {
             this.graphView = graphView;
         }

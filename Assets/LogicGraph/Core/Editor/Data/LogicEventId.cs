@@ -17,5 +17,11 @@ namespace Game.Logic.Editor
         /// args : LogicAssetsChangedEventArgs
         /// </summary>
         public const int LOGIC_ASSETS_CHANGED = -10000;
+
+        /// <summary>
+        /// 变量变化
+        /// args : VarModifyEventArgs
+        /// </summary>
+        public const int VAR_MODIFY = -10100;
     }
 }

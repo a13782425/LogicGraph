@@ -9,10 +9,9 @@ using UnityEngine;
 namespace Game.Logic.Editor
 {
     [Serializable]
-    public sealed class NodeEditorData
+    internal sealed class NodeEditorData
     {
-        [NonSerialized]
-        public BaseLogicNode node;
+        public BaseLogicNode target { get; set; }
 
         [SerializeField]
         private int a;

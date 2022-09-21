@@ -13,7 +13,7 @@ using UnityEngine.UIElements;
 
 namespace Game.Logic.Editor
 {
-    public partial class LogicGraphView : GraphView
+    public partial class BaseGraphView : GraphView
     {
         private const string STYLE_PATH = "GraphView/LogicGraphView.uss";
 
@@ -26,7 +26,7 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 默认变量
         /// </summary>
-        public virtual List<BaseVariable> DefaultVars => new List<BaseVariable>();
+        public virtual List<IVariable> DefaultVars => new List<IVariable>();
         /// <summary>
         /// 当前逻辑图可以用的变量
         /// </summary>
@@ -42,7 +42,12 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 当前逻辑图的编辑器信息
         /// </summary>
-        public GraphEditorData editorData => owner.operateData.editorData;
+        internal GraphEditorData editorData => owner.operateData.editorData;
+        /// <summary>
+        /// 当前逻辑图
+        /// </summary>
+        public BaseLogicGraph target => owner.operateData.logicGraph;
+
         private EdgeConnectorListener _connectorListener;
         /// <summary>
         /// 端口连接监听器
@@ -52,15 +57,15 @@ namespace Game.Logic.Editor
         /// 当前逻辑图所属的窗口
         /// </summary>
         public LGWindow owner { get; private set; }
-        /// <summary>
-        /// 当前节点视图对应的节点
-        /// </summary>
-        public BaseLogicGraph target { get; private set; }
+
         /// <summary>
         /// 创建节点的搜索窗口
         /// </summary>
         private CreateNodeSearchWindow _createNodeSearch = null;
-
+        /// <summary>
+        /// 逻辑图变量面板
+        /// </summary>
+        private GraphVariableView _variableView;
         /// <summary>
         /// 节点唯一ID
         /// </summary>
@@ -74,9 +79,9 @@ namespace Game.Logic.Editor
     /// <summary>
     /// 初始化
     /// </summary>
-    partial class LogicGraphView
+    partial class BaseGraphView
     {
-        public LogicGraphView()
+        public BaseGraphView()
         {
             this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
             Input.imeCompositionMode = IMECompositionMode.On;
@@ -85,32 +90,40 @@ namespace Game.Logic.Editor
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new ClickSelector());
+            this.RegisterCallback<DragPerformEvent>(m_onDragPerformEvent);
+            this.RegisterCallback<DragUpdatedEvent>(m_onDragUpdatedEvent);
             _connectorListener = new EdgeConnectorListener(this);
+            _variableView = new GraphVariableView();
+            _variableView.InitializeGraphView(this);
+            this.Add(_variableView);
         }
 
-        public void Initialize(LGWindow lgWindow, BaseLogicGraph graph)
+        public void Initialize(LGWindow lgWindow)
         {
             owner = lgWindow;
-            target = graph;
             m_initNodeUniqueId();
-            editorData.NodeDatas.RemoveAll(a => graph.GetNode(a.OnlyId) == null);
+            editorData.NodeDatas.RemoveAll(a => target.GetNode(a.OnlyId) == null);
             target.Nodes.RemoveAll(a => editorData.NodeDatas.FirstOrDefault(b => a.OnlyId == b.OnlyId) == null);
             editorData.NodeDatas.ForEach(a =>
             {
-                a.node = graph.GetNode(a.OnlyId);
+                a.target = target.GetNode(a.OnlyId);
                 m_showNodeView(a);
             });
+            editorData.VarDatas.RemoveAll(a => target.GetVar(a.Name) == null);
+            target.Variables.RemoveAll(a => editorData.VarDatas.FirstOrDefault(b => a.Name == b.Name) == null);
+            editorData.VarDatas.ForEach(a => { a.target = target.GetVar(a.Name); });
             viewTransform.position = editorData.Pos;
             viewTransform.scale = editorData.Scale;
             graphViewChanged = m_onGraphViewChanged;
             viewTransformChanged = m_onViewTransformChanged;
+            _variableView.Show();
         }
     }
 
     #region 公共方法
 
     //公共方法
-    partial class LogicGraphView
+    partial class BaseGraphView
     {
         /// <summary>
         /// 添加一个节点
@@ -130,7 +143,7 @@ namespace Game.Logic.Editor
             {
             }
             NodeEditorData data = new NodeEditorData();
-            data.node = logicNode;
+            data.target = logicNode;
             data.Pos = pos;
             data.Title = nodeCategory.NodeName;
             m_setNodeId(logicNode);
@@ -140,7 +153,21 @@ namespace Game.Logic.Editor
             m_showNodeView(data);
             return logicNode;
         }
-
+        /// <summary>
+        /// 添加一个变量
+        /// </summary>
+        /// <param name="varName">变量名</param>
+        /// <param name="varType">变量类型</param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void AddVariable(string varName, Type varType)
+        {
+            var variable = Activator.CreateInstance(varType) as IVariable;
+            variable.Name = varName;
+            target.Variables.Add(variable);
+            var varData = new VarEditorData();
+            varData.Name = varName;
+            editorData.VarDatas.Add(varData);
+        }
         /// <summary>
         /// 显示
         /// </summary>
@@ -174,7 +201,7 @@ namespace Game.Logic.Editor
     #region 重写
 
     //重写
-    partial class LogicGraphView
+    partial class BaseGraphView
     {
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
@@ -228,7 +255,7 @@ namespace Game.Logic.Editor
     #region 回调
 
     //回调
-    partial class LogicGraphView
+    partial class BaseGraphView
     {
         private GraphViewChange m_onGraphViewChanged(GraphViewChange graphViewChange)
         {
@@ -280,6 +307,36 @@ namespace Game.Logic.Editor
 
             return true;
         }
+
+        private void m_onDragPerformEvent(DragPerformEvent evt)
+        {
+            var mousePos = (evt.currentTarget as VisualElement).ChangeCoordinatesTo(contentViewContainer, evt.localMousePosition);
+            var dragData = DragAndDrop.GetGenericData("DragSelection") as List<ISelectable>;
+            if (dragData != null)
+            {
+                var exposedFieldViews = dragData.OfType<GraphVariableFieldView>();
+                if (exposedFieldViews.Any())
+                {
+                    foreach (GraphVariableFieldView varFieldView in exposedFieldViews)
+                    {
+                        //VariableNode node = AddNode(typeof(VariableNode), mousePos) as VariableNode;
+                        //node.Title = varFieldView.param.Name;
+                        ////node.varId = varFieldView.param.Name;
+                        //node.varName = varFieldView.param.Name;
+                        //AddNodeView(node);
+                    }
+                }
+            }
+        }
+        private void m_onDragUpdatedEvent(DragUpdatedEvent evt)
+        {
+            List<ISelectable> dragData = DragAndDrop.GetGenericData("DragSelection") as List<ISelectable>;
+            bool dragging = false;
+            if (dragData != null)
+                dragging = dragData.OfType<GraphVariableFieldView>().Any();
+            if (dragging)
+                DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
+        }
     }
 
     #endregion
@@ -287,7 +344,7 @@ namespace Game.Logic.Editor
     #region 私有
 
     //私有
-    partial class LogicGraphView
+    partial class BaseGraphView
     {
         private void m_showNodeView(NodeEditorData editorData)
         {
@@ -358,7 +415,7 @@ namespace Game.Logic.Editor
     /// <summary>
     /// 背景网格
     /// </summary>
-    partial class LogicGraphView
+    partial class BaseGraphView
     {
         private class LGPanelViewGrid : GridBackground { }
         /// <summary>

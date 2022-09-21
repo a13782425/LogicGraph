@@ -146,7 +146,7 @@ namespace Game.Logic.Runtime
         /// </summary>
         /// <param name="varName">变量名</param>
         /// <returns></returns>
-        public BaseVariable GetVar(string varName) => logicGraph == null ? null : logicGraph.GetVar(varName);
+        public IVariable GetVar(string varName) => logicGraph == null ? null : logicGraph.GetVar(varName);
 
         #endregion
 

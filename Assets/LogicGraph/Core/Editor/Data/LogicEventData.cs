@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Game.Logic.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,5 +26,16 @@ namespace Game.Logic.Editor
         /// </summary>
         public List<string> addGraphs = new List<string>();
 
+    }
+
+    /// <summary>
+    /// 变量变化
+    /// </summary>
+    public sealed class VarModifyEventArgs
+    {
+        /// <summary>
+        /// 变化的变量
+        /// </summary>
+        public IVariable var;
     }
 }

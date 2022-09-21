@@ -121,11 +121,17 @@ namespace Game.Logic.Editor
         /// <param name="type"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        internal static Color GetGraphColor(Type type)
+        internal static Color GetColor(Type type)
         {
-            Random random = new Random(type.FullName.GetHashCode());
-            float h = (float)random.NextDouble();
-            return Color.HSVToRGB(h, 0.4f, 1);
+            int temp = type.FullName.GetHashCode();
+            int count = Math.Abs(temp) % 10;
+            Random random = new Random(temp);
+            float h = 0;
+            for (int i = 0; i < count; i++)
+            {
+                h = (float)random.NextDouble();
+            }
+            return Color.HSVToRGB(h, 0.3f, 1);
         }
 
         /// <summary>
@@ -169,6 +175,10 @@ namespace Game.Logic.Editor
             var editorData = graph.GetEditorData();
             editorData.LogicName = file;
             editorData.CreateTime = DateTime.Now;
+            var f = new FloatVariable();
+            f.Name = "test";
+            f.Value = 10;
+            graph.Variables.Add(f);
             graph.SetEditorData(editorData);
             AssetDatabase.CreateAsset(graph, path);
             AssetDatabase.Refresh();

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Game.Logic.Example.Editor
 {
     [LogicGraph("默认逻辑图", typeof(DefaultLogicGraph))]
-    public class DefaultLogicGraphView : LogicGraphView
+    public class DefaultLogicGraphView : BaseGraphView
     {
 
     }

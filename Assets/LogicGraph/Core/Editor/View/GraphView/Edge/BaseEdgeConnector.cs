@@ -16,7 +16,7 @@ namespace Game.Logic.Editor
         public override EdgeDragHelper edgeDragHelper => dragHelper;
         private bool active;
         private Vector2 mouseDownPosition;
-        private LogicGraphView graphView;
+        private BaseGraphView graphView;
         internal const float k_ConnectionDistanceTreshold = 10f;
         public BaseEdgeConnector(IEdgeConnectorListener listener) : base()
         {
