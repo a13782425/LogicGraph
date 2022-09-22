@@ -26,8 +26,8 @@ namespace Game.Logic.Runtime
         public List<int> Childs => _childs;
 
         [SerializeField]
-        private List<VarEdgeData> _varEdges = new List<VarEdgeData>();
-        public List<VarEdgeData> VarEdges => _varEdges;
+        private List<VarMappingData> _varMappings = new List<VarMappingData>();
+        public List<VarMappingData> VarMappings => _varMappings;
 
         /// <summary>
         /// 当前节点所在的逻辑图
@@ -60,26 +60,44 @@ namespace Game.Logic.Runtime
             return true;
         }
 
-
-
         /// <summary>
         /// 拉去数据
         /// </summary>
         public virtual void PullData()
         {
-
-            foreach (var item in VarEdges)
+            foreach (var item in VarMappings)
             {
                 if (item.isInput)
                 {
-
+                    if (_cacheVarField.ContainsKey(item.fieldName))
+                    {
+                        FieldInfo field = _cacheVarField[item.fieldName];
+                        IVariable val = GetVar(item.varName);
+                        if (val != null)
+                            field.SetValue(this, val.Value);
+                    }
                 }
             }
         }
         /// <summary>
         /// 推送数据
         /// </summary>
-        public virtual void PushData() { }
+        public virtual void PushData()
+        {
+            foreach (var item in VarMappings)
+            {
+                if (!item.isInput)
+                {
+                    if (_cacheVarField.ContainsKey(item.fieldName))
+                    {
+                        FieldInfo field = _cacheVarField[item.fieldName];
+                        IVariable val = GetVar(item.varName);
+                        if (val != null)
+                            val.Value = field.GetValue(this);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// 节点初始化的时候调用
@@ -125,7 +143,8 @@ namespace Game.Logic.Runtime
         /// <returns></returns>
         public T GetVarValue<T>(string varName)
         {
-            return (T)GetVarValue(varName, typeof(T));
+            object value = GetVarValue(varName);
+            return value == null ? default(T) : (T)value;
         }
         /// <summary>
         /// 获取当前图变量的值
@@ -133,11 +152,11 @@ namespace Game.Logic.Runtime
         /// <param name="varName">变量名</param>
         /// <param name="type">值的类型</param>
         /// <returns></returns>
-        public object GetVarValue(string varName, Type type)
+        public object GetVarValue(string varName)
         {
             var curVar = GetVar(varName);
             if (curVar == null)
-                return Activator.CreateInstance(type);
+                return null;
             return curVar.Value;
         }
 

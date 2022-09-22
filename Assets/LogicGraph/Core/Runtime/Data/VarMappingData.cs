@@ -10,7 +10,7 @@ namespace Game.Logic.Runtime
     /// 变量的连线数据
     /// </summary>
     [Serializable]
-    public class VarEdgeData
+    public class VarMappingData
     {
         /// <summary>
         /// 是否是输入

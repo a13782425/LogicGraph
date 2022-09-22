@@ -39,6 +39,7 @@ namespace Game.Logic.Editor
             this.UpdateViewTransform(pos, Vector3.one);
             this.RegisterCallback<KeyUpEvent>(m_onKeyDown);
             onwer.toolbar.Add(new OverviewGraphToolBar());
+            this.StretchToParentSize();
         }
 
         /// <summary>

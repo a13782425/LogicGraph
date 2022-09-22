@@ -23,5 +23,16 @@ namespace Game.Logic.Editor
         /// args : VarModifyEventArgs
         /// </summary>
         public const int VAR_MODIFY = -10100;
+        /// <summary>
+        /// 增加一个变量
+        /// args : VarAddEventArgs
+        /// </summary>
+        public const int VAR_ADD = -10200;
+        /// <summary>
+        /// 删除一个变量
+        /// args : VarDelEventArgs
+        /// </summary>
+        public const int VAR_DEL = -10300;
+
     }
 }

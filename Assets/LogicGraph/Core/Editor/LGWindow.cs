@@ -34,6 +34,7 @@ namespace Game.Logic.Editor
 
         private VisualElement _leftContent;
         private VisualElement _rightContent;
+        private VisualElement _graphContent;
 
         private FlyoutMenuView _menuView;
 
@@ -51,7 +52,6 @@ namespace Game.Logic.Editor
         internal OverviewGraphView overviewView { get; private set; }
 
         private BaseGraphView graphView { get; set; }
-
 
         /// <summary>
         /// 打开窗口
@@ -86,8 +86,6 @@ namespace Game.Logic.Editor
             }
             return window;
         }
-
-
 
         /// <summary>
         /// 显示单个逻辑图
@@ -124,7 +122,6 @@ namespace Game.Logic.Editor
                 graphButton.Hide();
                 saveButton.Hide();
                 m_onOverviewClick(null);
-
             }
         }
         /// <summary>
@@ -195,7 +192,7 @@ namespace Game.Logic.Editor
                     graphView.Initialize(this);
                     graphButton.Show();
                     saveButton.Show();
-                    _rightContent.Add(graphView);
+                    _graphContent.Add(graphView);
                     m_onGraphClick(null);
                 }
             }
@@ -235,6 +232,9 @@ namespace Game.Logic.Editor
             _rightContent.name = "right";
             toolbar = new ToolbarView();
             _rightContent.Add(toolbar);
+            _graphContent = new VisualElement();
+            _graphContent.name = "graphContent";
+            _rightContent.Add(_graphContent);
             this.contentContainer.Add(_leftContent);
             this.contentContainer.Add(_rightContent);
             _menuView = new FlyoutMenuView(this);
@@ -243,7 +243,7 @@ namespace Game.Logic.Editor
             m_initMenuBtns();
             //初始化总览图
             overviewView = new OverviewGraphView(this);
-            _rightContent.Add(overviewView);
+            _graphContent.Add(overviewView);
         }
 
         /// <summary>

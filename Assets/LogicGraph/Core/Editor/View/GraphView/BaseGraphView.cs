@@ -94,8 +94,9 @@ namespace Game.Logic.Editor
             this.RegisterCallback<DragUpdatedEvent>(m_onDragUpdatedEvent);
             _connectorListener = new EdgeConnectorListener(this);
             _variableView = new GraphVariableView();
-            _variableView.InitializeGraphView(this);
             this.Add(_variableView);
+            //扩展大小与父对象相同
+            this.StretchToParentSize();
         }
 
         public void Initialize(LGWindow lgWindow)
@@ -116,6 +117,7 @@ namespace Game.Logic.Editor
             viewTransform.scale = editorData.Scale;
             graphViewChanged = m_onGraphViewChanged;
             viewTransformChanged = m_onViewTransformChanged;
+            _variableView.InitializeGraphView(this);
             _variableView.Show();
         }
     }
@@ -165,8 +167,10 @@ namespace Game.Logic.Editor
             variable.Name = varName;
             target.Variables.Add(variable);
             var varData = new VarEditorData();
+            varData.target = variable;
             varData.Name = varName;
             editorData.VarDatas.Add(varData);
+            this.owner.OnEvent(LogicEventId.VAR_ADD, new VarAddEventArgs() { var = variable });
         }
         /// <summary>
         /// 显示
@@ -433,8 +437,8 @@ namespace Game.Logic.Editor
             contentZoomer.maxScale = 2f;
             contentZoomer.scaleStep = 0.05f;
             this.AddManipulator(contentZoomer);
-            ////扩展大小与父对象相同
-            //this.StretchToParentSize();
+            //扩展大小与父对象相同
+            this.StretchToParentSize();
         }
     }
 }

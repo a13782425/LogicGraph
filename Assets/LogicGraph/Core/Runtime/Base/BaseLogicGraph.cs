@@ -80,6 +80,8 @@ namespace Game.Logic.Runtime
         /// </summary>
         public virtual void Init()
         {
+            _varDic.Clear();
+            _nodeDic.Clear();
             foreach (var item in _variables)
             {
                 _varDic.Add(item.Name, item);

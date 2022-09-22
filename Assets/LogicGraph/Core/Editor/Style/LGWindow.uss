@@ -5,7 +5,9 @@
 }
 #LGWindow > #contentContainer > #left{
 }
-#LGWindow > #contentContainer > #right{
+#LGWindow > #contentContainer > #right,
+#LGWindow > #contentContainer > #right > #graphContent
+{
 	flex-grow: 1;
 	flex-direction: column;
 }

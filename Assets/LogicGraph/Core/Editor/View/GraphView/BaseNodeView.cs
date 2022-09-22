@@ -128,6 +128,12 @@ namespace Game.Logic.Editor
             port.Initialize(this, null, title);
             return port;
         }
+        protected NodePort ShowPort(string title, FieldInfo info, PortDirEnum dir)
+        {
+            var port = NodePort.CreatePort(dir, owner.ConnectorListener);
+            port.Initialize(this, info, title);
+            return port;
+        }
     }
 
     #endregion
@@ -147,13 +153,13 @@ namespace Game.Logic.Editor
         {
             var fields = this.target.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
 
-            foreach (var item in fields)
+            foreach (FieldInfo item in fields)
             {
                 VarInputAttribute inputAttribute = item.GetCustomAttribute<VarInputAttribute>();
                 VarOutputAttribute outputAttribute = item.GetCustomAttribute<VarOutputAttribute>();
                 if (inputAttribute != null)
                 {
-                    this.AddUI(ShowPort(inputAttribute.name, PortDirEnum.In));
+                    this.AddUI(ShowPort(inputAttribute.name, item, PortDirEnum.In));
                 }
                 //VisualElement nodeElement = Activator.CreateInstance(NodeElementUtils.ElementMapping[item.FieldType]) as VisualElement;
                 //this.AddUI(nodeElement);

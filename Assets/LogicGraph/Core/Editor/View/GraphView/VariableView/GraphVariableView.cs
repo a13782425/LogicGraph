@@ -46,14 +46,17 @@ namespace Game.Logic.Editor
             this.Q<Button>("addButton").clicked += m_onAddClicked;
             this.Q("subTitleLabel").RemoveFromHierarchy();
             title = "逻辑图变量";
+            this.Hide();
         }
 
         public void InitializeGraphView(BaseGraphView graphView)
         {
             this.onwer = graphView;
             SetPosition(new Rect(new Vector2(0, 20), new Vector2(180, 320)));
-            //graphView.onVariableModify += m_updateVariableList;
+            this.onwer.owner.AddListener(LogicEventId.VAR_ADD, m_onVarRefresh);
+            this.onwer.owner.AddListener(LogicEventId.VAR_DEL, m_onVarRefresh);
         }
+
         public override void AddToSelection(ISelectable selectable)
         {
             if (onwer.selection.Count > 0)
@@ -87,6 +90,19 @@ namespace Game.Logic.Editor
 
             parameterType.ShowAsContext();
         }
+
+
+        /// <summary>
+        /// 变量刷新
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private bool m_onVarRefresh(object args)
+        {
+            m_updateVariableList();
+            return true;
+        }
+
         private void m_updateVariableList()
         {
             content.Clear();

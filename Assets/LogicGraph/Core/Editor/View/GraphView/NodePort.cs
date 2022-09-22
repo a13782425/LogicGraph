@@ -27,6 +27,11 @@ namespace Game.Logic.Editor
         {
             this.nodeView = nodeView;
             this.portName = title;
+            if (fieldInfo != null)
+            {
+                this.AddToClassList(LogicUtils.PORT_CUBE);
+                this.portColor = LogicUtils.GetColor(fieldInfo.FieldType);
+            }
         }
         protected override void ExecuteDefaultAction(EventBase evt)
         {
@@ -43,6 +48,6 @@ namespace Game.Logic.Editor
             return port;
         }
 
-      
+
     }
 }

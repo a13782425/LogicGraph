@@ -38,4 +38,25 @@ namespace Game.Logic.Editor
         /// </summary>
         public IVariable var;
     }
+
+    /// <summary>
+    /// 新增变量
+    /// </summary>
+    public sealed class VarAddEventArgs
+    {
+        /// <summary>
+        /// 新增变量
+        /// </summary>
+        public IVariable var;
+    }
+    /// <summary>
+    /// 删除变量
+    /// </summary>
+    public sealed class VarDelEventArgs
+    {
+        /// <summary>
+        /// 删除的变量
+        /// </summary>
+        public IVariable var;
+    }
 }
