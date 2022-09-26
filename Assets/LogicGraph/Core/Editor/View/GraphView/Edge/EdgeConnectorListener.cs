@@ -23,8 +23,10 @@ namespace Game.Logic.Editor
                 return;
             //bool wasOnTheSamePort = false;
             graphView.AddElement(edgeView);
-            Port output = edgeView.output;
-            Port input = edgeView.input;
+            NodePort output = edgeView.output as NodePort;
+            NodePort input = edgeView.input as NodePort;
+            input.AddPort(output);
+            output.AddPort(input);
             input.Connect(edgeView);
             output.Connect(edgeView);
         }

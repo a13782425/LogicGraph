@@ -1,0 +1,21 @@
+﻿
+.varNode{
+    min-width: 64px;
+    width: auto;
+}
+
+.varNode #node-border{
+    border-radius: 16px;
+}
+.varNode #selection-border{
+    border-radius: 18px;
+}
+.varNode #title{
+    -unity-text-align: middle-center;
+    align-items: center;
+}
+.varNode #title > Label{
+    -unity-text-align: middle-center;
+    margin-left: 0px;
+    flex-grow: 1;
+}

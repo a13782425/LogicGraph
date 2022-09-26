@@ -92,6 +92,7 @@ namespace Game.Logic.Editor
             this.AddManipulator(new ClickSelector());
             this.RegisterCallback<DragPerformEvent>(m_onDragPerformEvent);
             this.RegisterCallback<DragUpdatedEvent>(m_onDragUpdatedEvent);
+            this.RegisterCallback<KeyDownEvent>(m_onKeyDownEvent);
             _connectorListener = new EdgeConnectorListener(this);
             _variableView = new GraphVariableView();
             this.Add(_variableView);
@@ -119,6 +120,12 @@ namespace Game.Logic.Editor
             viewTransformChanged = m_onViewTransformChanged;
             _variableView.InitializeGraphView(this);
             _variableView.Show();
+            editorData.VarNodeDatas.ForEach(a =>
+            {
+                a.owner = editorData.VarDatas.FirstOrDefault(c => a.Name == c.Name);
+                VarNodeView varNodeView = new VarNodeView();
+                varNodeView.Initialize(this, a);
+            });
         }
     }
 
@@ -276,6 +283,35 @@ namespace Game.Logic.Editor
         /// <param name="evt"></param>
         private void m_onKeyDownEvent(KeyDownEvent evt)
         {
+            if (evt.ctrlKey)
+            {
+                switch (evt.keyCode)
+                {
+                    case KeyCode.S:
+                        {
+                            //保存
+                            this.Save();
+                            evt.StopPropagation();
+                        }
+                        break;
+                    //case KeyCode.Z:
+                    //    {
+                    //        //撤销
+                    //        _undo.PopUndo();
+                    //        evt.StopPropagation();
+                    //    }
+                    //    break;
+                    //case KeyCode.D:
+                    //    {
+                    //        //复制
+                    //        op_Duplicate(evt);
+                    //        evt.StopPropagation();
+                    //    }
+                    //    break;
+                    default:
+                        break;
+                }
+            }
         }
         /// <summary>
         /// 节点搜索窗
@@ -323,6 +359,14 @@ namespace Game.Logic.Editor
                 {
                     foreach (GraphVariableFieldView varFieldView in exposedFieldViews)
                     {
+                        Debug.LogError(varFieldView.varData.Name);
+                        VarNodeView varNodeView = new VarNodeView();
+                        VarNodeEditorData varNodeData = new VarNodeEditorData();
+                        varNodeData.owner = varFieldView.varData;
+                        varNodeData.Pos = mousePos;
+                        varNodeData.Name = varFieldView.varData.Name;
+                        editorData.VarNodeDatas.Add(varNodeData);
+                        varNodeView.Initialize(this, varNodeData);
                         //VariableNode node = AddNode(typeof(VariableNode), mousePos) as VariableNode;
                         //node.Title = varFieldView.param.Name;
                         ////node.varId = varFieldView.param.Name;
@@ -360,6 +404,25 @@ namespace Game.Logic.Editor
         }
 
         /// <summary>
+        /// 获取节点唯一ID
+        /// </summary>
+        /// <returns></returns>
+        private int m_getId()
+        {
+            int id = 0;
+            if (_unusedIds.Count > 0)
+            {
+                id = _unusedIds.Dequeue();
+            }
+            else
+            {
+                id = _nodeUniqueId;
+                _nodeUniqueId++;
+            }
+            return id;
+        }
+
+        /// <summary>
         /// 设置唯一Id
         /// </summary>
         /// <param name="node"></param>
@@ -369,17 +432,7 @@ namespace Game.Logic.Editor
 
             if (field != null)
             {
-                int id = 0;
-                if (_unusedIds.Count > 0)
-                {
-                    id = _unusedIds.Dequeue();
-                }
-                else
-                {
-                    id = _nodeUniqueId;
-                    _nodeUniqueId++;
-                }
-                field.SetValue(node, id);
+                field.SetValue(node, m_getId());
             }
             else
             {

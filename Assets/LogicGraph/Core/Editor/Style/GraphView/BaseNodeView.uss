@@ -28,6 +28,11 @@
 	min-width: 100px;
 }
 
+#title{
+    border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+
 #title > .lock{
     background-image: resource("node_lock");
 }

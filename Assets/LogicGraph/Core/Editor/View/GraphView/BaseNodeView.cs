@@ -99,9 +99,8 @@ namespace Game.Logic.Editor
             _nodeContent = new VisualElement();
             _nodeContent.name = "nodeContent";
             this.topContainer.parent.Add(_nodeContent);
+            this.Q("node-border").style.overflow = Overflow.Visible;
         }
-
-
 
         internal void Initialize(BaseGraphView owner, NodeEditorData editorData)
         {

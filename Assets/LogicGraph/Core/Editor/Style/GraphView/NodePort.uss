@@ -70,13 +70,14 @@ NodePort > #connector > #cap:hover
     height: 20px;
     position: absolute;
     right:100%;
+    /*--layer: -100;*/
 }
 NodePort > ColorField{
     width: 60px;
 }
 NodePort > IntegerField,FloatField,DoubleField,{
     width: 45px;
-}
+}/*
 NodePort > Toggle{
     width: 16px;
 }
@@ -88,7 +89,7 @@ NodePort > Vector3Field{
 }
 NodePort > Vector4Field{
     width: 200px;
-}
+}*/
 .Port_Input {
 	--port-color: #0080FF;
 }

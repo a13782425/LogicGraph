@@ -112,6 +112,19 @@ namespace Game.Logic.Editor
         /// </summary>
         [SerializeField]
         private List<VarEditorData> j = new List<VarEditorData>();
+        /// <summary>
+        /// 当前图的变量编辑器数据
+        /// </summary>
         public List<VarEditorData> VarDatas => j;
+
+        /// <summary>
+        /// 当前图的变量节点数据
+        /// </summary>
+        [SerializeField]
+        private List<VarNodeEditorData> k = new List<VarNodeEditorData>();
+        /// <summary>
+        /// 当前图的变量节点数据
+        /// </summary>
+        public List<VarNodeEditorData> VarNodeDatas => k;
     }
 }
