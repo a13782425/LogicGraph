@@ -23,6 +23,10 @@ namespace Game.Logic.Editor
         public FieldInfo fieldInfo { get; private set; }
 
         /// <summary>
+        /// 变量视图
+        /// </summary>
+        private VisualElement varElement = null;
+        /// <summary>
         /// 添加一个端口
         /// </summary>
         public event Action<NodePort> onAddPort;
@@ -66,73 +70,85 @@ namespace Game.Logic.Editor
                 fieldInfo?.SetValue(nodeView.target, value);
             }
             Type type = this.fieldInfo.FieldType;
-            if (type == typeof(int))
+            if (NodeElementUtils.InputElementMapping.ContainsKey(type))
             {
-                IntegerField element = new IntegerField();
-                element.RegisterCallback<ChangeEvent<int>>(e => onValueChange(e.newValue));
-                element.value = (int)fieldInfo.GetValue(nodeView.target);
-                return element;
-            }
-            else if (type == typeof(float))
-            {
-                FloatField element = new FloatField();
-                element.RegisterCallback<ChangeEvent<float>>(e => onValueChange(e.newValue));
-                element.value = (float)fieldInfo.GetValue(nodeView.target);
-                return element;
-            }
-            else if (type == typeof(string))
-            {
-                TextField element = new TextField();
-                element.RegisterCallback<ChangeEvent<string>>(e => onValueChange(e.newValue));
-                element.value = (string)fieldInfo.GetValue(nodeView.target);
-                return element;
-            }
-            else if (type == typeof(double))
-            {
-                DoubleField element = new DoubleField();
-                element.RegisterCallback<ChangeEvent<double>>(e => onValueChange(e.newValue));
-                element.value = (int)fieldInfo.GetValue(nodeView.target);
-                return element;
-            }
-            else if (type == typeof(bool))
-            {
-                Toggle element = new Toggle();
-                element.RegisterCallback<ChangeEvent<bool>>(e => onValueChange(e.newValue));
-                element.value = (bool)fieldInfo.GetValue(nodeView.target);
-                return element;
-            }
-            else if (type == typeof(Vector2))
-            {
-                Vector2Field element = new Vector2Field();
-                element.RegisterCallback<ChangeEvent<Vector2>>(e => onValueChange(e.newValue));
-                element.value = (Vector2)fieldInfo.GetValue(nodeView.target);
-                return element;
-            }
-            else if (type == typeof(Vector3))
-            {
-                Vector3Field element = new Vector3Field();
-                element.RegisterCallback<ChangeEvent<Vector3>>(e => onValueChange(e.newValue));
-                element.value = (Vector3)fieldInfo.GetValue(nodeView.target);
-                return element;
-            }
-            else if (type == typeof(Vector4))
-            {
-                Vector4Field element = new Vector4Field();
-                element.RegisterCallback<ChangeEvent<Vector4>>(e => onValueChange(e.newValue));
-                element.value = (Vector4)fieldInfo.GetValue(nodeView.target);
-                return element;
-            }
-            else if (type == typeof(Color))
-            {
-                ColorField element = new ColorField();
-                element.RegisterCallback<ChangeEvent<Color>>(e => onValueChange(e.newValue));
-                element.value = (Color)fieldInfo.GetValue(nodeView.target);
-                return element;
+                Type elementType = NodeElementUtils.InputElementMapping[type];
+                IInputElement visual = Activator.CreateInstance(elementType) as IInputElement;
+                visual.value = fieldInfo.GetValue(nodeView.target);
+                visual.onValueChanged += onValueChange;
+                return visual as VisualElement;
             }
             else
             {
                 throw new NotSupportedException($"暂不支持:{type.Name}类型,请联系开发者");
             }
+            //if (type == typeof(int))
+            //{
+            //    IntegerField element = new IntegerField();
+            //    element.RegisterCallback<ChangeEvent<int>>(e => onValueChange(e.newValue));
+            //    element.value = (int)fieldInfo.GetValue(nodeView.target);
+            //    return element;
+            //}
+            //else if (type == typeof(float))
+            //{
+            //    FloatField element = new FloatField();
+            //    element.RegisterCallback<ChangeEvent<float>>(e => onValueChange(e.newValue));
+            //    element.value = (float)fieldInfo.GetValue(nodeView.target);
+            //    return element;
+            //}
+            //else if (type == typeof(string))
+            //{
+            //    TextField element = new TextField();
+            //    element.RegisterCallback<ChangeEvent<string>>(e => onValueChange(e.newValue));
+            //    element.value = (string)fieldInfo.GetValue(nodeView.target);
+            //    return element;
+            //}
+            //else if (type == typeof(double))
+            //{
+            //    DoubleField element = new DoubleField();
+            //    element.RegisterCallback<ChangeEvent<double>>(e => onValueChange(e.newValue));
+            //    element.value = (int)fieldInfo.GetValue(nodeView.target);
+            //    return element;
+            //}
+            //else if (type == typeof(bool))
+            //{
+            //    Toggle element = new Toggle();
+            //    element.RegisterCallback<ChangeEvent<bool>>(e => onValueChange(e.newValue));
+            //    element.value = (bool)fieldInfo.GetValue(nodeView.target);
+            //    return element;
+            //}
+            //else if (type == typeof(Vector2))
+            //{
+            //    Vector2Field element = new Vector2Field();
+            //    element.RegisterCallback<ChangeEvent<Vector2>>(e => onValueChange(e.newValue));
+            //    element.value = (Vector2)fieldInfo.GetValue(nodeView.target);
+            //    return element;
+            //}
+            //else if (type == typeof(Vector3))
+            //{
+            //    Vector3Field element = new Vector3Field();
+            //    element.RegisterCallback<ChangeEvent<Vector3>>(e => onValueChange(e.newValue));
+            //    element.value = (Vector3)fieldInfo.GetValue(nodeView.target);
+            //    return element;
+            //}
+            //else if (type == typeof(Vector4))
+            //{
+            //    Vector4Field element = new Vector4Field();
+            //    element.RegisterCallback<ChangeEvent<Vector4>>(e => onValueChange(e.newValue));
+            //    element.value = (Vector4)fieldInfo.GetValue(nodeView.target);
+            //    return element;
+            //}
+            //else if (type == typeof(Color))
+            //{
+            //    ColorField element = new ColorField();
+            //    element.RegisterCallback<ChangeEvent<Color>>(e => onValueChange(e.newValue));
+            //    element.value = (Color)fieldInfo.GetValue(nodeView.target);
+            //    return element;
+            //}
+            //else
+            //{
+            //    throw new NotSupportedException($"暂不支持:{type.Name}类型,请联系开发者");
+            //}
         }
         protected override void ExecuteDefaultAction(EventBase evt)
         {

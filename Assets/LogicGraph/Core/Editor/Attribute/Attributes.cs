@@ -119,11 +119,11 @@ namespace Game.Logic.Editor
     }
 
     /// <summary>
-    /// 节点所需要的 类型和组件的映射
+    /// 输入所需要的 类型和组件的映射
     /// 返回类型(Dic<Type:字段类型,Type:组件类型>)
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public sealed class NodeElementMappingAttribute : Attribute
+    public sealed class InputElementMappingAttribute : Attribute
     {
     }
 }

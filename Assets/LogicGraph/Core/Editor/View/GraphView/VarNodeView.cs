@@ -41,7 +41,6 @@ namespace Game.Logic.Editor
             this.owner = owner;
             this.target = editorData.owner.target;
             this.editorData = editorData;
-            this.owner.AddElement(this);
             m_initNodeView();
             Input.portColor = LogicUtils.GetColor(this.target.GetValueType());
             Input.onAddPort += Input_onAddPort;

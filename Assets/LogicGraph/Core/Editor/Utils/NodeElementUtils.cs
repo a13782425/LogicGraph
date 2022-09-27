@@ -14,13 +14,13 @@ namespace Game.Logic.Editor
     public static class NodeElementUtils
     {
 
-        public static Dictionary<Type, Type> ElementMapping = new Dictionary<Type, Type>()
+        public static Dictionary<Type, Type> InputElementMapping = new Dictionary<Type, Type>()
         {
-            { typeof(string), typeof(TextField) },
+            { typeof(string), typeof(NodeTextField) },
             { typeof(int), typeof(IntegerField)},
             { typeof(bool), typeof(Toggle)},
             { typeof(double), typeof(DoubleField)},
-            { typeof(float), typeof(FloatField)},
+            { typeof(float), typeof(NodeFloatField)},
             { typeof(Vector2), typeof(Vector2Field)},
             { typeof(Vector3), typeof(Vector3Field)},
             { typeof(Vector4), typeof(Vector4Field)},
@@ -32,7 +32,7 @@ namespace Game.Logic.Editor
 
         static NodeElementUtils()
         {
-            var methodInfos = TypeCache.GetMethodsWithAttribute<NodeElementMappingAttribute>().ToList();
+            var methodInfos = TypeCache.GetMethodsWithAttribute<InputElementMappingAttribute>().ToList();
             var retType = typeof(Dictionary<Type, Type>);
             foreach (var methodInfo in methodInfos)
             {
@@ -49,24 +49,31 @@ namespace Game.Logic.Editor
                 Dictionary<Type, Type> dic = methodInfo.Invoke(null, null) as Dictionary<Type, Type>;
                 foreach (var item in dic)
                 {
-                    if (ElementMapping.ContainsKey(item.Key))
+                    if (!typeof(IInputElement).IsAssignableFrom(item.Value))
                     {
-                        ElementMapping[item.Key] = item.Value;
+                        continue;
+                    }
+                    if (InputElementMapping.ContainsKey(item.Key))
+                    {
+                        InputElementMapping[item.Key] = item.Value;
                     }
                     else
                     {
-                        ElementMapping.Add(item.Key, item.Value);
+                        InputElementMapping.Add(item.Key, item.Value);
                     }
                 }
             }
             Debug.LogError(methodInfos.Count);
         }
+
+
+
         /// <summary>
         /// 设置字段组件的默认样式
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="element"></param>
-        public static void SetBaseFieldStyle<T>(BaseField<T> element)
+        public static void SetBaseFieldStyle<T>(this BaseField<T> element)
         {
             element.style.minHeight = 24;
             element.style.marginTop = 2;

@@ -123,8 +123,7 @@ namespace Game.Logic.Editor
             editorData.VarNodeDatas.ForEach(a =>
             {
                 a.owner = editorData.VarDatas.FirstOrDefault(c => a.Name == c.Name);
-                VarNodeView varNodeView = new VarNodeView();
-                varNodeView.Initialize(this, a);
+                m_showVarNodeView(a);
             });
         }
     }
@@ -360,18 +359,12 @@ namespace Game.Logic.Editor
                     foreach (GraphVariableFieldView varFieldView in exposedFieldViews)
                     {
                         Debug.LogError(varFieldView.varData.Name);
-                        VarNodeView varNodeView = new VarNodeView();
                         VarNodeEditorData varNodeData = new VarNodeEditorData();
                         varNodeData.owner = varFieldView.varData;
                         varNodeData.Pos = mousePos;
                         varNodeData.Name = varFieldView.varData.Name;
                         editorData.VarNodeDatas.Add(varNodeData);
-                        varNodeView.Initialize(this, varNodeData);
-                        //VariableNode node = AddNode(typeof(VariableNode), mousePos) as VariableNode;
-                        //node.Title = varFieldView.param.Name;
-                        ////node.varId = varFieldView.param.Name;
-                        //node.varName = varFieldView.param.Name;
-                        //AddNodeView(node);
+                        m_showVarNodeView(varNodeData);
                     }
                 }
             }
@@ -396,12 +389,24 @@ namespace Game.Logic.Editor
     {
         private void m_showNodeView(NodeEditorData editorData)
         {
-            BaseNodeView nodeView = new BaseNodeView();
+            LogicNodeCategory nodeCategory = categoryInfo.GetNodeCategory(editorData.target.GetType());
+            BaseNodeView nodeView = Activator.CreateInstance(nodeCategory.ViewType) as BaseNodeView;
             this.AddElement(nodeView);
             nodeView.Initialize(this, editorData);
             nodeView.ShowUI();
             nodeView.SetPosition(new Rect(editorData.Pos, Vector2.one));
         }
+
+        /// <summary>
+        /// 添加变量视图
+        /// </summary>
+        private void m_showVarNodeView(VarNodeEditorData varNodeEditor)
+        {
+            VarNodeView nodeView = new VarNodeView();
+            this.AddElement(nodeView);
+            nodeView.Initialize(this, varNodeEditor);
+        }
+
 
         /// <summary>
         /// 获取节点唯一ID

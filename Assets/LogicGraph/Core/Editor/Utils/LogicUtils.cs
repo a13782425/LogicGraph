@@ -223,6 +223,7 @@ namespace Game.Logic.Editor
         [MenuItem("Framework/逻辑图/打开逻辑图", priority = 99)]
         private static void OpenLogicWindow()
         {
+            Debug.LogError(NodeElementUtils.InputElementMapping.Count);
             LGWindow.OpenWindow();
         }
         [OnOpenAsset(0)]

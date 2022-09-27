@@ -72,24 +72,27 @@ NodePort > #connector > #cap:hover
     right:100%;
     /*--layer: -100;*/
 }
-NodePort > ColorField{
-    width: 60px;
+NodePort > .unity-text-field{
+    min-width: 48px;
 }
-NodePort > IntegerField,FloatField,DoubleField,{
-    width: 45px;
-}/*
+NodePort > .unity-color-field{
+    min-width: 60px;
+}
+NodePort > .unity-integer-field,.unity-float-field,.unity-double-field{
+     min-width: 24px;
+}
 NodePort > Toggle{
-    width: 16px;
+    min-width: 16px;
 }
 NodePort > Vector2Field{
-    width: 100px;
+    min-width: 100px;
 }
 NodePort > Vector3Field{
-    width: 150px;
+    min-width: 150px;
 }
 NodePort > Vector4Field{
-    width: 200px;
-}*/
+    min-width: 200px;
+}
 .Port_Input {
 	--port-color: #0080FF;
 }
