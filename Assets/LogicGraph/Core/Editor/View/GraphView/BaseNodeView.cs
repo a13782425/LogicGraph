@@ -123,14 +123,14 @@ namespace Game.Logic.Editor
         //}
         protected NodePort ShowPort(string title, PortDirEnum dir)
         {
-            var port = NodePort.CreatePort(dir, owner.ConnectorListener);
-            port.Initialize(this, null, title);
+            var port = NodePort.CreatePort(owner, this, dir, owner.ConnectorListener);
+            port.portName = title;
             return port;
         }
         protected NodePort ShowPort(string title, FieldInfo info, PortDirEnum dir)
         {
-            var port = NodePort.CreatePort(dir, owner.ConnectorListener);
-            port.Initialize(this, info, title);
+            var port = NodePort.CreatePort(owner, this, info, dir, owner.ConnectorListener);
+            port.portName = title;
             return port;
         }
     }
@@ -154,11 +154,15 @@ namespace Game.Logic.Editor
 
             foreach (FieldInfo item in fields)
             {
-                VarInputAttribute inputAttribute = item.GetCustomAttribute<VarInputAttribute>();
-                VarOutputAttribute outputAttribute = item.GetCustomAttribute<VarOutputAttribute>();
+                InputAttribute inputAttribute = item.GetCustomAttribute<InputAttribute>();
+                OutputAttribute outputAttribute = item.GetCustomAttribute<OutputAttribute>();
                 if (inputAttribute != null)
                 {
                     this.AddUI(ShowPort(inputAttribute.name, item, PortDirEnum.In));
+                }
+                if (outputAttribute != null)
+                {
+                    this.AddUI(ShowPort(outputAttribute.name, item, PortDirEnum.Out));
                 }
                 //VisualElement nodeElement = Activator.CreateInstance(NodeElementUtils.ElementMapping[item.FieldType]) as VisualElement;
                 //this.AddUI(nodeElement);

@@ -31,6 +31,36 @@ namespace Game.Logic.Runtime
             this.name = name;
         }
     }
+    /// <summary>
+    /// 入端口
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public sealed class InputAttribute : Attribute
+    {
+        /// <summary>
+        /// 端口显示的名字
+        /// </summary>
+        public string name;
+        public InputAttribute(string name = null)
+        {
+            this.name = name;
+        }
+    }
+    /// <summary>
+    /// 出端口
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public sealed class OutputAttribute : Attribute
+    {
+        /// <summary>
+        /// 端口显示的名字
+        /// </summary>
+        public string name;
+        public OutputAttribute(string name = null)
+        {
+            this.name = name;
+        }
+    }
 
     /// <summary>
     /// 参数入端口

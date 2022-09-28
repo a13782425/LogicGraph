@@ -126,6 +126,12 @@ namespace Game.Logic.Editor
         /// 节点端口类型
         /// </summary>
         public PortDirEnum PortType { get; set; }
+
+        /// <summary>
+        /// 字段信息
+        /// key:字段名 
+        /// </summary>
+        public Dictionary<string, FieldInfo> FieldInfos = new Dictionary<string, FieldInfo>();
     }
     /// <summary>
     /// 逻辑图格式化缓存

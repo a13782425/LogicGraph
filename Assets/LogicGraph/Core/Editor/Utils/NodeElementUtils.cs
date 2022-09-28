@@ -30,6 +30,16 @@ namespace Game.Logic.Editor
             { typeof(Bounds),typeof(BoundsField)},
         };
 
+        //[InputElementMapping]
+        //public static Dictionary<Type, Type> OutputElementMapping()
+        //{
+        //    return new Dictionary<Type, Type>()
+        //{
+        //    { typeof(string), typeof(string) },
+
+        //};
+        //}
+
         static NodeElementUtils()
         {
             var methodInfos = TypeCache.GetMethodsWithAttribute<InputElementMappingAttribute>().ToList();
@@ -53,6 +63,10 @@ namespace Game.Logic.Editor
                     {
                         continue;
                     }
+                    if (!typeof(VisualElement).IsAssignableFrom(item.Value))
+                    {
+                        continue;
+                    }
                     if (InputElementMapping.ContainsKey(item.Key))
                     {
                         InputElementMapping[item.Key] = item.Value;
@@ -63,10 +77,7 @@ namespace Game.Logic.Editor
                     }
                 }
             }
-            Debug.LogError(methodInfos.Count);
         }
-
-
 
         /// <summary>
         /// 设置字段组件的默认样式

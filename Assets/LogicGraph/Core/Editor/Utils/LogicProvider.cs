@@ -174,15 +174,19 @@ namespace Game.Logic.Editor
                 {
                     if (!nodeAttr.IsEnable)
                         continue;
-                    LogicNodeCategory nodeData = new LogicNodeCategory();
+                    LogicNodeCategory nodeCategory = new LogicNodeCategory();
                     string[] strs = nodeAttr.MenuText.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                    nodeData.NodeLayers = strs;
-                    nodeData.NodeName = strs[strs.Length - 1];
-                    nodeData.PortType = nodeAttr.PortType;
-                    nodeData.NodeType = nodeAttr.NodeType;
-                    nodeData.ViewType = nodeViewType;
-
-                    LGCategoryList.ForEach(a => a.Nodes.Add(nodeData));
+                    nodeCategory.NodeLayers = strs;
+                    nodeCategory.NodeName = strs[strs.Length - 1];
+                    nodeCategory.PortType = nodeAttr.PortType;
+                    nodeCategory.NodeType = nodeAttr.NodeType;
+                    nodeCategory.ViewType = nodeViewType;
+                    m_praseNodeField(nodeCategory);
+                    LGCategoryList.ForEach(a =>
+                    {
+                        if (nodeAttr.HasType(a.GetType()))
+                            a.Nodes.Add(nodeCategory);
+                    });
                 }
             }
             foreach (LGCategoryInfo item in LGCategoryList)
@@ -206,6 +210,21 @@ namespace Game.Logic.Editor
                 });
             }
         }
+
+        /// <summary>
+        /// 解析节点内的字段信息
+        /// </summary>
+        /// <param name="nodeCategory"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private static void m_praseNodeField(LogicNodeCategory nodeCategory)
+        {
+            FieldInfo[] fields = nodeCategory.NodeType.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            foreach (FieldInfo field in fields)
+            {
+                nodeCategory.FieldInfos.Add(field.Name, field);
+            }
+        }
+
         /// <summary>
         /// 生成逻辑图信息缓存
         /// </summary>

@@ -25,8 +25,8 @@ namespace Game.Logic.Editor
             graphView.AddElement(edgeView);
             NodePort output = edgeView.output as NodePort;
             NodePort input = edgeView.input as NodePort;
-            input.AddPort(output);
-            output.AddPort(input);
+            //input.AddPort(output);
+            //output.AddPort(input);
             input.Connect(edgeView);
             output.Connect(edgeView);
         }

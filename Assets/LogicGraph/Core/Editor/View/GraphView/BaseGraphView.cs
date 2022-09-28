@@ -74,6 +74,11 @@ namespace Game.Logic.Editor
         /// 没有使用到的Id
         /// </summary>
         private Queue<int> _unusedIds = new Queue<int>();
+
+        /// <summary>
+        /// 可以连接的端口
+        /// </summary>
+        private List<Port> _canLinkPorts = new List<Port>();
     }
 
     /// <summary>
@@ -226,7 +231,7 @@ namespace Game.Logic.Editor
         }
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
-            var compatiblePorts = new List<Port>();
+            _canLinkPorts.Clear();
             if (startPort.direction == Direction.Input)
             {
                 goto End;
@@ -252,10 +257,13 @@ namespace Game.Logic.Editor
                     {
                         continue;
                     }
-                    compatiblePorts.Add(tarPort);
+                    bool isResult = nodePort.CanLinkPort(tarPort);
+                    if (isResult)
+                        tarPort.AcceptPort(nodePort);
+                    _canLinkPorts.Add(tarPort);
                 }
             }
-        End: return compatiblePorts;
+        End: return _canLinkPorts;
         }
 
     }
@@ -269,6 +277,26 @@ namespace Game.Logic.Editor
     {
         private GraphViewChange m_onGraphViewChanged(GraphViewChange graphViewChange)
         {
+            if (graphViewChange.elementsToRemove != null)
+            {
+                List<GraphElement> removeList = graphViewChange.elementsToRemove.ToList();
+                List<GraphElement> removeList2 = removeList.ToList();
+                foreach (GraphElement item in removeList)
+                {
+                    switch (item)
+                    {
+                        case EdgeView edgeView:
+                            //NodePort input = edgeView.input as NodePort;
+                            //NodePort output = edgeView.output as NodePort;
+                            //output.DelPort(input);
+                            //input.DelPort(output);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+            }
             return graphViewChange;
         }
         private void m_onViewTransformChanged(GraphView graphView)

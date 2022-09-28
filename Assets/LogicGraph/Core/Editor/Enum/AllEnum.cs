@@ -27,6 +27,7 @@ namespace Game.Logic.Editor
     [Flags]
     public enum PortDirEnum : byte
     {
+        None = 0,
         /// <summary>
         /// 只有进
         /// </summary>
@@ -39,5 +40,12 @@ namespace Game.Logic.Editor
         /// 二者皆有
         /// </summary>
         All = In | Out
+    }
+    /// <summary>
+    /// 端口类型
+    /// </summary>
+    public enum PortTypeEnum : byte
+    {
+
     }
 }
