@@ -92,6 +92,9 @@ namespace Game.Logic.Editor
                     graphData.ViewType = item;
                     graphData.GraphName = graphAttr.LogicName;
                     graphData.GraphColor = graphAttr.Color.HasValue ? graphAttr.Color.Value : LogicUtils.GetColor(item);
+                    BaseGraphView graphView = Activator.CreateInstance(item) as BaseGraphView;
+                    graphView.DefaultNodes.ForEach(a => graphData.DefaultNodes.Add(a.FullName));
+                    graphView = null;
                     LGCategoryList.Add(graphData);
                 }
             }
@@ -167,28 +170,36 @@ namespace Game.Logic.Editor
         private static void m_buildNode()
         {
             List<Type> nodeViewTypes = TypeCache.GetTypesDerivedFrom<BaseNodeView>().ToList();
-            foreach (Type nodeViewType in nodeViewTypes)
+
+            foreach (var lgCategory in LGCategoryList)
             {
-                var nodeAttr = nodeViewType.GetCustomAttribute<LogicNodeAttribute>();
-                if (nodeAttr != null)
+                foreach (Type nodeViewType in nodeViewTypes)
                 {
-                    if (!nodeAttr.IsEnable)
-                        continue;
-                    LogicNodeCategory nodeCategory = new LogicNodeCategory();
-                    string[] strs = nodeAttr.MenuText.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                    nodeCategory.NodeLayers = strs;
-                    nodeCategory.NodeName = strs[strs.Length - 1];
-                    nodeCategory.PortType = nodeAttr.PortType;
-                    nodeCategory.NodeType = nodeAttr.NodeType;
-                    nodeCategory.ViewType = nodeViewType;
-                    m_praseNodeField(nodeCategory);
-                    LGCategoryList.ForEach(a =>
+                    var nodeAttr = nodeViewType.GetCustomAttribute<LogicNodeAttribute>();
+                    if (nodeAttr != null)
                     {
-                        if (nodeAttr.HasType(a.GetType()))
-                            a.Nodes.Add(nodeCategory);
-                    });
+                        LogicNodeCategory nodeCategory = new LogicNodeCategory();
+                        string[] strs = nodeAttr.MenuText.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                        nodeCategory.NodeLayers = strs;
+                        nodeCategory.NodeName = strs[strs.Length - 1];
+                        nodeCategory.PortType = nodeAttr.PortType;
+                        nodeCategory.NodeType = nodeAttr.NodeType;
+                        nodeCategory.ViewType = nodeViewType;
+                        nodeCategory.IsEnable = nodeAttr.IsEnable;
+                        m_praseNodeField(nodeCategory);
+                        if (lgCategory.DefaultNodes.Contains(nodeAttr.NodeType.FullName))
+                        {
+                            nodeCategory.IsEnable = false;
+                            lgCategory.Nodes.Add(nodeCategory);
+                        }
+                        else if (nodeAttr.HasType(lgCategory.GetType()))
+                        {
+                            lgCategory.Nodes.Add(nodeCategory);
+                        }
+                    }
                 }
             }
+
             foreach (LGCategoryInfo item in LGCategoryList)
             {
                 item.Nodes.Sort((entry1, entry2) =>

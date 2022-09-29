@@ -110,8 +110,8 @@ namespace Game.Logic.Editor
 
         private NodePort m_showPort(PortDirEnum dir)
         {
-            var port = NodePort.CreatePort(dir, owner.ConnectorListener);
-            port.Initialize(null, null, "");
+            var port = NodePort.CreatePort(owner,this, dir, owner.ConnectorListener);
+            port.portName = "";
             return port;
         }
 

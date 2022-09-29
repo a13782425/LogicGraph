@@ -126,25 +126,6 @@ namespace Game.Logic.Editor
             }
         }
 
-        [Obsolete]
-        internal void Initialize(BaseNodeView nodeView, FieldInfo fieldInfo, string title)
-        {
-            this.nodeView = nodeView;
-            this.portName = title;
-            this.fieldInfo = fieldInfo;
-            if (fieldInfo != null)
-            {
-                this.AddToClassList(LogicUtils.PORT_CUBE);
-                this.portColor = LogicUtils.GetColor(fieldInfo.FieldType);
-                if (this.direction == Direction.Input)
-                {
-                    //_varElement = m_createLinkElement();
-                    //_varElement.AddToClassList("port-input-element");
-                    //this.Insert(0, _varElement);
-                }
-            }
-        }
-
         /// <summary>
         /// 可以连接到某个端口
         /// Out端口调用
@@ -153,15 +134,12 @@ namespace Game.Logic.Editor
         /// <returns></returns>
         internal bool CanLinkPort(NodePort port)
         {
-            if (this.fieldInfo != null)
+            bool result = m_internalCheckLink(port);
+            if (onCanLinkPort != null)
             {
-
+                result = onCanLinkPort.Invoke(result, port);
             }
-            else
-            {
-
-            }
-            return true;
+            return result;
         }
 
         /// <summary>
@@ -171,21 +149,25 @@ namespace Game.Logic.Editor
         /// <param name="port">等待连接的Out端口</param>
         internal bool AcceptPort(NodePort port)
         {
-            return true;
+            bool result = m_internalCheckLink(port);
+            if (onAcceptPort != null)
+            {
+                result = onAcceptPort.Invoke(result, port);
+            }
+            return result;
         }
 
         internal void m_initialize()
         {
             if (fieldInfo != null)
             {
-                if (!this.fieldInfo.FieldType.IsAssignableFrom(typeof(BaseLogicNode)))
+                //if (!this.fieldInfo.FieldType.IsAssignableFrom(typeof(BaseLogicNode)))
                 {
                     this.AddToClassList(LogicUtils.PORT_CUBE);
                     this.portColor = LogicUtils.GetColor(fieldInfo.FieldType);
                     if (this.direction == Direction.Input)
                     {
                         m_createLinkElement();
-
                     }
                 }
             }
@@ -207,78 +189,140 @@ namespace Game.Logic.Editor
                 _varElement.AddToClassList("port-input-element");
                 this.Insert(0, _varElement);
             }
-            else
-            {
-                throw new NotSupportedException($"暂不支持:{type.Name}类型,请联系开发者");
-            }
-            //if (type == typeof(int))
-            //{
-            //    IntegerField element = new IntegerField();
-            //    element.RegisterCallback<ChangeEvent<int>>(e => onValueChange(e.newValue));
-            //    element.value = (int)fieldInfo.GetValue(nodeView.target);
-            //    return element;
-            //}
-            //else if (type == typeof(float))
-            //{
-            //    FloatField element = new FloatField();
-            //    element.RegisterCallback<ChangeEvent<float>>(e => onValueChange(e.newValue));
-            //    element.value = (float)fieldInfo.GetValue(nodeView.target);
-            //    return element;
-            //}
-            //else if (type == typeof(string))
-            //{
-            //    TextField element = new TextField();
-            //    element.RegisterCallback<ChangeEvent<string>>(e => onValueChange(e.newValue));
-            //    element.value = (string)fieldInfo.GetValue(nodeView.target);
-            //    return element;
-            //}
-            //else if (type == typeof(double))
-            //{
-            //    DoubleField element = new DoubleField();
-            //    element.RegisterCallback<ChangeEvent<double>>(e => onValueChange(e.newValue));
-            //    element.value = (int)fieldInfo.GetValue(nodeView.target);
-            //    return element;
-            //}
-            //else if (type == typeof(bool))
-            //{
-            //    Toggle element = new Toggle();
-            //    element.RegisterCallback<ChangeEvent<bool>>(e => onValueChange(e.newValue));
-            //    element.value = (bool)fieldInfo.GetValue(nodeView.target);
-            //    return element;
-            //}
-            //else if (type == typeof(Vector2))
-            //{
-            //    Vector2Field element = new Vector2Field();
-            //    element.RegisterCallback<ChangeEvent<Vector2>>(e => onValueChange(e.newValue));
-            //    element.value = (Vector2)fieldInfo.GetValue(nodeView.target);
-            //    return element;
-            //}
-            //else if (type == typeof(Vector3))
-            //{
-            //    Vector3Field element = new Vector3Field();
-            //    element.RegisterCallback<ChangeEvent<Vector3>>(e => onValueChange(e.newValue));
-            //    element.value = (Vector3)fieldInfo.GetValue(nodeView.target);
-            //    return element;
-            //}
-            //else if (type == typeof(Vector4))
-            //{
-            //    Vector4Field element = new Vector4Field();
-            //    element.RegisterCallback<ChangeEvent<Vector4>>(e => onValueChange(e.newValue));
-            //    element.value = (Vector4)fieldInfo.GetValue(nodeView.target);
-            //    return element;
-            //}
-            //else if (type == typeof(Color))
-            //{
-            //    ColorField element = new ColorField();
-            //    element.RegisterCallback<ChangeEvent<Color>>(e => onValueChange(e.newValue));
-            //    element.value = (Color)fieldInfo.GetValue(nodeView.target);
-            //    return element;
-            //}
             //else
             //{
             //    throw new NotSupportedException($"暂不支持:{type.Name}类型,请联系开发者");
             //}
         }
+        /// <summary>
+        /// 默认的检测是否可以连接
+        /// </summary>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        private bool m_internalCheckLink(NodePort port)
+        {
+            bool result = false;
+
+            if (this.node is VarNodeView varNodeView)
+            {
+                //当前端口所处节点为变量节点
+
+                if (port.node is VarNodeView)
+                {
+                    //目标端口所在节点是变量节点
+                    result = false;
+                }
+                else
+                {
+                    //目标端口所在节点不是变量节点
+                    if (port.fieldInfo == null)
+                    {
+                        //目标端口所在节点没有字段关联
+                        result = false;
+                    }
+                    else
+                    {
+                        //目标端口所在节点有字段关联
+                        if (port.fieldInfo.FieldType == varNodeView.target.GetValueType())
+                        {
+                            result = true;
+                        }
+                        else if (port.fieldInfo.FieldType.IsAssignableFrom(varNodeView.target.GetValueType()))
+                        {
+                            result = true;
+                        }
+                        else
+                            result = false;
+                    }
+                }
+            }
+            else
+            {
+                //当前端口所处节点不是变量节点
+                if (port.node is VarNodeView varView)
+                {
+                    //目标端口所在节点是变量节点
+                }
+                else
+                {
+                    //目标端口所在节点不是变量节点
+                    if (port.fieldInfo == null)
+                    {
+                        result = true;
+                    }
+
+                }
+
+            }
+
+            //if (this.fieldInfo != null)
+            //{
+            //    //当前端口绑定了变量
+
+            //    if (this.fieldInfo.FieldType.IsValueType)
+            //    {
+            //        //当前变量类型是值类型
+            //        if (port.fieldInfo == null)
+            //        {
+            //            result = false;
+            //        }
+            //        else if (port.fieldInfo.FieldType.IsValueType)
+            //        {
+
+            //        }
+            //    }
+            //    else
+            //    {
+            //        //当前变量类型是引用类型
+
+            //    }
+
+            //    if (this.fieldInfo.FieldType == typeof(BaseLogicNode))
+            //    {
+            //        //如果当前变量类型是
+
+            //    }
+            //}
+            //else
+            //{
+            //    //当前端口没有绑定变量
+
+            //    m_noFieldCheck(port, ref result);
+
+            //}
+            return result;
+        }
+
+        /// <summary>
+        /// 没有字段判断
+        /// </summary>
+        /// <param name="tarPort">目标端口</param>
+        /// <param name="result"></param>
+        private void m_noFieldCheck(NodePort tarPort, ref bool result)
+        {
+            if (tarPort.node is VarNodeView)
+            {
+                result = false;
+            }
+            else
+            {
+                if (tarPort.fieldInfo == null)
+                {
+                    //目标端口没有变量
+                    result = true;
+                }
+                else if (tarPort.fieldInfo.FieldType.IsValueType)
+                {
+                    //目标端口有变量,但变量类型为值类型
+                    result = false;
+                }
+                else if (typeof(BaseLogicNode).IsAssignableFrom(tarPort.fieldInfo.FieldType))
+                {
+                    result = true;
+                }
+            }
+        }
+
         protected override void ExecuteDefaultAction(EventBase evt)
         {
             if (direction == Direction.Output)
@@ -286,14 +330,7 @@ namespace Game.Logic.Editor
                 base.ExecuteDefaultAction(evt);
             }
         }
-        [Obsolete]
-        public static NodePort CreatePort(PortDirEnum dir, EdgeConnectorListener edgeConnectorListener)
-        {
-            var port = new NodePort(Orientation.Horizontal, dir == PortDirEnum.In ? Direction.Input : Direction.Output, Capacity.Multi, null);
-            port.m_EdgeConnector = new BaseEdgeConnector(edgeConnectorListener);
-            port.AddManipulator(port.m_EdgeConnector);
-            return port;
-        }
+
         public static NodePort CreatePort(BaseGraphView graphView, Node node, PortDirEnum dir, EdgeConnectorListener edgeConnectorListener)
         {
             var port = new NodePort(Orientation.Horizontal, dir == PortDirEnum.In ? Direction.Input : Direction.Output, Capacity.Multi, null);
@@ -302,6 +339,7 @@ namespace Game.Logic.Editor
             port.portDir = dir;
             port.owner = graphView;
             port.AddManipulator(port.m_EdgeConnector);
+            port.m_initialize();
             return port;
         }
         public static NodePort CreatePort(BaseGraphView graphView, Node node, FieldInfo field, EdgeConnectorListener edgeConnectorListener)
@@ -324,10 +362,12 @@ namespace Game.Logic.Editor
         public static NodePort CreatePort(BaseGraphView graphView, Node node, FieldInfo field, PortDirEnum dir, EdgeConnectorListener edgeConnectorListener)
         {
             var port = new NodePort(Orientation.Horizontal, dir == PortDirEnum.In ? Direction.Input : Direction.Output, Capacity.Multi, null);
+            port.m_EdgeConnector = new BaseEdgeConnector(edgeConnectorListener);
             port.fieldInfo = field;
             port.nodeView = node as BaseNodeView;
             port.portDir = dir;
             port.owner = graphView;
+            port.AddManipulator(port.m_EdgeConnector);
             port.m_initialize();
             return port;
         }

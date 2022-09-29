@@ -93,12 +93,25 @@ namespace Game.Logic.Editor
         /// </summary>
         public List<LogicNodeCategory> Nodes => _nodes;
 
+        private List<string> _defaultNodes = new List<string>();
+        /// <summary>
+        /// 当前逻辑图对应的默认节点
+        /// 节点类型全名
+        /// </summary>
+        public List<string> DefaultNodes => _defaultNodes;
+
         /// <summary>
         /// 获得当前节点的信息
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="nodeType"></param>
         /// <returns></returns>
         public LogicNodeCategory GetNodeCategory(Type nodeType) => Nodes.FirstOrDefault(a => a.NodeType == nodeType);
+        /// <summary>
+        /// 获得当前节点的信息
+        /// </summary>
+        /// <param name="nodeFullName"></param>
+        /// <returns></returns>
+        public LogicNodeCategory GetNodeCategory(string nodeFullName) => Nodes.FirstOrDefault(a => a.NodeType.FullName == nodeFullName);
 
     }
     /// <summary>
@@ -126,6 +139,10 @@ namespace Game.Logic.Editor
         /// 节点端口类型
         /// </summary>
         public PortDirEnum PortType { get; set; }
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool IsEnable { get; set; }
 
         /// <summary>
         /// 字段信息

@@ -16,12 +16,12 @@ namespace Game.Logic.Editor
         /// </summary>
         public VarEditorData owner { get; set; }
 
-        //[SerializeField]
-        //private int a = 0;
-        ///// <summary>
-        ///// 变量节点的ID
-        ///// </summary>
-        //public int OnlyId { get => a; set => a = value; }
+        [SerializeField]
+        private int a = 0;
+        /// <summary>
+        /// 变量节点的ID
+        /// </summary>
+        public int OnlyId { get => a; set => a = value; }
 
         [SerializeField]
         private Vector2 b;

@@ -126,5 +126,20 @@ namespace Game.Logic.Editor
         /// 当前图的变量节点数据
         /// </summary>
         public List<VarNodeEditorData> VarNodeDatas => k;
+
+
+
+        /// <summary>
+        /// 获取变量节点缓存
+        /// </summary>
+        /// <param name="onlyId"></param>
+        /// <returns></returns>
+        internal VarNodeEditorData GetVarNodeEditorData(int onlyId) => VarNodeDatas.FirstOrDefault(a => a.OnlyId == onlyId);
+        /// <summary>
+        /// 获取节点缓存
+        /// </summary>
+        /// <param name="onlyId"></param>
+        /// <returns></returns>
+        internal NodeEditorData GetNodeEditorData(int onlyId) => NodeDatas.FirstOrDefault(a => a.OnlyId == onlyId);
     }
 }

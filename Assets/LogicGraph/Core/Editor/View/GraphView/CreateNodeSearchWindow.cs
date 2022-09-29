@@ -41,6 +41,8 @@ namespace Game.Logic.Editor
             List<string> groups = new List<string>();
             foreach (LogicNodeCategory nodeConfig in _categoryInfo.Nodes)
             {
+                if (!nodeConfig.IsEnable)
+                    continue;
                 int createIndex = int.MaxValue;
 
                 for (int i = 0; i < nodeConfig.NodeLayers.Length - 1; i++)

@@ -20,9 +20,9 @@ namespace Game.Logic.Editor
         private const int NODE_START_ID = 10000;
 
         /// <summary>
-        /// 开始节点
+        /// 默认节点
         /// </summary>
-        public virtual List<BaseLogicNode> StartNodes => new List<BaseLogicNode>();
+        public virtual List<Type> DefaultNodes => new List<Type>();
         /// <summary>
         /// 默认变量
         /// </summary>
@@ -62,6 +62,7 @@ namespace Game.Logic.Editor
         /// 创建节点的搜索窗口
         /// </summary>
         private CreateNodeSearchWindow _createNodeSearch = null;
+
         /// <summary>
         /// 逻辑图变量面板
         /// </summary>
@@ -75,6 +76,7 @@ namespace Game.Logic.Editor
         /// </summary>
         private Queue<int> _unusedIds = new Queue<int>();
 
+        private Dictionary<int, Node> _nodeCacheDic = new Dictionary<int, Node>();
         /// <summary>
         /// 可以连接的端口
         /// </summary>
@@ -130,6 +132,7 @@ namespace Game.Logic.Editor
                 a.owner = editorData.VarDatas.FirstOrDefault(c => a.Name == c.Name);
                 m_showVarNodeView(a);
             });
+            editorData.GroupDatas.ForEach(a => m_showGroupView(a));
         }
     }
 
@@ -138,6 +141,21 @@ namespace Game.Logic.Editor
     //公共方法
     partial class BaseGraphView
     {
+        /// <summary>
+        /// 是否存在一个节点视图
+        /// </summary>
+        /// <param name="nodeId">节点唯一ID</param>
+        /// <returns></returns>
+        public bool HasNodeView(int nodeId)
+        {
+            return _nodeCacheDic.ContainsKey(nodeId);
+        }
+        /// <summary>
+        /// 获取一个节点视图
+        /// </summary>
+        /// <param name="nodeId">节点唯一ID</param>
+        /// <returns></returns>
+        public Node GetNodeView(int nodeId) => HasNodeView(nodeId) ? _nodeCacheDic[nodeId] : null;
         /// <summary>
         /// 添加一个节点
         /// </summary>
@@ -148,13 +166,10 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 添加一个节点
         /// </summary>
-        public BaseLogicNode AddNode(Type nodeType, Vector2 pos)
+        public BaseLogicNode AddNode(Type nodeType, Vector2 pos, bool isDefault = false)
         {
             BaseLogicNode logicNode = Activator.CreateInstance(nodeType) as BaseLogicNode;
             LogicNodeCategory nodeCategory = categoryInfo.Nodes.FirstOrDefault(a => a.NodeType == nodeType);
-            if (nodeCategory != null)
-            {
-            }
             NodeEditorData data = new NodeEditorData();
             data.target = logicNode;
             data.Pos = pos;
@@ -163,6 +178,10 @@ namespace Game.Logic.Editor
             data.OnlyId = logicNode.OnlyId;
             this.target.Nodes.Add(logicNode);
             this.editorData.NodeDatas.Add(data);
+            if (isDefault)
+            {
+                this.target.StartNodes.Add(logicNode.OnlyId);
+            }
             m_showNodeView(data);
             return logicNode;
         }
@@ -197,7 +216,6 @@ namespace Game.Logic.Editor
         {
             this.style.display = DisplayStyle.None;
         }
-
         /// <summary>
         /// 保存
         /// </summary>
@@ -221,8 +239,11 @@ namespace Game.Logic.Editor
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
             evt.menu.AppendAction("创建节点", m_onCreateNodeWindow, DropdownMenuAction.AlwaysEnabled);
-            evt.menu.AppendAction("创建分组", null, DropdownMenuAction.AlwaysEnabled);
-            evt.menu.AppendAction("创建默认节点", null, DropdownMenuAction.AlwaysEnabled);
+            evt.menu.AppendAction("创建分组", m_onCreateGroup, DropdownMenuAction.AlwaysEnabled);
+            if (DefaultNodes.Count > 0)
+            {
+                evt.menu.AppendAction("创建默认节点", m_onCreateDefaultNode, DropdownMenuAction.AlwaysEnabled);
+            }
             evt.menu.AppendSeparator();
             foreach (var item in categoryInfo.Formats)
             {
@@ -260,7 +281,8 @@ namespace Game.Logic.Editor
                     bool isResult = nodePort.CanLinkPort(tarPort);
                     if (isResult)
                         tarPort.AcceptPort(nodePort);
-                    _canLinkPorts.Add(tarPort);
+                    if (isResult)
+                        _canLinkPorts.Add(tarPort);
                 }
             }
         End: return _canLinkPorts;
@@ -374,7 +396,50 @@ namespace Game.Logic.Editor
 
             return true;
         }
+        /// <summary>
+        /// 创建默认节点
+        /// </summary>
+        /// <param name="obj"></param>
+        private void m_onCreateDefaultNode(DropdownMenuAction obj)
+        {
+            int createNum = 0;
+            Vector2 screenPos = owner.GetScreenPosition(obj.eventInfo.mousePosition);
+            //经过计算得出节点的位置
+            var windowMousePosition = owner.rootVisualElement.ChangeCoordinatesTo(owner.rootVisualElement.parent, screenPos - owner.position.position);
+            var nodePosition = this.contentViewContainer.WorldToLocal(windowMousePosition);
+            foreach (var item in categoryInfo.DefaultNodes)
+            {
+                if (target.Nodes.FirstOrDefault(a => a.GetType().FullName == item) != null)
+                {
+                    continue;
+                }
+                AddNode(categoryInfo.GetNodeCategory(item).NodeType, nodePosition, true);
+                createNum++;
+            }
+            if (createNum == 0)
+            {
+                owner.ShowNotification(new GUIContent("当前逻辑图已创建所有默认节点"));
+            }
+        }
+        /// <summary>
+        /// 创建分组
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void m_onCreateGroup(DropdownMenuAction obj)
+        {
+            Vector2 screenPos = owner.GetScreenPosition(obj.eventInfo.mousePosition);
+            //经过计算得出节点的位置
+            var windowMousePosition = owner.rootVisualElement.ChangeCoordinatesTo(owner.rootVisualElement.parent, screenPos - owner.position.position);
+            var groupPos = this.contentViewContainer.WorldToLocal(windowMousePosition);
+            GroupEditorData group = new GroupEditorData();
 
+            group.Pos = groupPos;
+            group.Title = "默认分组";
+
+            editorData.GroupDatas.Add(group);
+            m_showGroupView(group);
+        }
         private void m_onDragPerformEvent(DragPerformEvent evt)
         {
             var mousePos = (evt.currentTarget as VisualElement).ChangeCoordinatesTo(contentViewContainer, evt.localMousePosition);
@@ -391,6 +456,7 @@ namespace Game.Logic.Editor
                         varNodeData.owner = varFieldView.varData;
                         varNodeData.Pos = mousePos;
                         varNodeData.Name = varFieldView.varData.Name;
+                        varNodeData.OnlyId = m_getId();
                         editorData.VarNodeDatas.Add(varNodeData);
                         m_showVarNodeView(varNodeData);
                     }
@@ -423,6 +489,7 @@ namespace Game.Logic.Editor
             nodeView.Initialize(this, editorData);
             nodeView.ShowUI();
             nodeView.SetPosition(new Rect(editorData.Pos, Vector2.one));
+            _nodeCacheDic.Add(editorData.OnlyId, nodeView);
         }
 
         /// <summary>
@@ -433,9 +500,21 @@ namespace Game.Logic.Editor
             VarNodeView nodeView = new VarNodeView();
             this.AddElement(nodeView);
             nodeView.Initialize(this, varNodeEditor);
+            _nodeCacheDic.Add(varNodeEditor.OnlyId, nodeView);
         }
 
-
+        /// <summary>
+        /// 添加分组视图
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        private LogicGroupView m_showGroupView(GroupEditorData group)
+        {
+            LogicGroupView groupView = new LogicGroupView();
+            groupView.Initialize(this, group);
+            this.AddElement(groupView);
+            return groupView;
+        }
         /// <summary>
         /// 获取节点唯一ID
         /// </summary>
@@ -487,11 +566,12 @@ namespace Game.Logic.Editor
         {
             if (target.Nodes.Count > 0)
             {
-                int node = target.Nodes.Max(a => a.OnlyId);
+
+                int node = Math.Max(target.Nodes.Max(a => a.OnlyId), editorData.VarNodeDatas.Count == 0 ? 0 : editorData.VarNodeDatas.Max(a => a.OnlyId));
                 _nodeUniqueId = node + 1;
                 for (int i = NODE_START_ID; i < _nodeUniqueId; i++)
                 {
-                    if (target.GetNode(i) == null)
+                    if (target.GetNode(i) == null && editorData.GetVarNodeEditorData(i) == null)
                     {
                         _unusedIds.Enqueue(i);
                     }
