@@ -9,7 +9,8 @@ namespace Game.Logic.Example
     {
         [Input("延时")]
         public float delayTime;
-
+        [Output("延时2")]
+        public string delayTime2;
         [Input("测试")]
         public DebugNode node;
         [Output("测试2")]

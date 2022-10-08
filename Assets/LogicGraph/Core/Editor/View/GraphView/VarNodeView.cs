@@ -55,7 +55,7 @@ namespace Game.Logic.Editor
         {
             VarEdgeEditorData edgeEditorData = new VarEdgeEditorData();
             edgeEditorData.IsIn = false;
-            edgeEditorData.NodeId = obj.nodeView.target.OnlyId;
+            edgeEditorData.NodeId = (obj.node as BaseNodeView).target.OnlyId;
             edgeEditorData.NodeFieldName = obj.fieldInfo.Name;
             this.editorData.Edges.Add(edgeEditorData);
         }
@@ -64,7 +64,7 @@ namespace Game.Logic.Editor
         {
             VarEdgeEditorData edgeEditorData = new VarEdgeEditorData();
             edgeEditorData.IsIn = true;
-            edgeEditorData.NodeId = obj.nodeView.target.OnlyId;
+            edgeEditorData.NodeId = (obj.node as BaseNodeView).target.OnlyId;
             edgeEditorData.NodeFieldName = obj.fieldInfo.Name;
             this.editorData.Edges.Add(edgeEditorData);
         }
@@ -110,7 +110,7 @@ namespace Game.Logic.Editor
 
         private NodePort m_showPort(PortDirEnum dir)
         {
-            var port = NodePort.CreatePort(owner,this, dir, owner.ConnectorListener);
+            var port = NodePort.CreatePort(owner, this, dir);
             port.portName = "";
             return port;
         }

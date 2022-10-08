@@ -123,13 +123,13 @@ namespace Game.Logic.Editor
         //}
         protected NodePort ShowPort(string title, PortDirEnum dir)
         {
-            var port = NodePort.CreatePort(owner, this, dir, owner.ConnectorListener);
+            var port = NodePort.CreatePort(owner, this, dir);
             port.portName = title;
             return port;
         }
         protected NodePort ShowPort(string title, FieldInfo info, PortDirEnum dir)
         {
-            var port = NodePort.CreatePort(owner, this, info, dir, owner.ConnectorListener);
+            var port = NodePort.CreatePort(owner, this, info, dir);
             port.portName = title;
             return port;
         }
@@ -297,6 +297,7 @@ namespace Game.Logic.Editor
             if ((nodeCategory.PortType & PortDirEnum.In) > 0)
             {
                 Input = ShowPort("In", PortDirEnum.In);
+                Input.AddToClassList("base_port");
                 inputContainer.Add(Input);
             }
             else
@@ -306,6 +307,7 @@ namespace Game.Logic.Editor
             if ((nodeCategory.PortType & PortDirEnum.Out) > 0)
             {
                 OutPut = ShowPort("Out", PortDirEnum.Out);
+                OutPut.AddToClassList("base_port");
                 outputContainer.Add(OutPut);
             }
             else

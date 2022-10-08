@@ -279,8 +279,8 @@ namespace Game.Logic.Editor
                         continue;
                     }
                     bool isResult = nodePort.CanLinkPort(tarPort);
-                    if (isResult)
-                        tarPort.AcceptPort(nodePort);
+                    //if (isResult)
+                    //    tarPort.AcceptPort(nodePort);
                     if (isResult)
                         _canLinkPorts.Add(tarPort);
                 }
@@ -312,6 +312,10 @@ namespace Game.Logic.Editor
                             //NodePort output = edgeView.output as NodePort;
                             //output.DelPort(input);
                             //input.DelPort(output);
+                            break;
+                        case VarNodeView varNodeView:
+                            this.m_recycleUniqueId(varNodeView.editorData.OnlyId);
+                            this.editorData.VarNodeDatas.Remove(varNodeView.editorData);
                             break;
                         default:
                             break;

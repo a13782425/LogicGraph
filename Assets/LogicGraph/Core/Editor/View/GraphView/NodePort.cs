@@ -23,18 +23,45 @@ namespace Game.Logic.Editor
         /// <param name="port">等待计算的端口</param>
         /// <returns></returns>
         public delegate bool CheckPortFunc(bool result, NodePort port);
-        private const BindingFlags FLAG = BindingFlags.Instance | BindingFlags.Public;
         private const string STYLE_PATH = "GraphView/NodePort.uss";
+        private const string PORT_TYPE_CLASS = "base_port";
 
         public BaseGraphView owner { get; private set; }
 
-        public BaseNodeView nodeView { get; private set; }
+        public new Node node { get; private set; }
 
-        public FieldInfo fieldInfo { get; private set; }
+        private FieldInfo _fieldInfo = null;
+
         /// <summary>
-        /// 端口朝向
+        /// 当前节点关联的端口
         /// </summary>
-        public PortDirEnum portDir { get; private set; }
+        public FieldInfo fieldInfo
+        {
+            get { return _fieldInfo; }
+            set
+            {
+                if (_fieldInfo != null)
+                {
+                    this.RemoveFromClassList(LogicUtils.PORT_CUBE);
+                    this.OnCustomStyleResolved(this.customStyle);
+                }
+                _fieldInfo = value;
+                if (value != null)
+                {
+                    this.AddToClassList(LogicUtils.PORT_CUBE);
+                    this.portColor = LogicUtils.GetColor(fieldInfo.FieldType);
+                    if (this.direction == Direction.Input)
+                    {
+                        m_createLinkElement();
+                    }
+                    this.portType = _fieldInfo.FieldType;
+                }
+            }
+        }
+        ///// <summary>
+        ///// 端口朝向
+        ///// </summary>
+        //public PortDirEnum portDir { get; private set; }
 
         /// <summary>
         /// 变量视图
@@ -135,6 +162,8 @@ namespace Game.Logic.Editor
         internal bool CanLinkPort(NodePort port)
         {
             bool result = m_internalCheckLink(port);
+
+
             if (onCanLinkPort != null)
             {
                 result = onCanLinkPort.Invoke(result, port);
@@ -159,40 +188,32 @@ namespace Game.Logic.Editor
 
         internal void m_initialize()
         {
-            if (fieldInfo != null)
+            if (node is VarNodeView varNodeView)
             {
-                //if (!this.fieldInfo.FieldType.IsAssignableFrom(typeof(BaseLogicNode)))
-                {
-                    this.AddToClassList(LogicUtils.PORT_CUBE);
-                    this.portColor = LogicUtils.GetColor(fieldInfo.FieldType);
-                    if (this.direction == Direction.Input)
-                    {
-                        m_createLinkElement();
-                    }
-                }
+                this.portType = varNodeView.target.GetValueType();
+            }
+            else
+            {
+                this.portType = (this.node as BaseNodeView).target.GetType();
             }
         }
         private void m_createLinkElement()
         {
             void onValueChange(object value)
             {
-                fieldInfo?.SetValue(nodeView.target, value);
+                fieldInfo?.SetValue((node as BaseNodeView).target, value);
             }
             Type type = this.fieldInfo.FieldType;
             if (NodeElementUtils.InputElementMapping.ContainsKey(type))
             {
                 Type elementType = NodeElementUtils.InputElementMapping[type];
                 IInputElement visual = Activator.CreateInstance(elementType) as IInputElement;
-                visual.value = fieldInfo.GetValue(nodeView.target);
+                visual.value = fieldInfo.GetValue((node as BaseNodeView).target);
                 visual.onValueChanged += onValueChange;
                 _varElement = visual as VisualElement;
                 _varElement.AddToClassList("port-input-element");
                 this.Insert(0, _varElement);
             }
-            //else
-            //{
-            //    throw new NotSupportedException($"暂不支持:{type.Name}类型,请联系开发者");
-            //}
         }
         /// <summary>
         /// 默认的检测是否可以连接
@@ -203,124 +224,33 @@ namespace Game.Logic.Editor
         {
             bool result = false;
 
-            if (this.node is VarNodeView varNodeView)
-            {
-                //当前端口所处节点为变量节点
+            bool curBase = this.ClassListContains(PORT_TYPE_CLASS);
+            bool tarBase = port.ClassListContains(PORT_TYPE_CLASS);
 
-                if (port.node is VarNodeView)
-                {
-                    //目标端口所在节点是变量节点
+            if (curBase && tarBase)
+            {
+                result = true;
+            }
+            else if (this.portType == port.portType)
+            {
+                if (this.node is VarNodeView && port.node is VarNodeView)
                     result = false;
-                }
                 else
-                {
-                    //目标端口所在节点不是变量节点
-                    if (port.fieldInfo == null)
-                    {
-                        //目标端口所在节点没有字段关联
-                        result = false;
-                    }
-                    else
-                    {
-                        //目标端口所在节点有字段关联
-                        if (port.fieldInfo.FieldType == varNodeView.target.GetValueType())
-                        {
-                            result = true;
-                        }
-                        else if (port.fieldInfo.FieldType.IsAssignableFrom(varNodeView.target.GetValueType()))
-                        {
-                            result = true;
-                        }
-                        else
-                            result = false;
-                    }
-                }
+                    result = true;
+            }
+            else if (this.portType == typeof(BaseLogicNode))
+            {
+                result = typeof(BaseLogicNode).IsAssignableFrom(port.portType);
+            }
+            else if (port.portType.IsAssignableFrom(this.portType))
+            {
+                result = true;
             }
             else
-            {
-                //当前端口所处节点不是变量节点
-                if (port.node is VarNodeView varView)
-                {
-                    //目标端口所在节点是变量节点
-                }
-                else
-                {
-                    //目标端口所在节点不是变量节点
-                    if (port.fieldInfo == null)
-                    {
-                        result = true;
-                    }
-
-                }
-
-            }
-
-            //if (this.fieldInfo != null)
-            //{
-            //    //当前端口绑定了变量
-
-            //    if (this.fieldInfo.FieldType.IsValueType)
-            //    {
-            //        //当前变量类型是值类型
-            //        if (port.fieldInfo == null)
-            //        {
-            //            result = false;
-            //        }
-            //        else if (port.fieldInfo.FieldType.IsValueType)
-            //        {
-
-            //        }
-            //    }
-            //    else
-            //    {
-            //        //当前变量类型是引用类型
-
-            //    }
-
-            //    if (this.fieldInfo.FieldType == typeof(BaseLogicNode))
-            //    {
-            //        //如果当前变量类型是
-
-            //    }
-            //}
-            //else
-            //{
-            //    //当前端口没有绑定变量
-
-            //    m_noFieldCheck(port, ref result);
-
-            //}
-            return result;
-        }
-
-        /// <summary>
-        /// 没有字段判断
-        /// </summary>
-        /// <param name="tarPort">目标端口</param>
-        /// <param name="result"></param>
-        private void m_noFieldCheck(NodePort tarPort, ref bool result)
-        {
-            if (tarPort.node is VarNodeView)
             {
                 result = false;
             }
-            else
-            {
-                if (tarPort.fieldInfo == null)
-                {
-                    //目标端口没有变量
-                    result = true;
-                }
-                else if (tarPort.fieldInfo.FieldType.IsValueType)
-                {
-                    //目标端口有变量,但变量类型为值类型
-                    result = false;
-                }
-                else if (typeof(BaseLogicNode).IsAssignableFrom(tarPort.fieldInfo.FieldType))
-                {
-                    result = true;
-                }
-            }
+            return result;
         }
 
         protected override void ExecuteDefaultAction(EventBase evt)
@@ -331,44 +261,23 @@ namespace Game.Logic.Editor
             }
         }
 
-        public static NodePort CreatePort(BaseGraphView graphView, Node node, PortDirEnum dir, EdgeConnectorListener edgeConnectorListener)
+        public static NodePort CreatePort(BaseGraphView graphView, Node node, PortDirEnum dir)
         {
+            return CreatePort(graphView, node, null, dir);
+        }
+        public static NodePort CreatePort(BaseGraphView graphView, Node node, FieldInfo field, PortDirEnum dir)
+        {
+            if (graphView == null || node == null)
+            {
+                throw new ArgumentException("参数错误,graphView和node不能为空");
+            }
             var port = new NodePort(Orientation.Horizontal, dir == PortDirEnum.In ? Direction.Input : Direction.Output, Capacity.Multi, null);
-            port.m_EdgeConnector = new BaseEdgeConnector(edgeConnectorListener);
-            port.nodeView = node as BaseNodeView;
-            port.portDir = dir;
+            port.m_EdgeConnector = new BaseEdgeConnector(graphView.ConnectorListener);
+            port.node = node;
             port.owner = graphView;
             port.AddManipulator(port.m_EdgeConnector);
             port.m_initialize();
-            return port;
-        }
-        public static NodePort CreatePort(BaseGraphView graphView, Node node, FieldInfo field, EdgeConnectorListener edgeConnectorListener)
-        {
-            if (field == null)
-            {
-                throw new ArgumentException($"当前重载字段参数不能为空");
-            }
-            InputAttribute input = field.GetCustomAttribute<InputAttribute>();
-            OutputAttribute output = field.GetCustomAttribute<OutputAttribute>();
-            PortDirEnum dir = PortDirEnum.All;
-            dir = dir & (input != null ? PortDirEnum.In : PortDirEnum.All);
-            dir = dir & (output != null ? PortDirEnum.Out : PortDirEnum.All);
-            if (dir == PortDirEnum.None || dir == PortDirEnum.All)
-            {
-                throw new ArgumentException($"节点:{node.GetType().FullName}中{field.Name}字段没有Input或Output特性或者有多个Input或Output特性,请检查或使用其他重载");
-            }
-            return CreatePort(graphView, node, field, dir, edgeConnectorListener);
-        }
-        public static NodePort CreatePort(BaseGraphView graphView, Node node, FieldInfo field, PortDirEnum dir, EdgeConnectorListener edgeConnectorListener)
-        {
-            var port = new NodePort(Orientation.Horizontal, dir == PortDirEnum.In ? Direction.Input : Direction.Output, Capacity.Multi, null);
-            port.m_EdgeConnector = new BaseEdgeConnector(edgeConnectorListener);
             port.fieldInfo = field;
-            port.nodeView = node as BaseNodeView;
-            port.portDir = dir;
-            port.owner = graphView;
-            port.AddManipulator(port.m_EdgeConnector);
-            port.m_initialize();
             return port;
         }
     }
