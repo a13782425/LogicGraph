@@ -123,9 +123,6 @@ namespace Game.Logic.Editor
 
     partial class BaseNodeView
     {
-        //protected NodePort ShowPort(string fieldName, string titleName = null)
-        //{
-        //}
         /// <summary>
         /// 根据端口变量名获取端口
         /// </summary>
@@ -147,6 +144,14 @@ namespace Game.Logic.Editor
                 }
                 return a.fieldInfo.Name == fieldName;
             });
+        }
+
+        /// <summary>
+        /// 连接已经连接的线
+        /// </summary>
+        public void DrawLink()
+        {
+
         }
         protected NodePort ShowPort(string title, PortDirEnum dir)
         {
@@ -269,6 +274,14 @@ namespace Game.Logic.Editor
                         varData.fieldName = curPort.fieldInfo.Name;
                         varData.varName = varNodeView.target.Name;
                         this.target.VarMappings.Add(varData);
+                        break;
+                    case BaseNodeView baseNodeView:
+                        if (curPort.fieldInfo == null)
+                            break;
+                        if (tarPort.IsBasePort)
+                        {
+                            curPort.fieldInfo.SetValue(target, baseNodeView.target);
+                        }
                         break;
                     default:
                         break;
@@ -419,6 +432,8 @@ namespace Game.Logic.Editor
             {
                 OutPut = ShowPort("Out", PortDirEnum.Out);
                 OutPut.AddToClassList("base_port");
+                OutPut.onAddPort += (a, b) => this.target.Childs.Add((b.node as BaseNodeView).target.OnlyId);
+                OutPut.onDelPort += (a, b) => this.target.Childs.Remove((b.node as BaseNodeView).target.OnlyId);
                 outputContainer.Add(OutPut);
             }
             else

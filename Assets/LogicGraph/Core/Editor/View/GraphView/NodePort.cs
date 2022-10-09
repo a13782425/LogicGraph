@@ -64,6 +64,10 @@ namespace Game.Logic.Editor
                 }
             }
         }
+        /// <summary>
+        /// 是否是基础的端口
+        /// </summary>
+        public bool IsBasePort => this.ClassListContains(PORT_TYPE_CLASS);
         ///// <summary>
         ///// 端口朝向
         ///// </summary>
@@ -82,7 +86,7 @@ namespace Game.Logic.Editor
         /// 是否接受某个端口的连接
         /// In端口调用
         /// </summary>
-        public event PortCanLinkFunc onAcceptPort;
+        //public event PortCanLinkFunc onAcceptPort;
         /// <summary>
         /// 添加一个端口
         /// </summary>
@@ -238,8 +242,8 @@ namespace Game.Logic.Editor
         {
             bool result = false;
 
-            bool curBase = this.ClassListContains(PORT_TYPE_CLASS);
-            bool tarBase = port.ClassListContains(PORT_TYPE_CLASS);
+            bool curBase = this.IsBasePort;
+            bool tarBase = port.IsBasePort;
             if (curBase && tarBase)
             {
                 result = true;
