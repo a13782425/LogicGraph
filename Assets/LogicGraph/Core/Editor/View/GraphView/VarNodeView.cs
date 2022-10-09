@@ -44,28 +44,65 @@ namespace Game.Logic.Editor
             m_initNodeView();
             Input.portColor = LogicUtils.GetColor(this.target.GetValueType());
             Input.onAddPort += Input_onAddPort;
+            Input.onDelPort += Input_onDelPort;
             OutPut.portColor = LogicUtils.GetColor(this.target.GetValueType());
             OutPut.onAddPort += OutPut_onAddPort;
+            OutPut.onDelPort += OutPut_onDelPort;
             this.title = this.editorData.owner.Name;
             this.SetPosition(new Rect(this.editorData.Pos, Vector2.zero));
             this.owner.owner.AddListener(LogicEventId.VAR_MODIFY, onVarModify);
+            editorData.Edges.RemoveAll(a =>
+            {
+                var nodeView = owner.GetNodeView(a.NodeId) as BaseNodeView;
+                if (nodeView == null)
+                    return true;
+                return nodeView.GetPortByFieldName(a.NodeFieldName, !a.IsIn) == null;
+            });
+            editorData.Edges.ForEach(a =>
+            {
+                var nodeView = owner.GetNodeView(a.NodeId) as BaseNodeView;
+                var nodePort = nodeView.GetPortByFieldName(a.NodeFieldName, !a.IsIn);
+                EdgeView edgeView = new EdgeView();
+                edgeView.input = a.IsIn ? Input : nodePort;
+                edgeView.output = a.IsIn ? nodePort : OutPut;
+                if (a.IsIn)
+                    Input.DrawLink(edgeView);
+                else
+                    OutPut.DrawLink(edgeView);
+                nodePort.DrawLink(edgeView);
+                owner.AddElement(edgeView);
+            });
         }
 
-        private void OutPut_onAddPort(NodePort obj)
+        private void OutPut_onDelPort(NodePort curPort, NodePort tarPort)
+        {
+            int nodeId = (tarPort.node as BaseNodeView).target.OnlyId;
+            string fieldName = tarPort.fieldInfo.Name;
+            this.editorData.Edges.RemoveAll(a => a.NodeId == nodeId && a.NodeFieldName == fieldName && !a.IsIn);
+        }
+
+        private void Input_onDelPort(NodePort curPort, NodePort tarPort)
+        {
+            int nodeId = (tarPort.node as BaseNodeView).target.OnlyId;
+            string fieldName = tarPort.fieldInfo.Name;
+            this.editorData.Edges.RemoveAll(a => a.NodeId == nodeId && a.NodeFieldName == fieldName && a.IsIn);
+        }
+
+        private void OutPut_onAddPort(NodePort cur, NodePort tarPort)
         {
             VarEdgeEditorData edgeEditorData = new VarEdgeEditorData();
             edgeEditorData.IsIn = false;
-            edgeEditorData.NodeId = (obj.node as BaseNodeView).target.OnlyId;
-            edgeEditorData.NodeFieldName = obj.fieldInfo.Name;
+            edgeEditorData.NodeId = (tarPort.node as BaseNodeView).target.OnlyId;
+            edgeEditorData.NodeFieldName = tarPort.fieldInfo.Name;
             this.editorData.Edges.Add(edgeEditorData);
         }
 
-        private void Input_onAddPort(NodePort obj)
+        private void Input_onAddPort(NodePort cur, NodePort tarPort)
         {
             VarEdgeEditorData edgeEditorData = new VarEdgeEditorData();
             edgeEditorData.IsIn = true;
-            edgeEditorData.NodeId = (obj.node as BaseNodeView).target.OnlyId;
-            edgeEditorData.NodeFieldName = obj.fieldInfo.Name;
+            edgeEditorData.NodeId = (tarPort.node as BaseNodeView).target.OnlyId;
+            edgeEditorData.NodeFieldName = tarPort.fieldInfo.Name;
             this.editorData.Edges.Add(edgeEditorData);
         }
 

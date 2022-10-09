@@ -86,6 +86,11 @@ namespace Game.Logic.Editor
                 this.style.width = value;
             }
         }
+
+        /// <summary>
+        /// 所有端口的缓存
+        /// </summary>
+        private List<NodePort> _cachePorts = new List<NodePort>();
     }
 
     /// <summary>
@@ -121,6 +126,28 @@ namespace Game.Logic.Editor
         //protected NodePort ShowPort(string fieldName, string titleName = null)
         //{
         //}
+        /// <summary>
+        /// 根据端口变量名获取端口
+        /// </summary>
+        /// <param name="fieldName">变量名</param>
+        /// <param name="isIn">是否是入端口</param>
+        /// <returns></returns>
+        public NodePort GetPortByFieldName(string fieldName, bool isIn = true)
+        {
+            Direction dir = isIn ? Direction.Input : Direction.Output;
+            return _cachePorts.FirstOrDefault(a =>
+            {
+                if (a.direction != dir)
+                {
+                    return false;
+                }
+                if (a.fieldInfo == null)
+                {
+                    return false;
+                }
+                return a.fieldInfo.Name == fieldName;
+            });
+        }
         protected NodePort ShowPort(string title, PortDirEnum dir)
         {
             var port = NodePort.CreatePort(owner, this, dir);
@@ -158,14 +185,20 @@ namespace Game.Logic.Editor
                 OutputAttribute outputAttribute = item.GetCustomAttribute<OutputAttribute>();
                 if (inputAttribute != null)
                 {
-                    this.AddUI(ShowPort(inputAttribute.name, item, PortDirEnum.In));
+                    NodePort port = ShowPort(inputAttribute.name, item, PortDirEnum.In);
+                    port.onAddPort += DefaultPortConnect;
+                    port.onDelPort += DefaultPortDisconnect;
+                    _cachePorts.Add(port);
+                    this.AddUI(port);
                 }
                 if (outputAttribute != null)
                 {
-                    this.AddUI(ShowPort(outputAttribute.name, item, PortDirEnum.Out));
+                    NodePort port = ShowPort(outputAttribute.name, item, PortDirEnum.Out);
+                    port.onAddPort += DefaultPortConnect;
+                    port.onDelPort += DefaultPortDisconnect;
+                    _cachePorts.Add(port);
+                    this.AddUI(port);
                 }
-                //VisualElement nodeElement = Activator.CreateInstance(NodeElementUtils.ElementMapping[item.FieldType]) as VisualElement;
-                //this.AddUI(nodeElement);
             }
         }
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
@@ -189,8 +222,6 @@ namespace Game.Logic.Editor
             base.SetPosition(newPos);
             editorData.Pos = newPos.position;
         }
-
-
     }
 
     #endregion
@@ -202,6 +233,86 @@ namespace Game.Logic.Editor
     /// </summary>
     partial class BaseNodeView
     {
+        /// <summary>
+        /// 默认端口连接方法
+        /// </summary>
+        protected virtual void DefaultPortConnect(NodePort curPort, NodePort tarPort)
+        {
+            if (curPort.direction == Direction.Input)
+            {
+                //入端口
+                switch (tarPort.node)
+                {
+                    case VarNodeView varNodeView:
+                        if (curPort.fieldInfo == null)
+                            break;
+                        VarMappingData varData = new VarMappingData();
+                        varData.isInput = true;
+                        varData.fieldName = curPort.fieldInfo.Name;
+                        varData.varName = varNodeView.target.Name;
+                        this.target.VarMappings.Add(varData);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                //出端口
+                switch (tarPort.node)
+                {
+                    case VarNodeView varNodeView:
+                        if (curPort.fieldInfo == null)
+                            break;
+                        VarMappingData varData = new VarMappingData();
+                        varData.isInput = false;
+                        varData.fieldName = curPort.fieldInfo.Name;
+                        varData.varName = varNodeView.target.Name;
+                        this.target.VarMappings.Add(varData);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        /// <summary>
+        /// 默认端口断开方法
+        /// </summary>
+        protected virtual void DefaultPortDisconnect(NodePort curPort, NodePort tarPort)
+        {
+            if (curPort.direction == Direction.Input)
+            {
+                //入端口
+                switch (tarPort.node)
+                {
+                    case VarNodeView varNodeView:
+                        if (curPort.fieldInfo == null)
+                            break;
+                        VarMappingData varData = this.target.VarMappings.FirstOrDefault(a => a.isInput = true && a.fieldName == curPort.fieldInfo.Name && a.varName == varNodeView.target.Name);
+                        if (varData != null)
+                            this.target.VarMappings.Remove(varData);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                //出端口
+                switch (tarPort.node)
+                {
+                    case VarNodeView varNodeView:
+                        if (curPort.fieldInfo == null)
+                            break;
+                        VarMappingData varData = this.target.VarMappings.FirstOrDefault(a => a.isInput = false && a.fieldName == curPort.fieldInfo.Name && a.varName == varNodeView.target.Name);
+                        if (varData != null)
+                            this.target.VarMappings.Remove(varData);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
         /// <summary>
         /// 添加一个UI元素到节点视图中
         /// </summary>

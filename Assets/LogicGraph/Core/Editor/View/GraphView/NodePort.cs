@@ -22,7 +22,13 @@ namespace Game.Logic.Editor
         /// <param name="result">默认计算的结果</param>
         /// <param name="port">等待计算的端口</param>
         /// <returns></returns>
-        public delegate bool CheckPortFunc(bool result, NodePort port);
+        public delegate bool PortCanLinkFunc(bool result, NodePort port);
+        /// <summary>
+        /// 当端口连接状态发生改变时候
+        /// </summary>
+        /// <param name="curPort">当前端口</param>
+        /// <param name="tarPort">目标端口</param>
+        public delegate void PortModifyAction(NodePort curPort, NodePort tarPort);
         private const string STYLE_PATH = "GraphView/NodePort.uss";
         private const string PORT_TYPE_CLASS = "base_port";
 
@@ -71,20 +77,20 @@ namespace Game.Logic.Editor
         /// 可以连接到某个端口
         /// Out端口调用
         /// </summary>
-        public event CheckPortFunc onCanLinkPort;
+        public event PortCanLinkFunc onCanLinkPort;
         /// <summary>
         /// 是否接受某个端口的连接
         /// In端口调用
         /// </summary>
-        public event CheckPortFunc onAcceptPort;
+        public event PortCanLinkFunc onAcceptPort;
         /// <summary>
         /// 添加一个端口
         /// </summary>
-        public event Action<NodePort> onAddPort;
+        public event PortModifyAction onAddPort;
         /// <summary>
         /// 删除一个端口
         /// </summary>
-        public event Action<NodePort> onDelPort;
+        public event PortModifyAction onDelPort;
 
 
         public NodePort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type) : base(portOrientation, portDirection, portCapacity, type)
@@ -92,39 +98,39 @@ namespace Game.Logic.Editor
             this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
             this.AddToClassList("Port_" + direction);
         }
-        /// <summary>
-        /// 添加一个端口
-        /// 进出端口都会调用
-        /// </summary>
-        /// <param name="port">添加的端口</param>
-        internal void AddPort(NodePort port)
-        {
-            if (onAddPort != null)
-            {
-                onAddPort.Invoke(port);
-            }
-            if (_varElement != null)
-            {
-                _varElement.Hide();
-            }
-        }
+        ///// <summary>
+        ///// 添加一个端口
+        ///// 进出端口都会调用
+        ///// </summary>
+        ///// <param name="port">添加的端口</param>
+        //internal void AddPort(NodePort port)
+        //{
+        //    if (onAddPort != null)
+        //    {
+        //        onAddPort.Invoke(this, port);
+        //    }
+        //    if (_varElement != null)
+        //    {
+        //        _varElement.Hide();
+        //    }
+        //}
 
-        /// <summary>
-        /// 删除一个端口
-        /// 进出端口都会调用
-        /// </summary>
-        /// <param name="port">删除的端口</param>
-        internal void DelPort(NodePort port)
-        {
-            if (onDelPort != null)
-            {
-                onDelPort.Invoke(port);
-            }
-            if (_varElement != null)
-            {
-                _varElement.Show();
-            }
-        }
+        ///// <summary>
+        ///// 删除一个端口
+        ///// 进出端口都会调用
+        ///// </summary>
+        ///// <param name="port">删除的端口</param>
+        //internal void DelPort(NodePort port)
+        //{
+        //    if (onDelPort != null)
+        //    {
+        //        onDelPort.Invoke(this, port);
+        //    }
+        //    if (_varElement != null)
+        //    {
+        //        _varElement.Show();
+        //    }
+        //}
 
         public override void Connect(Edge edge)
         {
@@ -132,7 +138,7 @@ namespace Game.Logic.Editor
             NodePort tempPort = edge.input == this ? edge.output as NodePort : edge.input as NodePort;
             if (onAddPort != null)
             {
-                onAddPort.Invoke(tempPort);
+                onAddPort.Invoke(this, tempPort);
             }
             if (_varElement != null)
             {
@@ -145,12 +151,21 @@ namespace Game.Logic.Editor
             NodePort tempPort = edge.input == this ? edge.output as NodePort : edge.input as NodePort;
             if (onDelPort != null)
             {
-                onDelPort.Invoke(tempPort);
+                onDelPort.Invoke(this, tempPort);
             }
             if (_varElement != null)
             {
                 _varElement.Show();
             }
+        }
+
+        internal void DrawLink(EdgeView edge)
+        {
+            if (this._varElement != null)
+            {
+                this._varElement.Hide();
+            }
+            base.Connect(edge);
         }
 
         /// <summary>
@@ -163,7 +178,6 @@ namespace Game.Logic.Editor
         {
             bool result = m_internalCheckLink(port);
 
-
             if (onCanLinkPort != null)
             {
                 result = onCanLinkPort.Invoke(result, port);
@@ -171,20 +185,20 @@ namespace Game.Logic.Editor
             return result;
         }
 
-        /// <summary>
-        /// 是否接受某个端口的连接
-        /// In端口调用
-        /// </summary>
-        /// <param name="port">等待连接的Out端口</param>
-        internal bool AcceptPort(NodePort port)
-        {
-            bool result = m_internalCheckLink(port);
-            if (onAcceptPort != null)
-            {
-                result = onAcceptPort.Invoke(result, port);
-            }
-            return result;
-        }
+        ///// <summary>
+        ///// 是否接受某个端口的连接
+        ///// In端口调用
+        ///// </summary>
+        ///// <param name="port">等待连接的Out端口</param>
+        //internal bool AcceptPort(NodePort port)
+        //{
+        //    bool result = m_internalCheckLink(port);
+        //    if (onAcceptPort != null)
+        //    {
+        //        result = onAcceptPort.Invoke(result, port);
+        //    }
+        //    return result;
+        //}
 
         internal void m_initialize()
         {
@@ -226,14 +240,19 @@ namespace Game.Logic.Editor
 
             bool curBase = this.ClassListContains(PORT_TYPE_CLASS);
             bool tarBase = port.ClassListContains(PORT_TYPE_CLASS);
-
             if (curBase && tarBase)
             {
                 result = true;
             }
+            else if (port.direction == Direction.Input && port.fieldInfo != null && port.connections.Count() > 0)
+            {
+                result = false;
+            }
             else if (this.portType == port.portType)
             {
                 if (this.node is VarNodeView && port.node is VarNodeView)
+                    result = false;
+                else if (this.node is BaseNodeView && port.node is BaseNodeView && !curBase && !tarBase)
                     result = false;
                 else
                     result = true;
