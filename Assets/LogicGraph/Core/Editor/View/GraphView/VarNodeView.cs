@@ -62,15 +62,10 @@ namespace Game.Logic.Editor
             {
                 var nodeView = owner.GetNodeView(a.NodeId) as BaseNodeView;
                 var nodePort = nodeView.GetPortByFieldName(a.NodeFieldName, !a.IsIn);
-                EdgeView edgeView = new EdgeView();
-                edgeView.input = a.IsIn ? Input : nodePort;
-                edgeView.output = a.IsIn ? nodePort : OutPut;
                 if (a.IsIn)
-                    Input.DrawLink(edgeView);
+                    NodePort.JusrLinkPort(nodePort, Input);
                 else
-                    OutPut.DrawLink(edgeView);
-                nodePort.DrawLink(edgeView);
-                owner.AddElement(edgeView);
+                    NodePort.JusrLinkPort(OutPut, nodePort);
             });
         }
 

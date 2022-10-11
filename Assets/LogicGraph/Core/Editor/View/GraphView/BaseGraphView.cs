@@ -76,7 +76,11 @@ namespace Game.Logic.Editor
         /// </summary>
         private Queue<int> _unusedIds = new Queue<int>();
 
-        private Dictionary<int, Node> _nodeCacheDic = new Dictionary<int, Node>();
+        /// <summary>
+        /// 节点视图的全部缓存，目前缓存节点试图和变量视图
+        /// </summary>
+        //TODO: 后续需要把变量视图取消掉
+        private Dictionary<int, Node> _nodeViewCacheDic = new Dictionary<int, Node>();
         /// <summary>
         /// 可以连接的端口
         /// </summary>
@@ -118,6 +122,14 @@ namespace Game.Logic.Editor
                 a.target = target.GetNode(a.OnlyId);
                 m_showNodeView(a);
             });
+
+            foreach (var item in _nodeViewCacheDic)
+            {
+                if (item.Value is BaseNodeView nodeView)
+                {
+                    nodeView.DrawLink();
+                }
+            }
             editorData.VarDatas.RemoveAll(a => target.GetVar(a.Name) == null);
             target.Variables.RemoveAll(a => editorData.VarDatas.FirstOrDefault(b => a.Name == b.Name) == null);
             editorData.VarDatas.ForEach(a => { a.target = target.GetVar(a.Name); });
@@ -148,14 +160,14 @@ namespace Game.Logic.Editor
         /// <returns></returns>
         public bool HasNodeView(int nodeId)
         {
-            return _nodeCacheDic.ContainsKey(nodeId);
+            return _nodeViewCacheDic.ContainsKey(nodeId);
         }
         /// <summary>
         /// 获取一个节点视图
         /// </summary>
         /// <param name="nodeId">节点唯一ID</param>
         /// <returns></returns>
-        public Node GetNodeView(int nodeId) => HasNodeView(nodeId) ? _nodeCacheDic[nodeId] : null;
+        public Node GetNodeView(int nodeId) => HasNodeView(nodeId) ? _nodeViewCacheDic[nodeId] : null;
         /// <summary>
         /// 添加一个节点
         /// </summary>
@@ -285,7 +297,7 @@ namespace Game.Logic.Editor
                         _canLinkPorts.Add(tarPort);
                 }
             }
-        End: return _canLinkPorts;
+            End: return _canLinkPorts;
         }
 
     }
@@ -493,7 +505,7 @@ namespace Game.Logic.Editor
             nodeView.Initialize(this, editorData);
             nodeView.ShowUI();
             nodeView.SetPosition(new Rect(editorData.Pos, Vector2.one));
-            _nodeCacheDic.Add(editorData.OnlyId, nodeView);
+            _nodeViewCacheDic.Add(editorData.OnlyId, nodeView);
         }
 
         /// <summary>
@@ -504,7 +516,7 @@ namespace Game.Logic.Editor
             VarNodeView nodeView = new VarNodeView();
             this.AddElement(nodeView);
             nodeView.Initialize(this, varNodeEditor);
-            _nodeCacheDic.Add(varNodeEditor.OnlyId, nodeView);
+            _nodeViewCacheDic.Add(varNodeEditor.OnlyId, nodeView);
         }
 
         /// <summary>

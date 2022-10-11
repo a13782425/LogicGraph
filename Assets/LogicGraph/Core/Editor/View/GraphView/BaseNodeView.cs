@@ -114,7 +114,6 @@ namespace Game.Logic.Editor
             this.editorData = editorData;
             m_initTitle();
             this.title = editorData.Title;
-
             m_initPort();
         }
     }
@@ -149,9 +148,29 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 连接已经连接的线
         /// </summary>
-        public void DrawLink()
+        public virtual void DrawLink()
         {
+            if (this.OutPut == null)
+            {
+                this.target.Childs.Clear();
+                return;
+            }
 
+            List<int> tempList = target.Childs.ToList();
+
+            foreach (var item in tempList)
+            {
+                BaseNodeView nodeView = owner.GetNodeView(item) as BaseNodeView;
+                if (nodeView == null || nodeView.Input == null)
+                {
+                    target.Childs.Remove(item);
+                    continue;
+                }
+                else
+                {
+                    NodePort.JusrLinkPort(this.OutPut, nodeView.Input);
+                }
+            }
         }
         protected NodePort ShowPort(string title, PortDirEnum dir)
         {
