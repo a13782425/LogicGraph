@@ -224,7 +224,7 @@ namespace Game.Logic.Editor
             contentContainer = new VisualElement();
             contentContainer.name = "contentContainer";
             this.rootVisualElement.Add(contentContainer);
-            rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, "LGWindow.uss")));
+            rootVisualElement.styleSheets.Add(LogicUtils.Load<StyleSheet>("Uss/LGWindow.uss"));
             this.rootVisualElement.name = "LGWindow";
             _leftContent = new VisualElement();
             _leftContent.name = "left";
@@ -252,16 +252,16 @@ namespace Game.Logic.Editor
         private void m_initMenuBtns()
         {
             overviewButton = _menuView.AddButton("总览");
-            overviewButton.icon = LogicUtils.GetTexture("flyout_all");
+            overviewButton.icon = LogicUtils.Load<Texture>("Common/flyout_all.png");
 
             loadButton = _menuView.AddButton("打开");
-            loadButton.icon = LogicUtils.GetTexture("flyout_load");
+            loadButton.icon = LogicUtils.Load<Texture>("Common/flyout_load.png");
 
             graphButton = _menuView.AddButton("图");
-            graphButton.icon = LogicUtils.GetTexture("flyout_graph");
+            graphButton.icon = LogicUtils.Load<Texture>("Common/flyout_graph.png");
 
             saveButton = _menuView.AddButton("保存");
-            saveButton.icon = LogicUtils.GetTexture("flyout_save");
+            saveButton.icon = LogicUtils.Load<Texture>("Common/flyout_save.png");
 
             overviewButton.onClick += m_onOverviewClick;
             loadButton.onClick += m_onLoadClick;

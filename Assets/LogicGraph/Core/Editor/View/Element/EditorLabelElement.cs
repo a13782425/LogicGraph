@@ -15,7 +15,7 @@ namespace Game.Logic.Editor
     /// </summary>
     public class EditorLabelElement : VisualElement
     {
-        private const string STYLE_PATH = "Element/EditorLabelElement.uss";
+        private const string STYLE_PATH = "Uss/Element/EditorLabelElement.uss";
         private Label title_label { get; }
         private TextField input_field { get; }
 
@@ -69,7 +69,7 @@ namespace Game.Logic.Editor
 
         public EditorLabelElement(string title)
         {
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
             title_label = new Label(title);
             title_label.name = "title_label";
             this.Add(title_label);

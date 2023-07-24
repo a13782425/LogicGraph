@@ -17,7 +17,7 @@ namespace Game.Logic.Editor
     /// </summary>
     internal class OverviewNode : Node
     {
-        private const string STYLE_PATH = "OverviewGraph/OverviewNode.uss";
+        private const string STYLE_PATH = "Uss/OverviewGraph/OverviewNode.uss";
         public OverviewGraphView onwer { get; }
         public OverviewGroup group { get; }
         private EditorLabelElement title_element { get; }
@@ -34,7 +34,7 @@ namespace Game.Logic.Editor
             onwer = view;
             this.group = group;
             base.capabilities = Capabilities.Selectable;
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
             _contentContainer = new VisualElement();
             this.topContainer.parent.Add(_contentContainer);
             _contentContainer.name = "center";

@@ -15,7 +15,7 @@ namespace Game.Logic.Editor
 {
     public partial class BaseGraphView : GraphView
     {
-        private const string STYLE_PATH = "GraphView/LogicGraphView.uss";
+        private const string STYLE_PATH = "Uss/GraphView/LogicGraphView.uss";
 
         private const int NODE_START_ID = 10000;
 
@@ -90,7 +90,7 @@ namespace Game.Logic.Editor
     {
         public BaseGraphView()
         {
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
             Input.imeCompositionMode = IMECompositionMode.On;
             m_addGridBackGround();
             this.AddManipulator(new ContentDragger());

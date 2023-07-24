@@ -17,7 +17,7 @@ namespace Game.Logic.Editor
     /// </summary>
     internal sealed class VarNodeView : Node
     {
-        private const string STYLE_PATH = "GraphView/VarNodeView.uss";
+        private const string STYLE_PATH = "Uss/GraphView/VarNodeView.uss";
 
         /// <summary>
         /// 入端口
@@ -34,7 +34,7 @@ namespace Game.Logic.Editor
 
         internal VarNodeView()
         {
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
         }
         internal void Initialize(BaseGraphView owner, VarNodeEditorData editorData)
         {

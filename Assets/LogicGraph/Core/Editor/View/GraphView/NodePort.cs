@@ -29,7 +29,7 @@ namespace Game.Logic.Editor
         /// <param name="curPort">当前端口</param>
         /// <param name="tarPort">目标端口</param>
         public delegate void PortModifyAction(NodePort curPort, NodePort tarPort);
-        private const string STYLE_PATH = "GraphView/NodePort.uss";
+        private const string STYLE_PATH = "Uss/GraphView/NodePort.uss";
         private const string PORT_TYPE_CLASS = "base_port";
 
         public BaseGraphView owner { get; private set; }
@@ -99,7 +99,7 @@ namespace Game.Logic.Editor
 
         public NodePort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type) : base(portOrientation, portDirection, portCapacity, type)
         {
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
             this.AddToClassList("Port_" + direction);
         }
         ///// <summary>

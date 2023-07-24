@@ -24,6 +24,10 @@ namespace Game.Logic.Editor
         /// </summary>
         public readonly static string EDITOR_PATH;
         /// <summary>
+        /// 编辑器路径
+        /// </summary>
+        public readonly static string EDITOR_RESOURCE_PATH;
+        /// <summary>
         /// 编辑器样式路径
         /// </summary>
         public readonly static string EDITOR_STYLE_PATH;
@@ -48,13 +52,14 @@ namespace Game.Logic.Editor
             {
                 string path = AssetDatabase.GUIDToAssetPath(item);
                 MonoScript monoScript = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
-                if (monoScript.GetClass() == lgType)
+                if (monoScript != null && monoScript.GetClass() == lgType)
                 {
                     EDITOR_PATH = Path.GetDirectoryName(path);
                     break;
                 }
             }
             EDITOR_STYLE_PATH = Path.Combine(EDITOR_PATH, "Style");
+            EDITOR_RESOURCE_PATH = Path.Combine(EDITOR_PATH, "_Resources");
             PORT_CUBE = "cube";
             MIN_SIZE = new Vector2(640, 360);
             _logicMessage = new LogicMessage();
@@ -65,13 +70,14 @@ namespace Game.Logic.Editor
     partial class LogicUtils
     {
         /// <summary>
-        /// 获取resource下的图片
+        /// 加载_Resources文件夹下的资源
         /// </summary>
-        /// <param name="textureName"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
         /// <returns></returns>
-        public static Texture GetTexture(string textureName)
+        public static T Load<T>(string path) where T : UnityEngine.Object
         {
-            return Resources.Load<Texture>(textureName);
+            return AssetDatabase.LoadAssetAtPath<T>(Path.Combine(EDITOR_RESOURCE_PATH, path));
         }
 
         /// <summary>

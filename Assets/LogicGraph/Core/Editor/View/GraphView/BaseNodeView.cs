@@ -20,7 +20,7 @@ namespace Game.Logic.Editor
     /// </summary>
     public partial class BaseNodeView : Node
     {
-        private const string STYLE_PATH = "GraphView/BaseNodeView.uss";
+        private const string STYLE_PATH = "Uss/GraphView/BaseNodeView.uss";
         /// <summary>
         /// 可编辑的标题
         /// </summary>
@@ -100,7 +100,7 @@ namespace Game.Logic.Editor
     {
         public BaseNodeView()
         {
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
             _nodeContent = new VisualElement();
             _nodeContent.name = "nodeContent";
             this.topContainer.parent.Add(_nodeContent);

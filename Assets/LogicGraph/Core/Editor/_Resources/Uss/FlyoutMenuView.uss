@@ -28,7 +28,7 @@
 #headerContainer > .headerIcon{
     width: 24px;
     height: 24px;
-    background-image: resource("flyout_hide");
+    background-image: url("../Common/flyout_hide.png");
     margin: 4px;
 }
 

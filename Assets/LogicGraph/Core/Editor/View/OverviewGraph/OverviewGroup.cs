@@ -16,7 +16,7 @@ namespace Game.Logic.Editor
     /// </summary>
     internal class OverviewGroup : Scope
     {
-        private const string STYLE_PATH = "OverviewGraph/OverviewGroup.uss";
+        private const string STYLE_PATH = "Uss/OverviewGraph/OverviewGroup.uss";
         private const int NODE_WIDTH = 180;
         public OverviewGraphView onwer { get; }
 
@@ -31,11 +31,10 @@ namespace Game.Logic.Editor
         {
             base.capabilities |= Capabilities.Selectable;
             onwer = view;
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
             title_label = new Label("默认逻辑图");
             this.headerContainer.Add(title_label);
             this.AddManipulator(new ContextualMenuManipulator(BuildContextualMenu));
-            ;
         }
         /// <summary>
         /// 初始化

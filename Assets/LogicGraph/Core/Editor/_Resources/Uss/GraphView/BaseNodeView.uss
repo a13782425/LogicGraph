@@ -34,11 +34,11 @@
 }
 
 #title > .lock{
-    background-image: resource("node_lock");
+    background-image: url("../../Common/node_lock.png");
 }
 
 #title > .unlock{
-    background-image: resource("node_unlock");
+    background-image: url("../../Common/node_unlock.png");
 }
 #run-state{
 	align-self: center;
@@ -49,7 +49,7 @@
 }
 #run-state.run-state-shape{
     /*-unity-background-image-tint-color: red;*/
-    background-image: resource("node_shape");
+    background-image: url("../../Common/node_shape.png");
 }
 #lock-icon{
 	align-self: center;

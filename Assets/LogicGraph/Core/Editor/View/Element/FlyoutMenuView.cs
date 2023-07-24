@@ -14,7 +14,7 @@ namespace Game.Logic.Editor
     //抄FluidSideMenu
     public sealed class FlyoutMenuView : VisualElement
     {
-        private const string STYLE_PATH = "FlyoutMenuView.uss";
+        private const string STYLE_PATH = "Uss/FlyoutMenuView.uss";
 
         /// <summary>
         /// 当前界面属于哪个窗口
@@ -41,7 +41,7 @@ namespace Game.Logic.Editor
         public FlyoutMenuView(LGWindow lgwindow)
         {
             owner = lgwindow;
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
             buttons = new List<FlyoutButton>();
             layoutContainer = new VisualElement();
             layoutContainer.AddToClassList("FlyoutMenuView");

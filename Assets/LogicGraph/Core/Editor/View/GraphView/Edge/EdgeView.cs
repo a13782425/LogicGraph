@@ -12,13 +12,13 @@ namespace Game.Logic.Editor
 {
     internal sealed class EdgeView : Edge
     {
-        private const string STYLE_PATH = "GraphView/EdgeView.uss";
+        private const string STYLE_PATH = "Uss/GraphView/EdgeView.uss";
         public bool isConnected = false;
         //private BaseGraphView owner => ((input ?? output) as PortView).owner.owner;
 
         public EdgeView() : base()
         {
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
         }
 
         //public override void OnPortChanged(bool isInput)

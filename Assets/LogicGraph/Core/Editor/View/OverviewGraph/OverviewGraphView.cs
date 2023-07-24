@@ -17,7 +17,7 @@ namespace Game.Logic.Editor
     /// </summary>
     internal class OverviewGraphView : GraphView
     {
-        private const string STYLE_PATH = "OverviewGraph/OverviewGraphView.uss";
+        private const string STYLE_PATH = "Uss/OverviewGraph/OverviewGraphView.uss";
         public LGWindow onwer { get; }
         private CreateGraphSearchWindow _createLGSearch;
         private List<OverviewGroup> _groups = new List<OverviewGroup>();
@@ -25,7 +25,7 @@ namespace Game.Logic.Editor
         {
             Input.imeCompositionMode = IMECompositionMode.On;
             onwer = window;
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new ClickSelector());

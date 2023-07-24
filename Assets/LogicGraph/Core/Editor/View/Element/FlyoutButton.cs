@@ -12,7 +12,7 @@ namespace Game.Logic.Editor
 {
     public class FlyoutButton : VisualElement
     {
-        private const string STYLE_PATH = "FlyoutButton.uss";
+        private const string STYLE_PATH = "Uss/FlyoutButton.uss";
 
         public event Action<ClickEvent> onClick;
 
@@ -25,7 +25,7 @@ namespace Game.Logic.Editor
 
         public FlyoutButton()
         {
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
             _tabIcon = new Image();
             _tabIcon.name = "tabIcon";
             this.Add(_tabIcon);

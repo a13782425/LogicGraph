@@ -17,7 +17,7 @@ namespace Game.Logic.Editor
     /// </summary>
     internal sealed class GraphVariableView : Blackboard
     {
-        private const string STYLE_PATH = "GraphView/GraphVariableView.uss";
+        private const string STYLE_PATH = "Uss/GraphView/GraphVariableView.uss";
         private BaseGraphView onwer;
 
         private VisualElement root;
@@ -27,7 +27,7 @@ namespace Game.Logic.Editor
 
         public GraphVariableView()
         {
-            this.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(LogicUtils.EDITOR_STYLE_PATH, STYLE_PATH)));
+            this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
             scrollView = new ScrollView(ScrollViewMode.Vertical);
             scrollView.horizontalScroller.RemoveFromHierarchy();
             root = this.Q("content");

@@ -51,15 +51,15 @@ FlyoutButton.hide{
 	padding-left: 0px;
 }
 #tabIcon.overview{
-	background-image: resource("flyout_all");
+	background-image: url("../Common/flyout_all.png");
 }
 
 #tabIcon.load{
-	background-image: resource("flyout_load");
+	background-image: url("../Common/flyout_load.png");
 }
 #tabIcon.graph{
-	background-image: resource("flyout_graph");
+	background-image:  url("../Common/flyout_graph.png");
 }
 #tabIcon.save{
-	background-image: resource("flyout_save");
+	background-image:  url("../Common/flyout_save.png");
 }
