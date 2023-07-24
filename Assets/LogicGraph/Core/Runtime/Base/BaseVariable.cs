@@ -48,7 +48,6 @@ namespace Game.Logic.Runtime
     [Serializable]
     public class ColorVariable : BaseVariable<Color>
     {
-
     }
     [Serializable]
     public class FloatVariable : BaseVariable<float>
@@ -57,42 +56,22 @@ namespace Game.Logic.Runtime
     [Serializable]
     public class IntVariable : BaseVariable<int>
     {
-        //    [SerializeField]
-        //    private int val = default;
-        //    public override object Value { get => val; set => val = (int)value; }
-        //    public override Type GetValueType() => typeof(int);
     }
     [Serializable]
     public class StringVariable : BaseVariable<string>
     {
-        //    [SerializeField]
-        //    private string val = "";
-        //    public override object Value { get => val; set => val = (string)value; }
-        //    public override Type GetValueType() => typeof(string);
     }
     [Serializable]
     public class Vector2Variable : BaseVariable<Vector2>
     {
-        //    [SerializeField]
-        //    private Vector2 val = default;
-        //    public override object Value { get => val; set => val = (Vector2)value; }
-        //    public override Type GetValueType() => typeof(Vector2);
     }
 
     [Serializable]
     public class Vector3Variable : BaseVariable<Vector3>
     {
-        //    [SerializeField]
-        //    private Vector3 val = default;
-        //    public override object Value { get => val; set => val = (Vector3)value; }
-        //    public override Type GetValueType() => typeof(Vector3);
     }
     [Serializable]
     public class BoolVariable : BaseVariable<bool>
     {
-        //    [SerializeField]
-        //    private bool val = default;
-        //    public override object Value { get => val; set => val = (bool)value; }
-        //    public override Type GetValueType() => typeof(bool);
     }
 }

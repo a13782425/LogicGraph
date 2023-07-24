@@ -168,7 +168,7 @@ namespace Game.Logic.Editor
                 }
                 else
                 {
-                    NodePort.JusrLinkPort(this.OutPut, nodeView.Input);
+                    NodePort.JustLinkPort(this.OutPut, nodeView.Input);
                 }
             }
         }
@@ -234,7 +234,6 @@ namespace Game.Logic.Editor
             evt.menu.AppendAction("查看节点代码", m_onOpenNodeScript);
             evt.menu.AppendAction("查看界面代码", m_onOpenNodeViewScript);
             evt.menu.AppendSeparator();
-            //evt.menu.AppendAction("删除", (a) => owner.DeleteSelection());
             evt.StopPropagation();
         }
         public override void SetPosition(Rect newPos)
@@ -546,8 +545,8 @@ namespace Game.Logic.Editor
             this.Insert(0, inputContainer);
             this.Add(outputContainer);
             this.Insert(1, titleContainer);
-            this.AddToClassList("vertical-layout");
-            //outputContainer.AddToClassList("vertical-layout");
+            inputContainer.AddToClassList("vertical-layout");
+            outputContainer.AddToClassList("vertical-layout");
         }
         /// <summary>
         /// 端口水平布局

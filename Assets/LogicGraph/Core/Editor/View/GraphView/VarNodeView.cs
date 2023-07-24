@@ -63,9 +63,9 @@ namespace Game.Logic.Editor
                 var nodeView = owner.GetNodeView(a.NodeId) as BaseNodeView;
                 var nodePort = nodeView.GetPortByFieldName(a.NodeFieldName, !a.IsIn);
                 if (a.IsIn)
-                    NodePort.JusrLinkPort(nodePort, Input);
+                    NodePort.JustLinkPort(nodePort, Input);
                 else
-                    NodePort.JusrLinkPort(OutPut, nodePort);
+                    NodePort.JustLinkPort(OutPut, nodePort);
             });
         }
 

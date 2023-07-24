@@ -83,11 +83,6 @@ namespace Game.Logic.Editor
         /// </summary>
         public event PortCanLinkFunc onCanLinkPort;
         /// <summary>
-        /// 是否接受某个端口的连接
-        /// In端口调用
-        /// </summary>
-        //public event PortCanLinkFunc onAcceptPort;
-        /// <summary>
         /// 添加一个端口
         /// </summary>
         public event PortModifyAction onAddPort;
@@ -102,39 +97,6 @@ namespace Game.Logic.Editor
             this.styleSheets.Add(LogicUtils.Load<StyleSheet>(STYLE_PATH));
             this.AddToClassList("Port_" + direction);
         }
-        ///// <summary>
-        ///// 添加一个端口
-        ///// 进出端口都会调用
-        ///// </summary>
-        ///// <param name="port">添加的端口</param>
-        //internal void AddPort(NodePort port)
-        //{
-        //    if (onAddPort != null)
-        //    {
-        //        onAddPort.Invoke(this, port);
-        //    }
-        //    if (_varElement != null)
-        //    {
-        //        _varElement.Hide();
-        //    }
-        //}
-
-        ///// <summary>
-        ///// 删除一个端口
-        ///// 进出端口都会调用
-        ///// </summary>
-        ///// <param name="port">删除的端口</param>
-        //internal void DelPort(NodePort port)
-        //{
-        //    if (onDelPort != null)
-        //    {
-        //        onDelPort.Invoke(this, port);
-        //    }
-        //    if (_varElement != null)
-        //    {
-        //        _varElement.Show();
-        //    }
-        //}
 
         public override void Connect(Edge edge)
         {
@@ -163,8 +125,6 @@ namespace Game.Logic.Editor
             }
         }
 
-
-
         /// <summary>
         /// 可以连接到某个端口
         /// Out端口调用
@@ -181,21 +141,6 @@ namespace Game.Logic.Editor
             }
             return result;
         }
-
-        ///// <summary>
-        ///// 是否接受某个端口的连接
-        ///// In端口调用
-        ///// </summary>
-        ///// <param name="port">等待连接的Out端口</param>
-        //internal bool AcceptPort(NodePort port)
-        //{
-        //    bool result = m_internalCheckLink(port);
-        //    if (onAcceptPort != null)
-        //    {
-        //        result = onAcceptPort.Invoke(result, port);
-        //    }
-        //    return result;
-        //}
 
         internal void m_initialize()
         {
@@ -299,6 +244,7 @@ namespace Game.Logic.Editor
             port.node = node;
             port.owner = graphView;
             port.AddManipulator(port.m_EdgeConnector);
+            //port.AddToClassList("vertical-layout");
             port.m_initialize();
             port.fieldInfo = field;
             return port;
@@ -309,7 +255,7 @@ namespace Game.Logic.Editor
         /// </summary>
         /// <param name="outPut"></param>
         /// <param name="input"></param>
-        public static void JusrLinkPort(NodePort outPut, NodePort input)
+        public static void JustLinkPort(NodePort outPut, NodePort input)
         {
             EdgeView edgeView = new EdgeView();
             edgeView.input = input;

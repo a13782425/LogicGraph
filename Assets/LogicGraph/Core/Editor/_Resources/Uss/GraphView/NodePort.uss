@@ -18,6 +18,11 @@ NodePort.output {
     padding-left : 0px;
     padding-right : 0px;
 }
+NodePort.output.vertical-layout {
+    flex-direction: row;
+    padding-left : 0px;
+    padding-right : 0px;
+}
 
 NodePort > #connector {
     border-color: rgb(255, 255, 0);

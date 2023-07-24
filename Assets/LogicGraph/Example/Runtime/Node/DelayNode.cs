@@ -12,8 +12,10 @@ namespace Game.Logic.Example
         [Output("延时2")]
         public string delayTime2;
         [Input("测试")]
+        [SerializeReference]
         public DebugNode node;
         [Output("测试2")]
+        [SerializeReference]
         public DebugNode node2;
     }
 }

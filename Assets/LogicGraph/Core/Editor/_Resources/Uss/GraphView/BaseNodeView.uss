@@ -128,3 +128,15 @@
     overflow: hidden;
     padding-right: 1px;
 }
+#input{
+    align-items: stretch;
+}
+#output{
+    align-items: stretch;
+}
+#input.vertical-layout{
+    align-items: center;
+}
+#output.vertical-layout{
+    align-items: center;
+}

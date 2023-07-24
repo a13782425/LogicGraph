@@ -1,0 +1,919 @@
+﻿
+:root{
+    /*metrics*/
+    --unity-metrics-default-border_radius: 3px;
+    --unity-metrics-inspector_titlebar-height: 22px;
+    --unity-metrics-single_line-height: 18px;
+    --unity-metrics-single_line_large-height: 2 s0px;
+    --unity-metrics-single_line_small-height: 16px;
+    --unity-metrics-toolbar-height: 21px;
+    --unity-metrics-toolbar_button-height: 20px;
+/*colors*/
+    /*alternated_rows*/
+    --unity-colors-alternated_rows-background: #3F3F3F;
+    /*app_toolbar*/
+    --unity-colors-app_toolbar-background: #191919;
+    /* app_toolbar_button*/
+    --unity-colors-app_toolbar_button-background: #383838;
+    --unity-colors-app_toolbar_button-background-checked: #6A6A6A;
+    --unity-colors-app_toolbar_button-background-hover: #424242;
+    --unity-colors-app_toolbar_button-background-pressed: #6A6A6A;
+    --unity-colors-app_toolbar_button-border: #191919;
+    --unity-colors-app_toolbar_button-border_accent: #222222;
+    /*box*/
+    --unity-colors-box-background: rgba(40, 40, 40, 0.3019608);
+    --unity-colors-box-border: transparent;
+    /*button*/
+    --unity-colors-button-background: #585858;
+    --unity-colors-button-background-focus: #6E6E6E;
+    --unity-colors-button-background-hover: #676767;
+    --unity-colors-button-background-pressed: #353535;
+    --unity-colors-button-border: #303030;
+    --unity-colors-button-border_accent: #242424;
+    --unity-colors-button-border-pressed: #0D0D0D;
+    --unity-colors-button-text: #EEEEEE;
+    /*default*/
+    --unity-colors-default-background: #282828;
+    --unity-colors-default-border: #232323;
+    --unity-colors-default-text: #D2D2D2;
+    --unity-colors-default-text-hover: #BDBDBD;
+    /*dropdown*/
+    --unity-colors-dropdown-background: #515151;
+    --unity-colors-dropdown-background-hover: #585858;
+    --unity-colors-dropdown-border: #303030;
+    --unity-colors-dropdown-border_accent: #242424;
+    --unity-colors-dropdown-text: #E4E4E4;
+    /*error*/
+    --unity-colors-error-text: #D32222;
+    /*helpbox*/
+    --unity-colors-helpbox-background: rgba(96, 96, 96, 0.2039216);
+    --unity-colors-helpbox-border: #232323;
+    --unity-colors-helpbox-text: #BDBDBD;
+    /*highlight*/
+    --unity-colors-highlight-background: #2C5D87;
+    --unity-colors-highlight-background-hover: rgba(256, 256, 256, 0.0627451);
+    --unity-colors-highlight-background-inactive: #4D4D4D;
+    --unity-colors-highlight-text: #4C7EFF;
+    --unity-colors-highlight-text-inactive: #FFFFFF;
+    /*input_field*/
+    --unity-colors-input_field-background: #2A2A2A;
+    --unity-colors-input_field-border: #212121;
+    --unity-colors-input_field-border_accent: #0D0D0D;
+    --unity-colors-input_field-border-focus: #3A79BB;
+    --unity-colors-input_field-border-hover: #656565;
+    /*inspector_titlebar*/
+    --unity-colors-inspector_titlebar-background: #3E3E3E;
+    --unity-colors-inspector_titlebar-background-hover: #474747;
+    --unity-colors-inspector_titlebar-border: #1A1A1A;
+    --unity-colors-inspector_titlebar-border_accent: #303030;
+    /*label*/
+    --unity-colors-label-text: #C4C4C4;
+    --unity-colors-label-text-focus: #81B4FF;
+    /*link*/
+    --unity-colors-link-text: #4C7EFF;
+    /*object_field*/
+    --unity-colors-object_field-background: #282828;
+    --unity-colors-object_field-border: #202020;
+    --unity-colors-object_field-border-focus: #3A79BB;
+    --unity-colors-object_field-border-hover: #656565;
+    /*object_field_button*/
+    --unity-colors-object_field_button-background: #373737;
+    --unity-colors-object_field_button-background-hover: #4C4C4C;
+    /*play_mode*/
+    --unity-colors-play_mode-background: #606060;
+    /*popup*/
+    --unity-colors-popup-background: #313131;
+    /*preview*/
+    --unity-colors-preview-background: #313131;
+    --unity-colors-preview-border: #232323;
+    --unity-colors-preview-text: #BDBDBD;
+    /*preview_overlay*/
+    --unity-colors-preview_overlay-text: #DEDEDE;
+    /*progress*/
+    --unity-colors-progress-background: #303030;
+    /*scrollbar_button*/
+    --unity-colors-scrollbar_button-background: rgba(0, 0, 0, 0.05098039);
+    --unity-colors-scrollbar_button-background-hover: #494949;
+    /*scrollbar_groove*/
+    --unity-colors-scrollbar_groove-background: rgba(0, 0, 0, 0.05098039);
+    --unity-colors-scrollbar_groove-border: rgba(0, 0, 0, 0.1019608);
+    /*scrollbar_thumb*/
+    --unity-colors-scrollbar_thumb-background: #5F5F5F;
+    --unity-colors-scrollbar_thumb-background-hover: #686868;
+    --unity-colors-scrollbar_thumb-border: #323232;
+    --unity-colors-scrollbar_thumb-border-hover: #686868;
+    /*slider_groove*/
+    --unity-colors-slider_groove-background: #5E5E5E;
+    --unity-colors-slider_groove-background-disabled: #575757;
+    /*slider_thumb*/
+    --unity-colors-slider_thumb-background: #999999;
+    --unity-colors-slider_thumb-background-disabled: #666666;
+    --unity-colors-slider_thumb-background-hover: #EAEAEA;
+    --unity-colors-slider_thumb-border: #999999;
+    --unity-colors-slider_thumb-border-disabled: #666666;
+    /*slider_thumb_halo*/
+    --unity-colors-slider_thumb_halo-background: rgba(16, 111, 205, 0.5019608);
+    /*tab*/
+    --unity-colors-tab-background: #353535;
+    --unity-colors-tab-background-checked: #3C3C3C;
+    --unity-colors-tab-background-hover: #303030;
+    --unity-colors-tab-text: #BDBDBD;
+    /*toolbar*/
+    --unity-colors-toolbar-background: #3C3C3C;
+    --unity-colors-toolbar-border: #232323;
+    /*toolbar_button*/
+    --unity-colors-toolbar_button-background: #3C3C3C;
+    --unity-colors-toolbar_button-background-checked: #505050;
+    --unity-colors-toolbar_button-background-focus: #464646;
+    --unity-colors-toolbar_button-background-hover: #464646;
+    --unity-colors-toolbar_button-border: #232323;
+    --unity-colors-toolbar_button-text: #C4C4C4;
+    --unity-colors-toolbar_button-text-checked: #C4C4C4;
+    --unity-colors-toolbar_button-text-hover: #BDBDBD;
+    /*visited_link*/
+    --unity-colors-visited_link-text: #FF00FF;
+    /*warning*/
+    --unity-colors-warning-text: #F4BC02;
+    /*window*/
+    --unity-colors-window-background: #383838;
+    --unity-colors-window-border: #242424;
+    --unity-colors-window-text: #BDBDBD
+    --fixed-field-width-m: 120px; /* マイナスfloat値が収まる枠 */
+    --fixed-field-width-s: 60px;
+    --slider-min-width: 248px;
+    --input-border-width: 2px;
+    --cursor-resize-horizontal: resource("cursor_ew") 24 9;
+    --close-icon: resource("close");
+    
+    --logicgraph-gray-button-tint: #A0A0A0;
+
+    --logicgraph-highlight-gray: #606060;
+    --logicgraph-highlight-dark-gray: #404040;
+    --logicgraph-highlight-blue: rgb(0, 150, 230);
+    --logicgraph-highlight-dark-blue: var(--unity-colors-highlight-background);
+
+    --logicgraph-slider-tracker-height: 4px;
+    --logicgraph-slider-tracker-margin-top: -2px; /* half of height */
+    --logicgraph-slider-tracker-border-radius: 3px;
+    
+    --logicgraph-slider-dragger-height: 14px;
+    --logicgraph-slider-dragger-margin-top: -7px; /* half of height */
+    --logicgraph-slider-dragger-border-radius: 7px;
+    
+    --logicgraph-scroller-size: 18px;
+    --logicgraph-scroller-tint-color: #808080;
+    
+    --logicgraph-color-input-background: #181818;
+    --logicgraph-color-window-background: rgba(45, 45, 45, 0.85);
+    --logicgraph-color-window-background-focused: rgba(45, 45, 45, 0.9);
+    --logicgraph-color-box-background: rgba(100,100,100,0.3);
+    --logicgraph-color-list-background: var(--logicgraph-color-box-background);
+    --logicgraph-color-tabs-title-inactive-background: rgba(0,0,0,0.4);
+
+    --logicgraph-button-background-pressed: var(--logicgraph-highlight-dark-blue);
+    
+}
+
+/********************************************************************************
+* Group
+********************************************************************************/
+.logicgraph-column{
+	flex: 1 0 auto;
+}
+.logicgraph-row{
+	flex-direction: row;
+}
+
+.logicgraph-row> * {
+    flex-grow: 1;
+}
+
+.logicgraph-row > .unity-label,
+.logicgraph-row > .unity-button
+{
+    flex-grow: 0;
+}
+
+/********************************************************************************
+* boxshadow
+********************************************************************************/
+.logicgraph-box-shadow {
+    position: absolute;
+    background-image: url("../Common/box-shadow.png");
+    -unity-background-image-tint-color: rgba(0,4,16,0.4);
+
+    border-width: 22px 25px 24px 21px;
+
+    -unity-slice-top: 22;
+    -unity-slice-right: 25;
+    -unity-slice-bottom: 24;
+    -unity-slice-left: 21;
+}
+
+.unity-base-field:focus > .unity-base-field__label {
+    color: var(--unity-colors-highlight-text);
+}
+
+.unity-base-field {
+    margin-left: 0;
+}
+
+.unity-base-field__input{
+    flex-grow: 1;
+    padding: 0;
+    border-width: var(--input-border-width);
+    border-radius: 3px;
+    margin-left: 2px;
+    min-width: var(--fixed-field-width-s);
+    max-width: var(--fixed-field-width-m);
+}
+
+.unity-base-field--no-label > .unity-base-field__input {
+    min-width: initial;
+}
+
+.unity-base-text-field__input
+{
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.unity-base-text-field__input,
+.unity-base-popup-field__input,
+.unity-base-text-field__input:disabled
+{
+    background-color: var(--logicgraph-color-input-background);
+    border-color: var(--unity-colors-input_field-border);
+}
+
+/*.unity-base-text-field__input:disabled {*/
+/*    background-color: var(--unity-colors-highlight-background-inactive);*/
+/*}*/
+
+.unity-base-text-field:hover > .unity-base-field__input {
+    border-color: var(--unity-colors-input_field-border-hover);
+}
+
+.unity-base-text-field:focus > .unity-base-field__input {
+    border-color: var(--unity-colors-input_field-border-focus);
+}
+
+.unity-base-text-field:disabled > .unity-base-field__input {
+    border-color: var(--unity-colors-input_field-border));
+}
+
+ /* status なしのデフォルトでカーソル指定がないと hover の指定で warning メッセージが出る*/
+.unity-base-field__label--with-dragger,
+.unity-base-field__label--with-dragger:disabled
+{
+    cursor: initial;
+}
+
+.unity-base-field__label--with-dragger:hover:enabled
+{
+    cursor: var(--cursor-resize-horizontal);
+}
+
+.unity-base-text-field__input {
+    --unity-cursor-color: var(--unity-colors-default-text);
+}
+
+/********************************************************************************
+* label
+********************************************************************************/
+.unity-label{
+    margin: 1px;
+    padding: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/********************************************************************************
+* text field multiline
+********************************************************************************/
+/* 
+特定のTextField(Rowの子供、ラベルあり、multiline)
+align-self: flex-start
+だとなぜか横幅が伸びてしまう対策
+Unity2022.2.0b6
+ */
+.unity-base-text-field__input--multiline {
+    align-self: auto;
+}
+
+
+/********************************************************************************
+* toggle
+********************************************************************************/
+.unity-toggle {
+    min-height: 28px;
+    margin: 1px 0 3px 0;
+}
+
+.unity-toggle.unity-base-field--no-label
+{
+    flex-grow: 0;
+}
+
+.unity-toggle__input,
+.unity-toggle:disabled > .unity-toggle__input{
+    flex-basis: initial;
+    flex-grow: 0;
+    padding: initial;
+    min-width: auto;
+    border-width: 0;
+}
+
+.unity-toggle > .unity-toggle__input:hover > .unity-toggle__checkmark{
+    border-color: var(--unity-colors-input_field-border-hover);
+}
+
+.unity-toggle > .unity-toggle__input:focus > .unity-toggle__checkmark{
+    border-color: var(--unity-colors-input_field-border-focus);
+}
+
+.unity-toggle__checkmark{
+    border-width: 2px;
+    -unity-background-image-tint-color: var(--unity-colors-default-text);
+}
+
+.unity-toggle__checkmark,
+.unity-toggle > .unity-toggle__input:disabled > .unity-toggle__checkmark,
+.unity-toggle > .unity-toggle__input:checked > .unity-toggle__checkmark
+{
+    border-color: var(--unity-colors-input_field-border);
+    background-color: var(--logicgraph-color-input-background);
+}
+
+.unity-toggle__text{
+    margin: 0;
+}
+
+/********************************************************************************
+* foldout
+********************************************************************************/
+.unity-foldout .unity-base-field__label{
+    min-width: initial; /* remove unity value */
+}
+
+.unity-foldout__toggle
+{
+    height: 32px;
+    margin: 0;
+}
+
+.unity-foldout__toggle:hover
+{
+    background-color: var(--logicgraph-highlight-dark-gray);
+}
+
+.unity-foldout__toggle:focus
+{
+    background-color: var(--logicgraph-highlight-dark-blue);
+}
+
+.unity-foldout__toggle > .unity-toggle__input,
+.unity-foldout__toggle:disabled > .unity-toggle__input /* remove  .unity-toggle:disabled > .unity-toggle__input*/
+{
+    border-width: 0;
+    margin-left: 0;
+    background-color: initial;
+}
+.unity-foldout__toggle > .unity-toggle__input > .unity-toggle__checkmark
+{
+    border-width: 0;
+    margin: 0 2px;
+    -unity-background-image-tint-color: var(--logicgraph-gray-button-tint);
+}
+
+.unity-foldout__toggle > .logicgraph-row
+{
+    flex-grow: 1;
+}
+
+.unity-foldout__toggle > .unity-label {
+    padding-top: 4px;
+}
+
+.unity-foldout__content{
+    margin-left: 0;
+}
+
+/* remove .unity-toggle > .unity-toggle__input:disabled > .unity-toggle__checkmark */
+.unity-foldout__toggle > .unity-toggle__input:disabled > .unity-toggle__checkmark,
+.unity-foldout__toggle > .unity-toggle__input:checked > .unity-toggle__checkmark
+{
+    background-color: initial;
+}
+
+
+/********************************************************************************
+* popup
+********************************************************************************/
+.unity-base-popup-field:hover >.unity-base-popup-field__input,
+.unity-base-popup-field:active >.unity-base-popup-field__input
+{
+    background-color: var(--logicgraph-color-input-background);
+}
+
+.unity-base-popup-field:disabled >.unity-base-popup-field__input
+{
+    background-color: var(--logicgraph-color-input-background);
+    border-color: var(--unity-colors-input_field-border);
+}
+
+.unity-base-popup-field__arrow
+{
+    -unity-background-image-tint-color: var(--logicgraph-gray-button-tint);
+}
+
+.unity-base-popup-field__input{
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+/********************************************************************************
+* dropdown
+********************************************************************************/
+.unity-base-dropdown__container-inner
+{
+    background-color: var(--unity-colors-dropdown-background);
+    border-color: var(--unity-colors-dropdown-border);
+}
+.unity-base-dropdown__checkmark
+{
+    -unity-background-image-tint-color: initial;
+}
+
+
+
+
+/********************************************************************************
+* box
+********************************************************************************/
+.unity-box{
+    background-color: var(--logicgraph-color-box-background);
+    border-color: var(--unity-colors-input_field-border);
+    border-width: 2px;
+    margin: 2px 4px 4px 0;
+}
+
+/********************************************************************************
+* help box
+********************************************************************************/
+.unity-help-box{
+    background-color: var(--logicgraph-color-box-background);
+    border-color: var(--unity-colors-input_field-border);
+}
+
+
+/********************************************************************************
+* button
+********************************************************************************/
+.unity-button
+{
+    border-radius: 3px;
+    border-width: 2px;
+    padding: 2px 4px;
+    margin: 2px;
+    min-width: 30px;
+    
+    border-color: var(--unity-colors-button-border);
+}
+
+.unity-button:focus {
+    background-color: var(--unity-colors-button-background-focus);
+}
+
+.unity-button:hover {
+    background-color: var(--unity-colors-button-background-hover);
+}
+
+.unity-button:active {
+    background-color: var(--logicgraph-button-background-pressed);
+}
+
+.unity-button,
+.unity-button:disabled 
+{
+    background-color: var(--unity-colors-button-background);
+}
+
+/* 縦方向には伸びる */
+.logicgraph-row >.unity-button{
+    align-self: stretch;
+}
+
+/********************************************************************************
+* image
+********************************************************************************/
+.unity-image{
+    align-self: stretch;
+    flex-grow: 1;
+}
+
+/********************************************************************************
+* slider
+********************************************************************************/
+.unity-base-slider__input{
+    border-width: 0;
+}
+
+.unity-base-slider--horizontal .unity-base-slider__dragger{
+    width: 14px;
+    height: var(--logicgraph-slider-dragger-height);
+    margin-top: -7px;
+    border-radius: var(--logicgraph-slider-dragger-border-radius);
+    background-color: var(--unity-colors-slider_thumb-background);
+}
+
+.unity-base-slider--horizontal:focus .unity-base-slider__dragger {
+    background-color: var(--logicgraph-highlight-blue);
+}
+
+.unity-base-slider--horizontal .unity-base-slider__tracker {
+    margin-top: var(--logicgraph-slider-tracker-margin-top);
+    height: var(--logicgraph-slider-tracker-height);
+    border-radius: var(--logicgraph-slider-tracker-border-radius);
+}
+
+.unity-base-slider--horizontal .unity-base-slider__drag-container
+{
+    min-width: var(--slider-min-width);
+}
+
+/* cancel unity default */
+.unity-base-slider--horizontal .unity-base-slider__text-field
+{
+    width: var(--fixed-field-width-m);
+    height: auto;
+    flex-grow: 0;
+}
+
+/********************************************************************************
+* min max slider
+*  unity-min-max-slider__dragger に9sliceの画像をセットしておいて
+*  c#側の unityengine.uielements.minmaxslider が
+*  min/max-thumbを自動的に求めるコードになっている
+********************************************************************************/
+/*
+.unity-min-max-slider{
+    flex-grow: 1;
+}
+*/
+
+.unity-min-max-slider__input {
+    border-width: 0;
+    min-width: var(--slider-min-width);
+}
+
+.unity-min-max-slider__tracker {
+    margin-top: var(--logicgraph-slider-tracker-margin-top);
+    height: var(--logicgraph-slider-tracker-height);
+    border-radius: var(--logicgraph-slider-tracker-border-radius);
+}
+
+.unity-min-max-slider__dragger{
+    margin-top: var(--logicgraph-slider-dragger-margin-top);
+    height: var(--logicgraph-slider-dragger-height);
+    -unity-slice-left: 14;
+    -unity-slice-right: 14;
+    border-width: 0;
+    -unity-background-image-tint-color:#EEEEEE;
+}
+
+.unity-min-max-slider__dragger,
+.unity-min-max-slider__dragger:disabled
+{
+    background-color: transparent;
+}
+
+.unity-min-max-slider__dragger,
+.unity-min-max-slider__input:active > .unity-min-max-slider__dragger:hover, /* cancel unity default */
+.unity-min-max-slider__input:focus > .unity-min-max-slider__dragger /* cancel unity default */
+{
+    background-image: resource("minmax slider thumb act@2x");
+}
+
+
+.logicgraph-min-max-slider > .unity-base-text-field
+{
+    flex-grow: 0;
+    width: var(--fixed-field-width-m);
+}
+
+.unity-min-max-slider__min-thumb,
+.unity-min-max-slider__max-thumb {
+    cursor: var(--cursor-resize-horizontal);
+    border-width: 0;
+
+    margin-top: auto; /* cancel unity default */
+    min-height: auto; /* cancel unity default */
+}
+
+.unity-min-max-slider__min-thumb:disabled,
+.unity-min-max-slider__max-thumb:disabled {
+    cursor: initial;
+}
+
+.unity-min-max-slider__min-thumb,
+.unity-min-max-slider__max-thumb,
+.unity-min-max-slider__min-thumb:disabled,
+.unity-min-max-slider__max-thumb:disabled
+{
+    background-color: transparent;
+    color: transparent;
+}
+
+/*
+.unity-min-max-slider:focus .unity-min-max-slider__dragger,
+.unity-min-max-slider:focus .unity-min-max-slider__min-thumb,
+.unity-min-max-slider:focus .unity-min-max-slider__max-thumb {
+    -unity-background-image-tint-color: var(--logicgraph-highlight-blue);
+}
+*/
+
+/********************************************************************************
+* scroller
+********************************************************************************/
+.unity-scroller--vertical{
+    width: var(--logicgraph-scroller-size);
+}
+.unity-scroller--horizontal {
+    height: var(--logicgraph-scroller-size);
+}
+
+.unity-scroller .unity-base-slider__tracker,
+.unity-scroller:hover .unity-base-slider__tracker{
+    /* cancel unity default */
+    background-color: initial;
+    border-color: initial;
+    
+    margin: 0;
+}
+
+.unity-scroller--horizontal .unity-base-slider__tracker
+{
+    height: 100%;
+}
+
+
+.unity-scroller--vertical > .unity-scroller__low-button,
+.unity-scroller--vertical > .unity-scroller__high-button,
+.unity-scroller--horizontal > .unity-scroller__low-button,
+.unity-scroller--horizontal > .unity-scroller__high-button
+{
+    width: var(--logicgraph-scroller-size);
+    height: var(--logicgraph-scroller-size);
+    background-color: initial;
+    border-width: 0;
+    -unity-background-image-tint-color: var(--logicgraph-scroller-tint-color);
+}
+
+.unity-scroller--vertical > .unity-scroller__low-button:hover,
+.unity-scroller--vertical > .unity-scroller__high-button:hover,
+.unity-scroller--horizontal > .unity-scroller__low-button:hover,
+.unity-scroller--horizontal > .unity-scroller__high-button:hover
+{
+    background-color: var(--logicgraph-highlight-dark-gray);
+}
+
+.unity-scroller--vertical > .unity-scroller__slider
+{
+    width: var(--logicgraph-scroller-size);
+    min-width: var(--logicgraph-scroller-size);
+    margin-top: var(--logicgraph-scroller-size);
+    margin-bottom: var(--logicgraph-scroller-size);
+}
+.unity-scroller--horizontal > .unity-scroller__slider
+{
+    height: var(--logicgraph-scroller-size);
+    min-height: var(--logicgraph-scroller-size);
+    margin-right: var(--logicgraph-scroller-size);
+    margin-left: var(--logicgraph-scroller-size);
+}
+
+
+.unity-scroller--vertical .unity-slider__input,
+.unity-scroller--horizontal .unity-slider__input
+{
+    margin: 0;
+}
+
+.unity-scroller .unity-scroller__slider .unity-base-slider__dragger
+{
+    margin: 0;
+    background-image: resource("circle-fill");
+    background-color: initial;
+    border-width: 0;
+    border-radius: 0;
+    -unity-background-image-tint-color: var(--logicgraph-scroller-tint-color);
+}
+
+.unity-scroller .unity-scroller__slider:hover .unity-base-slider__dragger
+{
+    -unity-background-image-tint-color: var(--logicgraph-scroller-tint-color);
+}
+.unity-scroller .unity-scroller__slider:focus .unity-base-slider__dragger
+{
+    -unity-background-image-tint-color: var(--logicgraph-highlight-dark-blue);
+}
+
+
+.unity-scroller--vertical .unity-base-slider__dragger,
+.unity-scroller--vertical .unity-base-slider__dragger:hover
+{
+    left: 2px;
+    width: 14px;
+    -unity-slice-top: 8;
+    -unity-slice-bottom: 8;
+}
+
+.unity-scroller--horizontal .unity-base-slider__dragger,
+.unity-scroller--horizontal .unity-base-slider__dragger:hover
+{
+    top: 2px;
+    height: 14px;
+    -unity-slice-left: 8;
+    -unity-slice-right: 8;
+}
+
+
+/********************************************************************************
+* ListView
+********************************************************************************/
+.unity-collection-view
+{
+    max-height: initial; /* remove unity default */
+    margin-top: 1px;
+    margin-bottom: 3px;
+}
+
+.unity-collection-view__scroll-view
+{
+    background-color: var(--logicgraph-color-list-background);
+}
+
+.unity-list-view__empty-label
+{
+    height: 34px;
+    padding-left: 8px;
+}
+
+.unity-foldout__toggle > .unity-toggle__input:focus > .unity-label
+{
+    color: var(--unity-colors-default-text); /* remove unity default */
+}
+
+.unity-list-view__item,
+.unity-list-view__item:hover,
+.unity-collection-view__item:hover:enabled,
+.unity-collection-view__item--selected
+{
+    background-color: transparent; /* remove unity default */
+}
+
+.unity-collection-view:focus .unity-collection-view__item--selected
+{
+    background-color: var(--logicgraph-highlight-dark-blue);
+}
+
+.unity-list-view__reorderable-item__container
+{
+    padding-left: 0;
+}
+
+.unity-list-view__reorderable-handle
+{
+    min-width: 26px;
+    padding-top: 13px;
+    align-items: center;
+    justify-content: flex-start; /* for Unity2021. Default in Unity2022 */
+}
+
+.unity-list-view__reorderable-handle-bar
+{
+    opacity: 0.4;
+    height: 2px;
+}
+
+/*.unity-list-view__scroll-view--with-footer,*/
+.unity-list-view__footer
+{
+    background-color: var(--logicgraph-color-list-background);
+    border-width: 0;
+    /*border-color: var(--unity-colors-input_field-border);*/
+    /*border-width: 2px;*/
+    /*margin: 2px 4px 4px 0;*/
+}
+
+.unity-list-view__footer > .unity-button,
+.unity-list-view__footer > .unity-button:hover:disabled
+{
+    background-color: transparent;
+}
+
+.unity-list-view__footer > .unity-button:focus {
+    background-color: var(--unity-colors-button-background-focus);
+}
+
+.unity-list-view__footer > .unity-button:hover {
+    background-color: var(--unity-colors-button-background-hover);
+}
+
+.unity-list-view__footer > .unity-button:active
+{
+    background-color: var(--logicgraph-button-background-pressed);
+}
+
+
+/*
+.unity-list-view__foldout-header > .unity-foldout__toggle > .unity-toggle__input
+{
+    flex-grow: 1;
+}
+*/
+
+.unity-list-view__size-field
+{
+    /*top: 5px;*/
+    position: initial; /* remove unity default */
+}
+
+/********************************************************************************
+* ObjectField 
+*  DefaultCommonDark_inter.uss clone
+********************************************************************************/
+.unity-object-field
+{
+    align-items: flex-start;
+}
+.unity-object-field__input
+{
+    flex-direction: row;
+    background-color: var(--logicgraph-color-input-background);
+    border-color: var(--unity-colors-input_field-border);
+    /*border-width: 1px;*/
+    border-width: 2px;
+}
+
+.unity-object-field__input:hover
+{
+    border-color: var(--unity-colors-input_field-border-hover);
+}
+
+.unity-object-field:focus > .unity-object-field__input
+{
+    border-color: var(--unity-colors-input_field-border-focus);
+}
+
+.unity-object-field__object
+{
+    flex-direction: row;
+    flex: 1 0 0;
+    -unity-slice-left: 4;
+    -unity-slice-top: 4;
+    -unity-slice-right: 4;
+    -unity-slice-bottom: 4;
+}
+
+.unity-object-field-display__icon
+{
+    margin: 2px 0;
+    padding: 0 0 0 2px;
+    /*max-width: 14px;*/
+    /*max-height: 12px;*/
+    max-width: 14;
+    max-height: 12px;
+    align-self: center;
+}
+
+.unity-object-field-display__label
+{
+    flex: 1 0 0;
+    margin-left: 2px;
+    padding: 1px 2px 0 0;
+    overflow: hidden;
+}
+
+.unity-object-field__selector
+{
+    /*width: 18px;*/
+    /*height: 16px;*/
+    width: 18px;
+    height: 16px;
+    align-self: center;
+    /*background-color: var(--unity-colors-object_field_button-background);*/
+    background-color: #202020;
+    background-image: resource("uipackageresources/images/d_pick_uielements.png");
+    -unity-slice-left: 1;
+    -unity-slice-top: 1;
+    -unity-slice-right: 1;
+    -unity-slice-bottom: 1;
+}
+
+.unity-object-field__selector:hover
+{
+    background-color: var(--unity-colors-object_field_button-background-hover);
+}
