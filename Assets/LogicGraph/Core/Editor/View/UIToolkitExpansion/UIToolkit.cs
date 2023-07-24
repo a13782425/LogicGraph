@@ -8,6 +8,6 @@ namespace Game.Logic.Editor
 {
     public static partial class UIToolkit
     {
-        private const string STYLE_PATH = "Uss/LogicGraph.uss";
+        private const string STYLE_PATH = "Uss/Expansion/LogicGraph.uss";
     }
 }

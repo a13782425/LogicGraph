@@ -1,0 +1,39 @@
+﻿/*:root {
+    --logicgraph-highlight-dark-gray: #404040;
+    --logicgraph-color-tabs-title-inactive-background: rgba(0,0,0,0.4);
+
+}*/
+/********************************************************************************
+* Tabs
+********************************************************************************/
+.logicgraph-tabs__title-container
+{
+    flex-direction: row;
+    flex-shrink: 0;
+    border-top-width: 4px;
+    border-color: var(--logicgraph-color-tabs-title-inactive-background);
+}
+
+.logicgraph-tabs__title-spacer
+{
+    flex-grow: 1;
+    flex-shrink: 0;
+    height: 100%;
+    background-color: var(--logicgraph-color-tabs-title-inactive-background);
+}
+
+.logicgraph-tabs__title
+{
+    flex-shrink: 0;
+    padding: 2px 4px;
+}
+
+.logicgraph-tabs__title--inactive
+{
+    background-color: var(--logicgraph-color-tabs-title-inactive-background);
+}
+
+.logicgraph-tabs__title--inactive:hover
+{
+    background-color: var(--logicgraph-highlight-dark-gray);
+}
