@@ -163,14 +163,7 @@ namespace Game.Logic.Editor
             }
         }
 
-        internal void DrawLink(EdgeView edge)
-        {
-            if (this._varElement != null)
-            {
-                this._varElement.Hide();
-            }
-            base.Connect(edge);
-        }
+
 
         /// <summary>
         /// 可以连接到某个端口
@@ -283,7 +276,14 @@ namespace Game.Logic.Editor
                 base.ExecuteDefaultAction(evt);
             }
         }
-
+        private void m_drawLink(EdgeView edge)
+        {
+            if (this._varElement != null)
+            {
+                this._varElement.Hide();
+            }
+            base.Connect(edge);
+        }
         public static NodePort CreatePort(BaseGraphView graphView, Node node, PortDirEnum dir)
         {
             return CreatePort(graphView, node, null, dir);
@@ -302,6 +302,23 @@ namespace Game.Logic.Editor
             port.m_initialize();
             port.fieldInfo = field;
             return port;
+        }
+
+        /// <summary>
+        /// 仅链接两个端口，不触发任何事件
+        /// </summary>
+        /// <param name="outPut"></param>
+        /// <param name="input"></param>
+        public static void JusrLinkPort(NodePort outPut, NodePort input)
+        {
+            EdgeView edgeView = new EdgeView();
+            edgeView.input = input;
+            edgeView.output = outPut;
+
+            outPut.m_drawLink(edgeView);
+            input.m_drawLink(edgeView);
+
+            outPut.owner.AddElement(edgeView);
         }
     }
 }

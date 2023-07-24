@@ -114,7 +114,6 @@ namespace Game.Logic.Editor
             this.editorData = editorData;
             m_initTitle();
             this.title = editorData.Title;
-
             m_initPort();
         }
     }
@@ -149,9 +148,29 @@ namespace Game.Logic.Editor
         /// <summary>
         /// 连接已经连接的线
         /// </summary>
-        public void DrawLink()
+        public virtual void DrawLink()
         {
+            if (this.OutPut == null)
+            {
+                this.target.Childs.Clear();
+                return;
+            }
 
+            List<int> tempList = target.Childs.ToList();
+
+            foreach (var item in tempList)
+            {
+                BaseNodeView nodeView = owner.GetNodeView(item) as BaseNodeView;
+                if (nodeView == null || nodeView.Input == null)
+                {
+                    target.Childs.Remove(item);
+                    continue;
+                }
+                else
+                {
+                    NodePort.JusrLinkPort(this.OutPut, nodeView.Input);
+                }
+            }
         }
         protected NodePort ShowPort(string title, PortDirEnum dir)
         {
@@ -191,16 +210,16 @@ namespace Game.Logic.Editor
                 if (inputAttribute != null)
                 {
                     NodePort port = ShowPort(inputAttribute.name, item, PortDirEnum.In);
-                    port.onAddPort += DefaultPortConnect;
-                    port.onDelPort += DefaultPortDisconnect;
+                    port.onAddPort += OnPortConnect;
+                    port.onDelPort += OnPortDisconnect;
                     _cachePorts.Add(port);
                     this.AddUI(port);
                 }
                 if (outputAttribute != null)
                 {
                     NodePort port = ShowPort(outputAttribute.name, item, PortDirEnum.Out);
-                    port.onAddPort += DefaultPortConnect;
-                    port.onDelPort += DefaultPortDisconnect;
+                    port.onAddPort += OnPortConnect;
+                    port.onDelPort += OnPortDisconnect;
                     _cachePorts.Add(port);
                     this.AddUI(port);
                 }
@@ -239,90 +258,129 @@ namespace Game.Logic.Editor
     partial class BaseNodeView
     {
         /// <summary>
-        /// 默认端口连接方法
+        /// 自定义端口连接方法
         /// </summary>
-        protected virtual void DefaultPortConnect(NodePort curPort, NodePort tarPort)
+        protected virtual void OnPortConnect(NodePort curPort, NodePort tarPort)
         {
             if (curPort.direction == Direction.Input)
             {
                 //入端口
+                if (curPort.IsBasePort)
+                    return;
                 switch (tarPort.node)
                 {
                     case VarNodeView varNodeView:
-                        if (curPort.fieldInfo == null)
-                            break;
-                        VarMappingData varData = new VarMappingData();
-                        varData.isInput = true;
-                        varData.fieldName = curPort.fieldInfo.Name;
-                        varData.varName = varNodeView.target.Name;
-                        this.target.VarMappings.Add(varData);
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else
-            {
-                //出端口
-                switch (tarPort.node)
-                {
-                    case VarNodeView varNodeView:
-                        if (curPort.fieldInfo == null)
-                            break;
-                        VarMappingData varData = new VarMappingData();
-                        varData.isInput = false;
-                        varData.fieldName = curPort.fieldInfo.Name;
-                        varData.varName = varNodeView.target.Name;
-                        this.target.VarMappings.Add(varData);
-                        break;
-                    case BaseNodeView baseNodeView:
-                        if (curPort.fieldInfo == null)
-                            break;
-                        if (tarPort.IsBasePort)
                         {
-                            curPort.fieldInfo.SetValue(target, baseNodeView.target);
+                            if (curPort.fieldInfo == null)
+                                break;
+                            VarMappingData varData = new VarMappingData();
+                            varData.isInput = true;
+                            varData.fieldName = curPort.fieldInfo.Name;
+                            varData.varName = varNodeView.target.Name;
+                            this.target.VarMappings.Add(varData);
                         }
                         break;
                     default:
                         break;
                 }
             }
+            else
+            {
+                //出端口
+                if (curPort.IsBasePort)
+                {
+                    var tarNodeView = tarPort.node as BaseNodeView;
+                    if (tarPort.IsBasePort)
+                    {
+                        this.target.Childs.Add(tarNodeView.target.OnlyId);
+                    }
+                }
+                else
+                {
+                    switch (tarPort.node)
+                    {
+                        case VarNodeView varNodeView:
+                            {
+                                if (curPort.fieldInfo == null)
+                                    break;
+                                VarMappingData varData = new VarMappingData();
+                                varData.isInput = false;
+                                varData.fieldName = curPort.fieldInfo.Name;
+                                varData.varName = varNodeView.target.Name;
+                                this.target.VarMappings.Add(varData);
+                            }
+                            break;
+                        case BaseNodeView baseNodeView:
+                            {
+                                if (curPort.fieldInfo == null)
+                                    break;
+                                if (tarPort.IsBasePort)
+                                {
+                                    curPort.fieldInfo.SetValue(target, baseNodeView.target);
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         }
         /// <summary>
-        /// 默认端口断开方法
+        /// 自定义端口断开方法
         /// </summary>
-        protected virtual void DefaultPortDisconnect(NodePort curPort, NodePort tarPort)
+        protected virtual void OnPortDisconnect(NodePort curPort, NodePort tarPort)
         {
             if (curPort.direction == Direction.Input)
             {
                 //入端口
-                switch (tarPort.node)
+                if (curPort.IsBasePort)
+                    return;
+                else
                 {
-                    case VarNodeView varNodeView:
-                        if (curPort.fieldInfo == null)
+                    switch (tarPort.node)
+                    {
+                        case VarNodeView varNodeView:
+                            {
+                                if (curPort.fieldInfo == null)
+                                    break;
+                                VarMappingData varData = this.target.VarMappings.FirstOrDefault(a => a.isInput = true && a.fieldName == curPort.fieldInfo.Name && a.varName == varNodeView.target.Name);
+                                if (varData != null)
+                                    this.target.VarMappings.Remove(varData);
+                            }
                             break;
-                        VarMappingData varData = this.target.VarMappings.FirstOrDefault(a => a.isInput = true && a.fieldName == curPort.fieldInfo.Name && a.varName == varNodeView.target.Name);
-                        if (varData != null)
-                            this.target.VarMappings.Remove(varData);
-                        break;
-                    default:
-                        break;
+                        default:
+                            break;
+                    }
                 }
             }
             else
             {
                 //出端口
-                switch (tarPort.node)
+                if (curPort.IsBasePort)
                 {
-                    case VarNodeView varNodeView:
-                        if (curPort.fieldInfo == null)
+                    var tarNodeView = tarPort.node as BaseNodeView;
+                    if (tarPort.IsBasePort)
+                    {
+                        this.target.Childs.Remove(tarNodeView.target.OnlyId);
+                    }
+                }
+                else
+                {
+                    switch (tarPort.node)
+                    {
+                        case VarNodeView varNodeView:
+                            {
+                                if (curPort.fieldInfo == null)
+                                    break;
+                                VarMappingData varData = this.target.VarMappings.FirstOrDefault(a => a.isInput = false && a.fieldName == curPort.fieldInfo.Name && a.varName == varNodeView.target.Name);
+                                if (varData != null)
+                                    this.target.VarMappings.Remove(varData);
+                            }
                             break;
-                        VarMappingData varData = this.target.VarMappings.FirstOrDefault(a => a.isInput = false && a.fieldName == curPort.fieldInfo.Name && a.varName == varNodeView.target.Name);
-                        if (varData != null)
-                            this.target.VarMappings.Remove(varData);
-                        break;
-                    default:
-                        break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -422,6 +480,8 @@ namespace Game.Logic.Editor
             {
                 Input = ShowPort("In", PortDirEnum.In);
                 Input.AddToClassList("base_port");
+                Input.onAddPort += OnPortConnect;
+                Input.onDelPort += OnPortDisconnect;
                 inputContainer.Add(Input);
             }
             else
@@ -432,8 +492,8 @@ namespace Game.Logic.Editor
             {
                 OutPut = ShowPort("Out", PortDirEnum.Out);
                 OutPut.AddToClassList("base_port");
-                OutPut.onAddPort += (a, b) => this.target.Childs.Add((b.node as BaseNodeView).target.OnlyId);
-                OutPut.onDelPort += (a, b) => this.target.Childs.Remove((b.node as BaseNodeView).target.OnlyId);
+                OutPut.onAddPort += OnPortConnect;
+                OutPut.onDelPort += OnPortDisconnect;
                 outputContainer.Add(OutPut);
             }
             else
